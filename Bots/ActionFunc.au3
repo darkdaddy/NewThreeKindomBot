@@ -57,7 +57,7 @@ EndFunc
 
 Func CollectResources()
 
-   SetLog("Collect all resources", $COLOR_PINK)
+   SetLog("Collect all resources...", $COLOR_PINK)
    CloseAllMenu()
 
    If _Sleep(500) Then Return False
@@ -107,7 +107,7 @@ Func CollectResources()
 EndFunc
 
 Func ReadyToAttackState()
-   SetLog("Go to my castle position..", $COLOR_PINK)
+   SetLog("Go to my castle position...", $COLOR_PINK)
 
    ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
    If _Sleep(2000) Then Return False
@@ -137,6 +137,7 @@ Func ReadyToAttackState()
 EndFunc
 
 Func DoChargeBarrack()
+   SetLog("Recharge troop barrack...", $COLOR_PINK)
    If Not OpenMenu("Barrack", $POS_BUTTON_BARRACK_MENU, $CHECK_BUTTON_FIELD_MENU_CLOSE) Then
 	  Return False
    EndIf
