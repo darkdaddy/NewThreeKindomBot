@@ -182,38 +182,43 @@ Func CheckTroopAvailable()
    Return $result
 EndFunc
 
+Func GoToNearByEmemy($troopNumber)
+
+   Local Const $MaxMoveCount = 5
+   $tryCount = 1
+   While $RunState And $tryCount < $MaxMoveCount
+
+	  ; Open NearBy Screen
+	  If Not OpenMenu("NearBy", $POS_BUTTON_NEARBY, $CHECK_BUTTON_NEARBY_CLOSE) Then
+		 Return False
+	  EndIf
+
+	  ; Click Move Button
+	  If ClickMoveButton($troopNumber) Then
+		 Return True;
+	  Else
+		 ; Not found "move" button
+		 SetLog("Move button " & $troopNumber & " not found", $COLOR_RED)
+
+		 ; this means that there is no more enemy in this near field.
+		 ; go to anywhere to dragging
+		 CloseMenu("NearBy", $CHECK_BUTTON_NEARBY_CLOSE)
+		 If _Sleep(800) Then Return False
+
+		 SetLog("Go some near place...", $COLOR_PINK)
+		 DragControlPos("30:70", "80:20", 5);
+	  EndIf
+	  If _Sleep(800) Then Return False
+	  $tryCount = $tryCount + 1
+   WEnd
+   Return False
+EndFunc
 
 Func DoKillFieldMonster($troopNumber)
 
    Local $tryCount = 1
 
-   ; Open NearBy Screen
-   If Not OpenMenu("NearBy", $POS_BUTTON_NEARBY, $CHECK_BUTTON_NEARBY_CLOSE) Then
-	  Return False
-   EndIf
-
-   ; Click Move Button
-   $tryCount = 1
-   While $RunState And $tryCount < $MaxTryCount
-
-	  If CheckForPixelList($CHECK_BUTTON_NEARBY_CLOSE) Then
-		 If Not ClickMoveButton($troopNumber) Then
-			; Not found "move" button
-			SetLog("Move button " & $troopNumber & " not found", $COLOR_RED)
-			Return False
-		 EndIf
-	  EndIf
-	  If _Sleep(800) Then Return False
-
-	  If CheckForPixelList($CHECK_BUTTON_FIELD_ATTACK) Then
-		 SetLog("Clicked Move button " & $troopNumber, $COLOR_DARKGREY)
-		 ExitLoop
-	  EndIf
-	  $tryCount = $tryCount + 1
-   WEnd
-   If $tryCount == $MaxTryCount Then
-	  Return False
-   EndIf
+   GoToNearByEmemy($troopNumber)
 
    ; Click Attack Button & Open Select-Troup Menu
    $tryCount = 1

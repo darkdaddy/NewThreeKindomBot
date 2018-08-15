@@ -6,11 +6,13 @@ Func AutoFlow()
    Local $loopCount = 1
 
    ;DragControlPos("70:30", "40:70");
-   ;DragControlPos("40:70", "70:30");
+   ;DragControlPos("30:70", "80:20", 5);
    ;DragControlPos("70:70", "70:30");
    ;DragControlPos("40:40", "70:70");
    ;DragControlPos("70:70", "40:40");
    ;CollectResources()
+   ;DragControlPos("12.16:87.62", "30.51:50.79");
+   ;Return False
    ;DragControlPos("12.16:87.62", "30.51:50.79");
    ;Return False
 
@@ -26,8 +28,6 @@ Func AutoFlow()
 	  If $troopNumber > 0 Then
 		 ; Go!!
 		 If _Sleep(800) Then Return False
-
-		 DragControlPos("12.16:87.62", "30.51:50.79");
 
 		 If DoKillFieldMonster($troopNumber) Then
 			SetLog("Attack Count : " & $attackCount, $COLOR_BLUE)
