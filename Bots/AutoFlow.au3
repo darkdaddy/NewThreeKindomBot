@@ -20,7 +20,7 @@ Func AutoFlow()
 
    While $RunState
 
-	  SetLog("Loop Count : " & $attackCount, $COLOR_ORANGE)
+	  SetLog("Loop Count : " & $loopCount, $COLOR_ORANGE)
 
 	  ; Checking available
 	  $troopNumber = CheckTroopAvailable()
@@ -34,7 +34,6 @@ Func AutoFlow()
 			$attackCount = $attackCount + 1
 		 EndIf
 
-		 $needToCollectResources = False
 		 If Mod($loopCount, 100) == 0 Then
 			CollectResources()
 			; already go out to field
