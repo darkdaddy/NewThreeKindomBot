@@ -56,6 +56,7 @@ $comboTroopCount = GUICtrlCreateCombo("", $x + 80, $y - 5, 100, $h)
 GUICtrlSetData($comboTroopCount, "1")
 GUICtrlSetData($comboTroopCount, "2")
 GUICtrlSetData($comboTroopCount, "3")
+GUICtrlSetData($comboTroopCount, "4")
 _GUICtrlComboBox_SetCurSel($comboTroopCount, 2)
 
 ;-----------------------------------------------------------

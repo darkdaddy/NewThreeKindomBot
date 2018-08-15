@@ -57,7 +57,7 @@ Func ControlMouseDrag($hWnd, $X1, $Y1, $X2, $Y2, $Button = "left", $Step = 3, $D
 	  EndIf
    EndIf
 
-   ;_log("ControlMouseDrag called : " & $X1 & "," & $Y1 & "->" & $X2 & "," & $Y2 & ", gradient = " & $gradient & ", to = " & $to );
+   _log("ControlMouseDrag called : " & $X1 & "," & $Y1 & "->" & $X2 & "," & $Y2 & ", gradient = " & $gradient & ", to = " & $to );
 
    $i = 0
    While $i < $to
@@ -75,7 +75,7 @@ Func ControlMouseDrag($hWnd, $X1, $Y1, $X2, $Y2, $Button = "left", $Step = 3, $D
 		 $x = 0
 		 $y = $gradient * $i
 	  EndIf
-	  ;_log("ControlMouseDrag pos = " & $X1 + $x & " x " & $Y1 + $y );
+	  _log("ControlMouseDrag pos = " & $X1 + $x & " x " & $Y1 + $y );
 	  DllCall($User32, "bool", "PostMessage", "hwnd", $hWnd, "int", $WM_MOUSEMOVE, "int", $Pressed, "long", _MakeLong(Round($X1 + $x), Round($Y1 + $y)))
 	  If @error Then Return SetError(6, "", False)
 	  Sleep(1)

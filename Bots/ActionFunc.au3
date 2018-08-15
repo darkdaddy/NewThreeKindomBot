@@ -39,6 +39,12 @@ Func ClickMoveButton($number)
 		 ClickControlPos($POS_BUTTON_GREEN_MOVE3, 1)
 		 Return True
 	  EndIf
+   ElseIf $number == 4 Then
+	  If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE4) Then
+		 SetLog("Move Button 4 Found", $COLOR_DARKGREY)
+		 ClickControlPos($POS_BUTTON_GREEN_MOVE4, 1)
+		 Return True
+	  EndIf
    EndIf
    Return False
 EndFunc
@@ -52,6 +58,8 @@ Func SelectTroop($number)
 	  ClickControlPos($POS_BUTTON_TROUP2, 2)
    ElseIf $number == 3 Then
 	  ClickControlPos($POS_BUTTON_TROUP3, 2)
+   ElseIf $number == 4 Then
+	  ClickControlPos($POS_BUTTON_TROUP4, 2)
    EndIf
 EndFunc
 
@@ -166,6 +174,8 @@ Func CheckTroopAvailable()
 	  $result = 2
    ElseIf NOT CheckForPixelList($CHECK_STATUS_ATTACK_TROOP3, $DefaultTolerance, True) Then
 	  $result = 3
+   ElseIf NOT CheckForPixelList($CHECK_STATUS_ATTACK_TROOP4, $DefaultTolerance, True) Then
+	  $result = 4
    EndIf
 
    If $result > $setting_attack_troup_count Then
