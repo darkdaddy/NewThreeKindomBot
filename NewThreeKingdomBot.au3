@@ -351,7 +351,7 @@ Func CloseMenu($name, $checkScreenInfos)
 
    While $RunState
 	  If CheckForPixelList($checkScreenInfos) Then
-		 SetLog("Close " & $name & " Menu", $COLOR_BLUE)
+		 SetLog("Close " & $name & " Menu", $COLOR_DARKGREY)
 		 ClickControlPos($infoArr[1], 1, 800)
 		 If _Sleep(500) Then Return
 	  Else
@@ -364,7 +364,7 @@ Func OpenMenu($name, $buttonPos, $checkScreenInfos)
    $tryCount = 0
    While $RunState
 	  If CheckForPixelList($checkScreenInfos) Then
-		 SetLog("Open " & $name & " Menu", $COLOR_BLUE)
+		 SetLog("Open " & $name & " Menu", $COLOR_DARKGREY)
 		 Return True
 	  EndIf
 

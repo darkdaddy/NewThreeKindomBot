@@ -44,7 +44,7 @@ Func ControlMouseDrag($hWnd, $X1, $Y1, $X2, $Y2, $Button = "left", $Step = 3, $D
    $xmode = False
    $i = 0
    If Not (($X2 - $X1) == 0) Then
-	  $gradient = ($Y2 - $Y1) * 1.0 / ($X2 - $X1)
+	  $gradient = Abs(($Y2 - $Y1) * 1.0 / ($X2 - $X1))
 	  $to = Abs($X2 - $X1)
 	  $xmode = True
 	  If $X2 > $X1 Then $up = True
@@ -64,8 +64,11 @@ Func ControlMouseDrag($hWnd, $X1, $Y1, $X2, $Y2, $Button = "left", $Step = 3, $D
 	  If $xmode Then
 		 $y = $gradient * $i
 		 $x = $i
-		 If $gradient < 0 Then
+
+		 If $X2 < $X1 Then
 			$x = $x * -1
+		 EndIf
+		 If $Y2 < $Y1 Then
 			$y = $y * -1
 		 EndIf
 	  Else

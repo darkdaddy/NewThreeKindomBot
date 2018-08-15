@@ -56,8 +56,22 @@ Func SelectTroop($number)
 EndFunc
 
 Func CollectResources()
+
    SetLog("Collect all resources", $COLOR_PINK)
-   If _Sleep(1000) Then Return False
+   CloseAllMenu()
+
+   If _Sleep(500) Then Return False
+
+   ; Go to castle view
+   Local $tryCount = 1
+   While $RunState And $tryCount < $MaxTryCount
+	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
+		 ExitLoop
+	  Else
+		 ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
+		 If _Sleep(2500) Then Return False
+	  EndIf
+   WEnd
 
    Local Const $Delay = 500
    ClickControlPos("25.34:44.24", 2)	; click Barrack
@@ -85,10 +99,14 @@ Func CollectResources()
    If _Sleep($Delay/2) Then Return False
 
    If _Sleep(800) Then Return False
+
+   ; go out
+   ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
+    If _Sleep(2000) Then Return False
    Return True
 EndFunc
 
-Func ReadyToAttackState($collectResources = False)
+Func ReadyToAttackState()
    SetLog("Go to my castle position..", $COLOR_PINK)
 
    ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
@@ -100,10 +118,6 @@ Func ReadyToAttackState($collectResources = False)
 
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
 		 SetLog("Main castle view detected", $COLOR_DARKGREY)
-
-		 If $collectResources Then
-			CollectResources()
-		 EndIf
 
 		 ClickControlPos($POS_BUTTON_GOTO_MAP, 3)
 		 If _Sleep(1000) Then Return False

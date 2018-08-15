@@ -7,8 +7,10 @@ Func AutoFlow()
    ;DragControlPos("70:30", "40:70");
    ;DragControlPos("40:70", "70:30");
    ;DragControlPos("70:70", "70:30");
-   ;Return False
+   ;DragControlPos("40:40", "70:70");
+   ;DragControlPos("70:70", "40:40");
    ;CollectResources()
+   ;DragControlPos("12.16:87.62", "30.51:50.79");
    ;Return False
 
    ReadyToAttackState()
@@ -25,16 +27,17 @@ Func AutoFlow()
 		 DragControlPos("12.16:87.62", "30.51:50.79");
 
 		 If DoKillFieldMonster($troopNumber) Then
-			SetLog("Attack Count : " & $attackCount, $COLOR_RED)
+			SetLog("Attack Count : " & $attackCount, $COLOR_BLUE)
 			$attackCount = $attackCount + 1
 		 EndIf
 
 		 $needToCollectResources = False
 		 If Mod($attackCount, 15) == 0 Then
-			$needToCollectResources = True
+			CollectResources()
+			; already go out to field
+		 Else
+			ReadyToAttackState()
 		 EndIf
-
-		 ReadyToAttackState($needToCollectResources)
 
 	  EndIf
 
