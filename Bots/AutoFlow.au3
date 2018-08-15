@@ -11,10 +11,6 @@ Func AutoFlow()
    ;DragControlPos("40:40", "70:70");
    ;DragControlPos("70:70", "40:40");
    ;CollectResources()
-   ;DragControlPos("12.16:87.62", "30.51:50.79");
-   ;Return False
-   ;DragControlPos("12.16:87.62", "30.51:50.79");
-   ;DragControlPos("60:60", "60:55");
    ;ClickMoveButton(4)
    ;Return False
 

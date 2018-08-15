@@ -216,7 +216,7 @@ Func GoToNearByEmemy($troopNumber)
 		 If _Sleep(800) Then Return False
 
 		 SetLog("Go some near place...", $COLOR_PINK)
-		 DragControlPos("30:70", "80:20", 5);
+		 DragControlPos("70:70", "20:20", 5);
 	  EndIf
 	  If _Sleep(800) Then Return False
 	  $tryCount = $tryCount + 1
