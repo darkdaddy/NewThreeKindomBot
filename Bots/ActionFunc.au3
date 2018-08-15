@@ -251,9 +251,17 @@ Func DoKillFieldMonster($troopNumber)
    If _Sleep(400) Then Return False
 
    ; Start Attack!!
-   SetLog("Go Attack!", $COLOR_PINK)
    ClickControlPos($POS_BUTTON_START_ATTACK, 2)
    If _Sleep(1000) Then Return False
 
+   If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
+	  SetLog("Alert! Can not attack...", $COLOR_RED)
+
+	  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+	  If _Sleep(400) Then Return False
+	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
+	  Return False
+   EndIf
+   SetLog("Go Attack!", $COLOR_PINK)
    Return True
 EndFunc
