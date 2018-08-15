@@ -38,16 +38,16 @@ Func AutoFlow()
 		 Else
 			ReadyToAttackState()
 		 EndIf
-
+	  Else
+		 If _Sleep(4000) Then Return False
 	  EndIf
-
-	  If _Sleep(5000) Then Return False
 
 	  If Mod($loopCount, 50) == 0 Then
 		 DoChargeBarrack()
 	  EndIf
 
 	  $loopCount = $loopCount + 1
+	  If _Sleep(1000) Then Return False
    WEnd
 
    SetLog("Auto Kill FieldMonster End", $COLOR_GREEN)
