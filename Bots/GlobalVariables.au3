@@ -61,7 +61,7 @@ Global $BSpos[2] ; Inside BlueStacks positions relative to the screen
 Global Const $RetryWaitCount = 30
 Global Const $SleepWaitMSec = 1500
 Global Const $DefaultTolerance = 21
-Global Const $MaxTryCount = 10
+Global Const $MaxTryCount = 5
 
 ; ---------- COLORS ------------
 Global Const $COLOR_ORANGE = 0xFFA500
