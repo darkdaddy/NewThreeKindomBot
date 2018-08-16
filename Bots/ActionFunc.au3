@@ -10,9 +10,6 @@
 
 Func CloseAllMenu()
 
-   If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
-	  Return
-   EndIf
    CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
    CloseMenu("Event", $CHECK_BUTTON_EVENT_CLOSE)
    CloseMenu("NearBy", $CHECK_BUTTON_NEARBY_CLOSE)
@@ -126,15 +123,18 @@ Func ReadyToAttackState()
    ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
    If _Sleep(2000) Then Return False
 
+   GoToField()
+EndFunc
+
+Func GoToField()
+
    Local $tryCount = 1
    While $RunState And $tryCount < $MaxTryCount
-	  CloseAllMenu()
-
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
 		 SetLog("Main castle view detected", $COLOR_DARKGREY)
 
 		 ClickControlPos($POS_BUTTON_GOTO_MAP, 3)
-		 If _Sleep(1000) Then Return False
+		 If _Sleep(1200) Then Return False
 	  EndIf
 
 	  If CheckForPixel($CHECK_BUTTON_NEARBY[0]) Then
@@ -142,12 +142,15 @@ Func ReadyToAttackState()
 		 ExitLoop
 	  EndIf
 
+	  CloseAllMenu()
+
 	  $tryCount = $tryCount + 1
    WEnd
    If $tryCount == $MaxTryCount Then
 	  Return False
    EndIf
    Return True
+
 EndFunc
 
 Func DoChargeBarrack()
@@ -279,15 +282,19 @@ Func DoKillFieldMonster($troopNumber)
 
    Local $tryCount = 1
 
+   GoToField()
+
    GoToNearByEmemy($troopNumber)
 
    ; Click Attack Button & Open Select-Troup Menu
    $tryCount = 1
+   $foundAttackButton = False
    While $RunState And $tryCount < $MaxTryCount
 	  If _Sleep(500) Then Return False
 
 	  If CheckForPixelList($CHECK_BUTTON_FIELD_ATTACK) Then
 		 ClickControlPos($POS_BUTTON_FIELD_ATTACK, 1)
+		 $foundAttackButton = True
 	  EndIf
 
 	  If _Sleep(800) Then Return False
@@ -301,6 +308,10 @@ Func DoKillFieldMonster($troopNumber)
 		 SetLog("Charge Attack Point", $COLOR_RED)
 		 ClickControlPos($POS_BUTTON_CHARGE_ATTACK_POINT, 1)
 		 If _Sleep(1200) Then Return False
+	  EndIf
+
+	  If $foundAttackButton == False Then
+		 ClickControlPos("50:50", 1)
 	  EndIf
 
 	  $tryCount = $tryCount + 1
