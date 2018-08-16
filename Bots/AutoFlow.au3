@@ -12,6 +12,7 @@ Func AutoFlow()
    ;DragControlPos("70:70", "40:40");
    ;CollectResources()
    ;ClickMoveButton(4)
+   ;DragControlPos("20:80", "80:10", 5);
    ;Return False
 
    ReadyToAttackState()

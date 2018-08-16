@@ -195,7 +195,7 @@ EndFunc
 Func GoToNearByEmemy($troopNumber)
 
    Local Const $MaxMoveCount = 5
-   $tryCount = 1
+   $tryCount = 0
    While $RunState And $tryCount < $MaxMoveCount
 
 	  ; Open NearBy Screen
@@ -216,11 +216,16 @@ Func GoToNearByEmemy($troopNumber)
 		 If _Sleep(800) Then Return False
 
 		 SetLog("Go some near place...", $COLOR_PINK)
-		 DragControlPos("80:80", "10:10", 5);
+		 If Mod($tryCount, 2) == 0 Then
+			DragControlPos("80:80", "10:10", 5);
+		 Else
+			DragControlPos("20:80", "80:10", 5);
+		 EndIf
 	  EndIf
 	  If _Sleep(800) Then Return False
 	  $tryCount = $tryCount + 1
    WEnd
+   SetLog("Enemy not found...", $COLOR_RED)
    Return False
 EndFunc
 
