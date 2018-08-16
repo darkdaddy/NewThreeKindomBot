@@ -43,7 +43,7 @@ Func AutoFlow()
 		 If _Sleep(4000) Then Return False
 	  EndIf
 
-	  If Mod($loopCount, 50) == 0 Then
+	  If Mod($loopCount, 10) == 0 Then
 		 DoChargeBarrack()
 	  EndIf
 

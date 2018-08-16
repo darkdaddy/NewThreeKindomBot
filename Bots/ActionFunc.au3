@@ -194,38 +194,78 @@ EndFunc
 
 Func GoToNearByEmemy($troopNumber)
 
+   Local Const $DragSpeed = 7
    Local Const $MaxMoveCount = 5
    $tryCount = 0
-   While $RunState And $tryCount < $MaxMoveCount
 
-	  ; Open NearBy Screen
-	  If Not OpenMenu("NearBy", $POS_BUTTON_NEARBY, $CHECK_BUTTON_NEARBY_CLOSE) Then
-		 Return False
-	  EndIf
+   ; $direction = 1 : Up
+   ; $direction = 2 : Down
+   For $direction = 1 To 4
 
-	  ; Click Move Button
-	  If ClickMoveButton($troopNumber) Then
-		 Return True;
-	  Else
-		 ; Not found "move" button
-		 SetLog("Move button " & $troopNumber & " not found", $COLOR_RED)
+	  While $RunState
 
-		 ; this means that there is no more enemy in this near field.
-		 ; go to anywhere to dragging
-		 CloseMenu("NearBy", $CHECK_BUTTON_NEARBY_CLOSE)
-		 If _Sleep(800) Then Return False
-
-		 SetLog("Go some near place...", $COLOR_PINK)
-		 If Mod($tryCount, 2) == 0 Then
-			DragControlPos("80:80", "10:10", 5);
-		 Else
-			DragControlPos("20:80", "80:10", 5);
+		 ; Open NearBy Screen
+		 If Not OpenMenu("NearBy", $POS_BUTTON_NEARBY, $CHECK_BUTTON_NEARBY_CLOSE) Then
+			Return False
 		 EndIf
-	  EndIf
-	  If _Sleep(800) Then Return False
-	  $tryCount = $tryCount + 1
-   WEnd
-   SetLog("Enemy not found...", $COLOR_RED)
+
+		 ; Click Move Button
+		 If ClickMoveButton($troopNumber) Then
+			Return True;
+		 Else
+			$tryCount = $tryCount + 1
+
+			; Not found "move" button
+			SetLog("Move button " & $troopNumber & " not found", $COLOR_RED)
+
+			; this means that there is no more enemy in this near field.
+			; go to anywhere to dragging
+			CloseMenu("NearBy", $CHECK_BUTTON_NEARBY_CLOSE)
+			If _Sleep(800) Then Return False
+
+			If $tryCount > $MaxMoveCount Then
+			   ExitLoop
+			EndIf
+
+			SetLog("Go some near place...", $COLOR_PINK)
+
+			If $direction == 1 Then	; Up
+			   If Mod($tryCount, 2) == 0 Then
+				  DragControlPos("20:20", "90:90", $DragSpeed);
+			   Else
+				  DragControlPos("80:20", "10:80", $DragSpeed);
+			   EndIf
+			ElseIf $direction == 2 Then	; Down
+			   If Mod($tryCount, 2) == 0 Then
+				  DragControlPos("80:80", "10:10", $DragSpeed);
+			   Else
+				  DragControlPos("20:80", "80:10", $DragSpeed);
+			   EndIf
+			ElseIf $direction == 3 Then	; Right
+			   If Mod($tryCount, 2) == 0 Then
+				  DragControlPos("80:30", "10:50", $DragSpeed);
+			   Else
+				  DragControlPos("80:50", "10:30", $DragSpeed);
+			   EndIf
+			ElseIf $direction == 4 Then	; Left
+			   If Mod($tryCount, 2) == 0 Then
+				  DragControlPos("20:20", "80:30", $DragSpeed);
+			   Else
+				  DragControlPos("20:50", "80:30", $DragSpeed);
+			   EndIf
+			EndIf
+		 EndIf
+
+		 If _Sleep(400) Then Return False
+	  WEnd
+
+	  SetLog("Enemy not found : direction = " & $direction, $COLOR_RED)
+
+	  ; Go to origin position again..
+	  ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
+	  $tryCount = 0
+   Next
+
    Return False
 EndFunc
 
