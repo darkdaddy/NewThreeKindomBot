@@ -209,7 +209,7 @@ Func btnCalcPos()
    $orgPosY = Int(GUICtrlRead($inputCalcPosY))
 
    $posX = $orgPosX - $ThickFrameSize
-   $posY = $orgPosY -  $NoxTitleBarHeight
+   $posY = $orgPosY - $NoxTitleBarHeight
 
    $org = WinGetPos($HWnD)
    $r = $org
@@ -228,7 +228,7 @@ Func btnCalcPos()
 	  ClipPut($result)
 
 	  $color = GetPixelColor($orgPosX, $orgPosY);
-	  $result = $result & " | " & "0x" & StringMid(Hex($color), 3)
+	  $result = $result & " | " & "0x" & $color
 
 	  _log( "WinSize [" & $org[2] & "," & $org[3] & "] => (" & $orgPosX & "," & $orgPosY & ") => " & $result & ", color = " & Hex($color))
 
@@ -256,18 +256,14 @@ Func btnTestColor()
 	  $PixelTolerance = Number($infoArr[3])
    EndIf
 
-   Local Const $RegionSize = 1
-   Local Const $WinX = $WinRect[0] - $ThickFrameSize
-   Local Const $WinY = $WinRect[1] - $NoxTitleBarHeight
-
    Local $pos = ControlPos($posArr[1])
-   $x = $WinX + $pos[0]
-   $y = $WinY + $pos[1]
-   Local $answerColor = PixelGetColor($x, $y)
+   $x = $pos[0]
+   $y = $pos[1]
+   Local $answerColor = GetPixelColor($x, $y)
 
-   _log( $pos[0] & "(" & $x & ")" & "x" & $pos[1] & "(" & $y & ")" & " => " & Hex($answerColor))
+   _log( $pos[0] & "(" & $x & ")" & "x" & $pos[1] & "(" & $y & ")" & " => " & $answerColor)
 
-   GUICtrlSetData($inputTestColor, "0x" & StringMid(Hex($answerColor), 3))
+   GUICtrlSetData($inputTestColor, "0x" & $answerColor);
 EndFunc
 
 ; System callback

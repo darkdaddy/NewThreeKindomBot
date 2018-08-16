@@ -91,6 +91,10 @@ Global const $POS_BUTTON_BARRACK_MENU = "4.21:61.94"
 Global const $POS_BUTTON_BARRACK_MENU1 = "25.66:30.02"
 Global const $POS_BUTTON_BARRACK_MENU2 = "25.66:45.39"
 Global const $POS_BUTTON_BARRACK_MAKE = "71.58:80.38"
+Global const $POS_BUTTON_DUNGEON = "94.15:56.32"
+Global const $POS_BUTTON_DUNGEON_EXP_TAB = "4.53:8.14"
+Global const $POS_BUTTON_DUNGEON_HERO_TAB = "4.53:25.48"
+Global const $POS_BUTTON_DUNGEON_TREASURE_TAB = "4.53:41.33"
 
 
 ; ---------- Screen Check ------------

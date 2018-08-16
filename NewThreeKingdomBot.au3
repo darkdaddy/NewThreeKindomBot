@@ -17,6 +17,9 @@ $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 #include <Bots/Util/Click.au3>
 #include <Bots/Util/ControlMouseDrag.au3>
 #include <Bots/Util/SaveImageToFile.au3>
+#include <Bots/Util/Pixels/_ColorCheck.au3>
+#include <Bots/Util/Pixels/_GetPixelColor.au3>
+#include <Bots/Util/Pixels/_PixelSearch.au3>
 #include <Bots/Util/Pixels/_CaptureRegion.au3>
 #include <Bots/Util/Image Search/ImageSearch.au3>
 #include <ScreenCapture.au3>
@@ -171,11 +174,6 @@ Func UpdateWindowRect()
    $r = WinGetPos($HWnD)
    If Not @error Then
 	  If $r[2] > $MinWinSize AND $r[3] > $MinWinSize Then
-		 $r[0] = $r[0] + $ThickFrameSize
-		 $r[1] = $r[1] + $NoxTitleBarHeight
-		 $r[2] = $r[2] + ($ThickFrameSize * 2)
-		 $r[3] = $r[3] - $NoxTitleBarHeight - $ThickFrameSize
-
 		 $WinRect = $r
 		 ;_log("Nox Rect : " & $WinRect[0] & "," & $WinRect[1] & " " & $WinRect[2] & "x" & $WinRect[3])
 	  EndIf
@@ -186,8 +184,8 @@ Func ControlPos($posInfo)
 
    Local $xy = StringSplit($posInfo, $PosXYSplitter)
 
-   Local $x = Round(Number($xy[1]) * $WinRect[2] / 100)
-   Local $y = Round(Number($xy[2]) * $WinRect[3] / 100)
+   Local $x = Round(Number($xy[1]) * ($WinRect[2] + ($ThickFrameSize * 2)) / 100)
+   Local $y = Round(Number($xy[2]) * ($WinRect[3] - $NoxTitleBarHeight - $ThickFrameSize) / 100)
 
    $x = $x + $ThickFrameSize
    $y = $y + $NoxTitleBarHeight
@@ -217,48 +215,36 @@ Func IsNoxActivated()
 EndFunc
 
 Func GetPixelColor($x, $y)
-   $x = $WinRect[0] + $x - $ThickFrameSize
-   $y = $WinRect[1] + $y - $NoxTitleBarHeight
-   Local $c = PixelGetColor($x, $y)
-   _log("GetPixelColor : " & $x & "x" & $y & " => " & $c)
-   Return $c
+
+   If $setting_capture_mode Then
+	  _CaptureRegion($x, $y, $x+1, $y+1)
+	  Local $c = _GetPixelColor(0, 0)
+	  Return $c
+   Else
+	  $x = $WinRect[0] + $x
+	  $y = $WinRect[1] + $y
+	  Local $c = PixelGetColor($x, $y)
+	  Return StringMid(Hex($c), 3)
+   EndIf
 EndFunc
 
-Func SearchPixel($regionInfo, $PixelTolerance = 12)
-   Local $infoArr = StringSplit($regionInfo, "|")
-   Local $posArr = StringSplit($infoArr[1], "-")
+Func MyPixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)
 
-   If UBound($infoArr) - 1 >= 3 Then
-	  $PixelTolerance = Number($infoArr[3])
+   If $setting_capture_mode Then
+
+	  Local $aCoord = _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)
+	  If IsArray($aCoord) = True Then
+		 Return $aCoord
+	  EndIf
+   Else
+
+	  Local $aCoord = PixelSearch($WinRect[0]+$iLeft, $WinRect[1]+$iTop, $WinRect[0]+$iRight, $WinRect[1]+$iBottom, $iColor, $iColorVariation)
+	  If Not @error Then
+		 Return $aCoord
+	  EndIf
    EndIf
 
-   Local $WinX = $WinRect[0] - $ThickFrameSize
-   Local $WinY = $WinRect[1] - $NoxTitleBarHeight
-
-   Local $leftTopPos = ControlPos($posArr[1])
-   Local $rightBottomPos = ControlPos($posArr[2])
-
-   $x1 = $WinX + $leftTopPos[0]
-   $y1 = $WinY + $leftTopPos[1]
-   $x2 = $WinX + $rightBottomPos[0]
-   $y2 = $WinY + $rightBottomPos[1]
-
-   Local $colorArr = StringSplit($infoArr[2], ",")
-
-   Local $lastRet
-   For $c = 1 To UBound($colorArr) - 1
-	  Local $color = StringStripWS($colorArr[$c], $STR_STRIPLEADING + $STR_STRIPTRAILING)
-	  $aCoord = PixelSearch($x1, $y1, $x2, $y2, $color, $PixelTolerance, 1, $HWnD)
-	  If Not @error Then
-		 _log("SearchPixel OK: " & ($x1 - $WinX) & " x " & ($y1 - $WinY) & " => OK " & ($aCoord[0]) & " x " & ($aCoord[1]) & ", " & $color )
-		 $lastRet = $aCoord
-	  Else
-		 _log("SearchPixel Failed: " & ($x1 - $WinX) & " x " & ($y1 - $WinY) & " => " & $color )
-		 Return False
-	  EndIf
-   Next
-
-   Return $lastRet
+   Return 0
 EndFunc
 
 Func CheckForPixel($screenInfo, $PixelTolerance = 15)
@@ -272,26 +258,23 @@ Func CheckForPixel($screenInfo, $PixelTolerance = 15)
 	  $PixelTolerance = Number($infoArr[3])
    EndIf
 
-   Local Const $RegionSize = 2
-
-   Local Const $WinX = $WinRect[0] - $ThickFrameSize
-   Local Const $WinY = $WinRect[1] - $NoxTitleBarHeight
+   Local Const $RegionSize = 1
 
    $okCount = 0
    For $p = 1 To UBound($posArr) - 1
 	  Local $pos = ControlPos($posArr[$p])
-	  $x = $WinX + $pos[0]
-	  $y = $WinY + $pos[1]
+	  $x = $pos[0]
+	  $y = $pos[1]
 
 	  Local $found = False
 	  Local $colorArr = StringSplit($infoArr[2], ",")
-	  Local $answerColor = PixelGetColor($x, $y)
+	  Local $answerColor = GetPixelColor($x, $y)	; For Log
 
 	  For $c = 1 To UBound($colorArr) - 1
 		 Local $color = StringStripWS($colorArr[$c], $STR_STRIPLEADING + $STR_STRIPTRAILING)
-		 Local $aCoord = PixelSearch($x-$RegionSize/2, $y-$RegionSize/2, $x+$RegionSize/2, $y+$RegionSize+$RegionSize/2, $color, $PixelTolerance)
-		 If Not @error Then
-			;_log("CheckForPixel : [" & $p & "] " & $pos[0] & " x " & $pos[1] & " => OK " & ($aCoord[0]) & " x " & ($aCoord[1]) & ", " & $color & " (" & Hex($answerColor) & ") <" & $PixelTolerance & ">");
+		 Local $aCoord = MyPixelSearch($x-$RegionSize, $y-$RegionSize, $x+$RegionSize, $y+$RegionSize+$RegionSize, $color, $PixelTolerance)
+		 If IsArray($aCoord) = True Then
+			;_log("CheckForPixel : [" & $p & "] " & $pos[0] & " x " & $pos[1] & " => OK " & ($aCoord[0]) & " x " & ($aCoord[1]) & ", " & $color & " (" & $answerColor & ") <" & $PixelTolerance & ">");
 			$okCount = $okCount + 1
 			$found = True
 			ExitLoop

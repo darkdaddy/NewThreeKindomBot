@@ -10,6 +10,9 @@
 
 Func CloseAllMenu()
 
+   If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
+	  Return
+   EndIf
    CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
    CloseMenu("Event", $CHECK_BUTTON_EVENT_CLOSE)
    CloseMenu("NearBy", $CHECK_BUTTON_NEARBY_CLOSE)

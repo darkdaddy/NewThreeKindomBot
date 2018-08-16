@@ -9,6 +9,7 @@ Global $setting_win_title = "녹스 안드로이드 앱플레이어"
 Global $setting_thick_frame_size = "36:2"
 Global $setting_attack_troup_count = 2
 Global $setting_delay_rate = 1.0
+Global $setting_capture_mode = False
 
 Func loadConfig()
 

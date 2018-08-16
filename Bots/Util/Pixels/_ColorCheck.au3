@@ -8,6 +8,9 @@
 Func _ColorCheck($nColor1, $nColor2, $sVari = 5)
 	Local $Red1, $Red2, $Blue1, $Blue2, $Green1, $Green2
 
+    $nColor1 = StringReplace($nColor1, "0x", "")
+	$nColor2 = StringReplace($nColor2, "0x", "")
+
 	$Red1 = Dec(StringMid(String($nColor1), 1, 2))
 	$Blue1 = Dec(StringMid(String($nColor1), 3, 2))
 	$Green1 = Dec(StringMid(String($nColor1), 5, 2))
