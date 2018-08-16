@@ -2,12 +2,12 @@
 
 #pragma compile(FileDescription, Raven Bot)
 #pragma compile(ProductName, Raven Bot)
-#pragma compile(ProductVersion, 0.10)
-#pragma compile(FileVersion, 0.10)
+#pragma compile(ProductVersion, 0.2)
+#pragma compile(FileVersion, 0.2)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.1"
+$sBotVersion = "0.2"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>
@@ -272,7 +272,7 @@ Func CheckForPixel($screenInfo, $PixelTolerance = 15)
 	  $PixelTolerance = Number($infoArr[3])
    EndIf
 
-   Local Const $RegionSize = 1
+   Local Const $RegionSize = 2
 
    Local Const $WinX = $WinRect[0] - $ThickFrameSize
    Local Const $WinY = $WinRect[1] - $NoxTitleBarHeight
@@ -289,7 +289,7 @@ Func CheckForPixel($screenInfo, $PixelTolerance = 15)
 
 	  For $c = 1 To UBound($colorArr) - 1
 		 Local $color = StringStripWS($colorArr[$c], $STR_STRIPLEADING + $STR_STRIPTRAILING)
-		 Local $aCoord = PixelSearch($x, $y, $x+$RegionSize, $y+$RegionSize, $color, $PixelTolerance)
+		 Local $aCoord = PixelSearch($x-$RegionSize/2, $y-$RegionSize/2, $x+$RegionSize/2, $y+$RegionSize+$RegionSize/2, $color, $PixelTolerance)
 		 If Not @error Then
 			;_log("CheckForPixel : [" & $p & "] " & $pos[0] & " x " & $pos[1] & " => OK " & ($aCoord[0]) & " x " & ($aCoord[1]) & ", " & $color & " (" & Hex($answerColor) & ") <" & $PixelTolerance & ">");
 			$okCount = $okCount + 1

@@ -233,6 +233,8 @@ Func DoKillFieldMonster($troopNumber)
    ; Click Attack Button & Open Select-Troup Menu
    $tryCount = 1
    While $RunState And $tryCount < $MaxTryCount
+	  If _Sleep(500) Then Return False
+
 	  If CheckForPixelList($CHECK_BUTTON_FIELD_ATTACK) Then
 		 ClickControlPos($POS_BUTTON_FIELD_ATTACK, 1)
 	  EndIf
