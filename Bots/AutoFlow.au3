@@ -13,6 +13,7 @@ Func AutoFlow()
    ;CollectResources()
    ;ClickMoveButton(4)
    ;DragControlPos("20:80", "80:10", 5);
+   ;CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
    ;Return False
 
    ReadyToAttackState()

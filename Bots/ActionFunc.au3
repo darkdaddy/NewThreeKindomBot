@@ -17,6 +17,7 @@ Func CloseAllMenu()
    CloseMenu("Capital-Treasure", $CHECK_BUTTON_CAPITAL_TREASURE_CLOSE)
    CloseMenu("Center-Battle", $CHECK_BUTTON_CENTER_BATTLE_EVENT_CLOSE)
    CloseMenu("Clan-Mission", $CHECK_BUTTON_CLAN_MISSION_CLOSE)
+   CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
    CloseMenu("Field-Menu", $CHECK_BUTTON_FIELD_MENU_CLOSE)
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
    CloseMenu("Charge-AttackPoint", $CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE)
@@ -133,7 +134,7 @@ Func GoToField()
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
 		 SetLog("Main castle view detected", $COLOR_DARKGREY)
 
-		 ClickControlPos($POS_BUTTON_GOTO_MAP, 3)
+		 ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
 		 If _Sleep(1200) Then Return False
 	  EndIf
 
