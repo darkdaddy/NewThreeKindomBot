@@ -1,10 +1,5 @@
 
 Func AutoFlow()
-
-   SetLog("Auto Kill FieldMonster Start", $COLOR_GREEN)
-   Local $attackCount = 1
-   Local $loopCount = 1
-
    ;DragControlPos("70:30", "40:70");
    ;DragControlPos("30:70", "80:20", 5);
    ;DragControlPos("70:70", "70:30");
@@ -15,44 +10,21 @@ Func AutoFlow()
    ;DragControlPos("20:80", "80:10", 5);
    ;CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
    ;Return False
+   If $setting_checked_dungeon_hero Then
+	  MainDungeonSweep("hero")
+	  If _Sleep(1200) Then Return False
+   EndIf
 
-   ReadyToAttackState()
+   If $setting_checked_dungeon_exp Then
+	  MainDungeonSweep("exp")
+	  If _Sleep(1200) Then Return False
+   EndIf
 
-   While $RunState
-
-	  SetLog("Loop Count : " & $loopCount, $COLOR_ORANGE)
-
-	  ; Checking available
-	  $troopNumber = CheckTroopAvailable()
-
-	  If $troopNumber > 0 Then
-		 ; Go!!
-		 If _Sleep(800) Then Return False
-
-		 If DoKillFieldMonster($troopNumber) Then
-			SetLog("Attack Count : " & $attackCount, $COLOR_BLUE)
-			$attackCount = $attackCount + 1
-		 EndIf
-
-		 If Mod($loopCount, 100) == 0 Then
-			CollectResources()
-			; already go out to field
-		 Else
-			ReadyToAttackState()
-		 EndIf
-	  Else
-		 If _Sleep(4000) Then Return False
-	  EndIf
-
-	  If Mod($loopCount, 10) == 0 Then
-		 DoChargeBarrack()
-	  EndIf
-
-	  $loopCount = $loopCount + 1
-	  If _Sleep(1000) Then Return False
-   WEnd
-
-   SetLog("Auto Kill FieldMonster End", $COLOR_GREEN)
+   If $setting_checked_field_attack Then
+	  MainFieldAttack()
+	  If _Sleep(1200) Then Return False
+   EndIf
    Return True
-
 EndFunc
+
+

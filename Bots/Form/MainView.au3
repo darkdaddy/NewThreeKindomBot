@@ -48,17 +48,6 @@ Local $btnWidth = 90
 $btnStart = GUICtrlCreateButton("Start Bot", $x, $generalBottomY, $btnWidth, 50)
 $btnStop = GUICtrlCreateButton("Stop Bot", $x, $generalBottomY, $btnWidth, 50)
 
-; Attack Troop Count Combobox
-$x = $contentPaneX + $btnWidth + 10
-$y = $generalBottomY + 5
-GUICtrlCreateLabel("Troop Count", $x, $y)
-$comboTroopCount = GUICtrlCreateCombo("", $x + 80, $y - 5, 100, $h)
-GUICtrlSetData($comboTroopCount, "1")
-GUICtrlSetData($comboTroopCount, "2")
-GUICtrlSetData($comboTroopCount, "3")
-GUICtrlSetData($comboTroopCount, "4")
-_GUICtrlComboBox_SetCurSel($comboTroopCount, 2)
-
 ;-----------------------------------------------------------
 ; Tab : Option
 ;-----------------------------------------------------------
@@ -74,16 +63,48 @@ $Label_1 = GUICtrlCreateLabel("Nox Title", $x, $y + 5, 60, 20)
 $x += 80
 $inputNoxTitle = GUICtrlCreateInput("", $x, $y, 200, 20)
 
-; Nox Title
+; Nox ThickFrame
 $x = $contentPaneX
 $y += 30
 $Label_2 = GUICtrlCreateLabel("Thick Frame", $x, $y + 5, 100, 20)
 $x += 80
 $inputThickFraemSize = GUICtrlCreateInput("", $x, $y, 200, 20)
+$y += 40
 
-$y += 50
+; Auto Dungeon Hero Sweep
+$x = $contentPaneX
+$checkAutoDungeonHeroSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Hero Sweep (13~15)", $x, $y, 250, 25)
+$y += 26
 
-GUICtrlCreateGroup("Utility", 20, $y, 410, 80)
+; Auto Dungeon Exp Sweep
+$checkAutoDungeonExpSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Exp. Sweep (13~15)", $x, $y, 250, 25)
+$y += 26
+
+; Auto Filed Attack
+$checkAutoFieldAttackEnabled = GUICtrlCreateCheckbox("Auto Filed Attack", $x, $y, $w, 25)
+$y += 26
+
+; Use Point
+$checkUsePointEnabled = GUICtrlCreateCheckbox("Enable Use Point", $x, $y, $w, 25)
+$y += 26
+
+; Use Bread
+$checkUseBreadEnabled = GUICtrlCreateCheckbox("Enable Use Bread", $x, $y, $w, 25)
+$y += 35
+
+; Attack Troop Count Combobox
+GUICtrlCreateLabel("Troop Count", $x, $y)
+$comboTroopCount = GUICtrlCreateCombo("", $x + 80, $y - 5, 100, $h)
+GUICtrlSetData($comboTroopCount, "1")
+GUICtrlSetData($comboTroopCount, "2")
+GUICtrlSetData($comboTroopCount, "3")
+GUICtrlSetData($comboTroopCount, "4")
+_GUICtrlComboBox_SetCurSel($comboTroopCount, 2)
+$y += ($h + 10)
+
+; Utilty Group Box
+$y += 10
+GUICtrlCreateGroup("Utility", 20, $y, 345, 80)
 $x = $contentPaneX + 10
 $y += 20
 
@@ -203,7 +224,9 @@ Func btnCalcPos()
    loadConfig()
    applyConfig()
 
-   findWindow()
+   If findWindow() Then
+	  WinActivate($HWnD)
+   EndIf
 
    $orgPosX = Int(GUICtrlRead($inputCalcPosX))
    $orgPosY = Int(GUICtrlRead($inputCalcPosY))
@@ -245,7 +268,9 @@ Func btnTestColor()
    loadConfig()
    applyConfig()
 
-   findWindow()
+   If findWindow() Then
+	  WinActivate($HWnD)
+   EndIf
 
    $screenInfo = GUICtrlRead($inputPosInfo)
 

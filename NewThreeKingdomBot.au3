@@ -2,12 +2,12 @@
 
 #pragma compile(FileDescription, Raven Bot)
 #pragma compile(ProductName, Raven Bot)
-#pragma compile(ProductVersion, 0.2)
-#pragma compile(FileVersion, 0.2)
+#pragma compile(ProductVersion, 0.3)
+#pragma compile(FileVersion, 0.3)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.2"
+$sBotVersion = "0.3"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>
@@ -197,6 +197,16 @@ Func ClickControlPos($posInfo, $clickCount = 1, $delayMsec = 300)
    ClickPos(ControlPos($posInfo), $delayMsec * $setting_delay_rate, $clickCount)
 EndFunc
 
+Func ClickControlScreen($screenInfo, $clickCount = 1, $delayMsec = 300)
+   Local $infoArr = StringSplit($screenInfo, "|")
+   ClickPos(ControlPos($infoArr[1]), $delayMsec * $setting_delay_rate, $clickCount)
+EndFunc
+
+Func ScreenToPosInfo($screenInfo)
+   Local $infoArr = StringSplit($screenInfo, "|")
+   Return $infoArr[1]
+EndFunc
+
 Func DragControlPos($posInfo1, $posInfo2, $step = 3, $delayMsec = 300)
    $p1 = ControlPos($posInfo1)
    $p2 = ControlPos($posInfo2)
@@ -337,7 +347,7 @@ Func CloseMenu($name, $checkScreenInfos)
 	  If CheckForPixelList($checkScreenInfos) Then
 		 SetLog("Close " & $name & " Menu", $COLOR_DARKGREY)
 		 ClickControlPos($infoArr[1], 1, 800)
-		 If _Sleep(500) Then Return
+		 If _Sleep(800) Then Return
 	  Else
 		 Return
 	  EndIf

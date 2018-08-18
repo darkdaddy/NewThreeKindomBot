@@ -21,6 +21,8 @@ Func CloseAllMenu()
    CloseMenu("Field-Menu", $CHECK_BUTTON_FIELD_MENU_CLOSE)
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
    CloseMenu("Charge-AttackPoint", $CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE)
+   CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+   CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
 EndFunc
 
 
@@ -119,7 +121,7 @@ Func CollectResources()
 EndFunc
 
 Func ReadyToAttackState()
-   SetLog("Go to my castle position...", $COLOR_PINK)
+   SetLog("Go to init state...", $COLOR_PINK)
 
    ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
    If _Sleep(2000) Then Return False
@@ -279,6 +281,7 @@ Func GoToNearByEmemy($troopNumber)
    Return False
 EndFunc
 
+
 Func DoKillFieldMonster($troopNumber)
 
    Local $tryCount = 1
@@ -339,4 +342,197 @@ Func DoKillFieldMonster($troopNumber)
    EndIf
    SetLog("Go Attack!", $COLOR_PINK)
    Return True
+EndFunc
+
+
+Func DoDungeonSweep($level, $buttonPosList)
+   $result = True
+   $tryCount = 1
+   SetLog("Dungeon Attack Begin : " & $level, $COLOR_DARKGREY)
+   For $i = 0 To 4
+	  SetLog("Dungeon Attack Stage : " & $i + 1, $COLOR_ORANGE)
+	  $foundSweepButton = False
+	  $foundInitButton = False
+
+	  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+	  CloseMenu("Charge-AttackPoint", $CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE)
+	  CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+	  CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
+
+	  ClickControlPos($buttonPosList[$i], 2)
+
+	  $tryCount = 1
+	  While $RunState And $tryCount < $MaxTryCount
+
+		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_ATTACK_SWEEP) Then
+			$foundSweepButton = True
+			SetLog("Sweep Button Found", $COLOR_DARKGREY)
+			ExitLoop
+		 ElseIf CheckForPixelList($CHECK_BUTTON_DUNGEON_ATTACK_INIT) Then
+			$foundInitButton = True
+			SetLog("Init Button Found", $COLOR_DARKGREY)
+			ExitLoop
+		 Else
+			ClickControlPos($buttonPosList[$i], 2)
+		 EndIf
+		 If _Sleep(500) Then Return False
+		 $tryCount = $tryCount + 1
+	  WEnd
+	  If $tryCount == $MaxTryCount Then Return False
+
+	  If $foundSweepButton Then
+		 OpenMenu("Troop-Select", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_SWEEP[0]), $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
+	  ElseIf $foundInitButton Then
+
+		 If $setting_checked_use_point Then
+			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_INIT[0], 2)
+			If CheckForPixelList($CHECK_BUTTON_DUNGEON_CHARGE_POINT_DENY) Then
+			   SetLog("Can not charge point...", $COLOR_RED)
+			   ClickControlScreen($CHECK_BUTTON_DUNGEON_CHARGE_POINT_DENY[0])
+
+			   If _Sleep(800) Then Return False
+			   CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+			   ContinueLoop
+			Else
+			   OpenMenu("Charge-Point", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_INIT[0]), $CHECK_BUTTON_DUNGEON_CHARGE_POINT)
+			   If _Sleep(500) Then Return False
+			   ClickControlScreen($CHECK_BUTTON_DUNGEON_CHARGE_POINT[0], 2)
+			   If _Sleep(500) Then Return False
+			   OpenMenu("Troop-Select", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_SWEEP[0]), $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
+			EndIf
+		 Else
+			; Close Attack Menu
+			CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+			If _Sleep(800) Then Return False
+			ContinueLoop
+		 EndIf
+	  EndIf
+
+	  ; Select troop
+	  SelectTroop($setting_dungeon_troop_number)
+	  If _Sleep(400) Then Return False
+
+	  ; Start Attack!!
+	  ClickControlPos($POS_BUTTON_START_ATTACK, 2)
+
+	  OpenMenu("Sweep-Start", $POS_BUTTON_START_ATTACK, $CHECK_BUTTON_DUNGEON_ATTACK_START)
+
+	  ClickControlPos($POS_BUTTON_DUNGEON_SWEEP_PLUS, 13, 100)	; 10 clicked
+
+	  SetLog("Dungeon Sweep Attack!", $COLOR_PINK)
+	  ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
+	  If _Sleep(1200) Then Return False
+
+	  If $setting_checked_use_bread Then
+		 If CheckForPixelList($CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE) Then
+			; attack-button and use-bread button's position are almost same..
+			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
+			If _Sleep(1000) Then Return False
+
+			;ClickControlPos($POS_BUTTON_DUNGEON_SWEEP_PLUS, 13, 100)	; 10 clicked
+			;If _Sleep(800) Then Return False
+			SetLog("Dungeon Sweep Attack Again!", $COLOR_PINK)
+			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
+		 EndIf
+	  Else
+		 CloseMenu("Charge-Bread", $CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE)
+		 $result = False
+	  EndIf
+
+	  ; Close Attack Menu
+	  CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+
+	  If _Sleep(800) Then Return False
+	  If Not $result Then ExitLoop
+   Next
+
+   SetLog("Dungeon Attack End : " & $level, $COLOR_PINK)
+   Return $result
+EndFunc
+
+
+Func MainFieldAttack()
+   SetLog("Auto Kill FieldMonster Start", $COLOR_GREEN)
+   Local $attackCount = 1
+   Local $loopCount = 1
+
+   ReadyToAttackState()
+
+   While $RunState
+	  SetLog("Loop Count : " & $loopCount, $COLOR_ORANGE)
+
+	  ; Checking available
+	  $troopNumber = CheckTroopAvailable()
+
+	  If $troopNumber > 0 Then
+		 ; Go!!
+		 If _Sleep(800) Then Return False
+
+		 If DoKillFieldMonster($troopNumber) Then
+			SetLog("Attack Count : " & $attackCount, $COLOR_BLUE)
+			$attackCount = $attackCount + 1
+		 EndIf
+
+		 If Mod($loopCount, 100) == 0 Then
+			CollectResources()
+			; already go out to field
+		 Else
+			ReadyToAttackState()
+		 EndIf
+	  Else
+		 If _Sleep(4000) Then Return False
+	  EndIf
+
+	  If Mod($loopCount, 10) == 0 Then
+		 DoChargeBarrack()
+	  EndIf
+
+	  $loopCount = $loopCount + 1
+	  If _Sleep(1000) Then Return False
+   WEnd
+
+   SetLog("Auto Kill FieldMonster End", $COLOR_GREEN)
+   Return True
+
+EndFunc
+
+Func MainDungeonSweep($tab)
+   SetLog("Auto Dungeon Sweep Start : " & $tab, $COLOR_GREEN)
+
+   If Not CheckForPixel($CHECK_BUTTON_NEARBY[0]) Then
+	  ReadyToAttackState()
+	  If _Sleep(800) Then Return False
+   EndIf
+
+   ClickControlPos($POS_BUTTON_DUNGEON, 2)
+   If _Sleep(800) Then Return False
+
+   If $tab == "exp" Then
+	  ClickControlPos($POS_BUTTON_DUNGEON_EXP_TAB, 2)
+   ElseIf $tab == "hero" Then
+	  ClickControlPos($POS_BUTTON_DUNGEON_HERO_TAB, 2)
+   EndIf
+   If _Sleep(800) Then Return False
+
+   ; Level 15
+   If DoDungeonSweep(15, $POS_BUTTON_DUNGEON_15) Then
+
+	  ClickControlPos($POS_BUTTON_DUNGEON_MOVE_LEFT, 2)
+	  If _Sleep(1200) Then Return False
+
+	  ; Level 14
+	  If DoDungeonSweep(14, $POS_BUTTON_DUNGEON_14) Then
+
+		 ClickControlPos($POS_BUTTON_DUNGEON_MOVE_LEFT, 2)
+		 If _Sleep(1200) Then Return False
+
+		 ; Level 13
+		 If DoDungeonSweep(13, $POS_BUTTON_DUNGEON_13) Then
+		 EndIf
+	  EndIf
+   EndIf
+
+   CloseMenu("Dungeon-Menu", $CHECK_BUTTON_TOP_CLOSE)
+
+   SetLog("Auto Dungeon Sweep End : " & $tab, $COLOR_GREEN)
 EndFunc
