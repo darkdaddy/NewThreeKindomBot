@@ -73,11 +73,11 @@ $y += 40
 
 ; Auto Dungeon Hero Sweep
 $x = $contentPaneX
-$checkAutoDungeonHeroSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Hero Sweep (13~15)", $x, $y, 250, 25)
+$checkAutoDungeonExpSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Exp. Sweep (13~15)", $x, $y, 250, 25)
 $y += 26
 
 ; Auto Dungeon Exp Sweep
-$checkAutoDungeonExpSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Exp. Sweep (13~15)", $x, $y, 250, 25)
+$checkAutoDungeonHeroSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Hero Sweep (13~15)", $x, $y, 250, 25)
 $y += 26
 
 ; Auto Dungeon Treasure
@@ -97,8 +97,8 @@ $checkUseBreadEnabled = GUICtrlCreateCheckbox("Enable Use Bread", $x, $y, $w, 25
 $y += 35
 
 ; Attack Troop Count Combobox
-GUICtrlCreateLabel("Troop Count", $x, $y)
-$comboTroopCount = GUICtrlCreateCombo("", $x + 80, $y - 5, 60, $h)
+GUICtrlCreateLabel("Field Attact Troop Count", $x, $y)
+$comboTroopCount = GUICtrlCreateCombo("", $x + 150, $y - 5, 40, $h)
 GUICtrlSetData($comboTroopCount, "1")
 GUICtrlSetData($comboTroopCount, "2")
 GUICtrlSetData($comboTroopCount, "3")
@@ -108,7 +108,7 @@ $y += ($h + 10)
 
 ; Dungeon Sweep Troop Combobox
 GUICtrlCreateLabel("Dungeon Sweep Troop", $x, $y)
-$comboDungeonSweepTroop = GUICtrlCreateCombo("", $x + 140, $y - 5, 60, $h)
+$comboDungeonSweepTroop = GUICtrlCreateCombo("", $x + 140, $y - 5, 40, $h)
 GUICtrlSetData($comboDungeonSweepTroop, "1")
 GUICtrlSetData($comboDungeonSweepTroop, "2")
 GUICtrlSetData($comboDungeonSweepTroop, "3")
@@ -118,7 +118,7 @@ $y += ($h + 10)
 
 ; Dungeon Treasure Level
 GUICtrlCreateLabel("Dungeon Treasure Level", $x, $y)
-$comboDungeonTreasureLevel = GUICtrlCreateCombo("", $x + 150, $y - 5, 60, $h)
+$comboDungeonTreasureLevel = GUICtrlCreateCombo("", $x + 150, $y - 5, 40, $h)
 GUICtrlSetData($comboDungeonTreasureLevel, "1")
 GUICtrlSetData($comboDungeonTreasureLevel, "2")
 GUICtrlSetData($comboDungeonTreasureLevel, "3")
