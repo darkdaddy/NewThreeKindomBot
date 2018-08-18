@@ -20,7 +20,7 @@ Func CloseAllMenu()
    CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
    CloseMenu("Field-Menu", $CHECK_BUTTON_FIELD_MENU_CLOSE)
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
-   CloseMenu("Charge-AttackPoint", $CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE)
+   CloseMenu("Use-AttackPoint", $CHECK_BUTTON_USE_ATTACK_POINT_CLOSE)
    CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
    CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
 EndFunc
@@ -134,14 +134,14 @@ Func GoToField()
    Local $tryCount = 1
    While $RunState And $tryCount < $MaxTryCount
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
-		 SetLog("Main castle view detected", $COLOR_DARKGREY)
+		 SetLog("Castle view detected...", $COLOR_BLUE)
 
 		 ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
 		 If _Sleep(1200) Then Return False
 	  EndIf
 
-	  If CheckForPixel($CHECK_BUTTON_NEARBY[0]) Then
-		 SetLog("NearBy Button Found", $COLOR_DARKGREY)
+	  If CheckForPixelList($CHECK_MAIN_FIELD_VIEW) Then
+		 SetLog("Field view detected...", $COLOR_BLUE)
 		 ExitLoop
 	  EndIf
 
@@ -281,6 +281,66 @@ Func GoToNearByEmemy($troopNumber)
    Return False
 EndFunc
 
+Func FindTreasureDungeonLevelNumber($number)
+   Local Const $Delay = 500
+   $region = RegionToRect("21:10.92-90.08:87.67")
+   $buttonSizeRect = RegionToRect("22.08:10.49-31.62:35.76")
+
+   Local $firstItemGreen[1] = ["24.58:56.53 | 0x41705e, 0x569785"]
+   Local $firstItemBlue[1] = ["24.58:56.53 | 0x485770, 0x323e56"]
+   Local $firstItemPurple[1] = ["24.58:56.53 | 0x7a6197, 0x54436d, 0x694d80"]
+   Local $firstItemGold[1] = ["24.58:56.53 | 0x895c3c, 0x583d2c"]
+   Local $secondItemGreen[1] = ["36.71:55.64 | 0x41705e, 0x569785"]
+   Local $secondItemBlue[1] = ["36.71:55.64 | 0x485770, 0x323e56"]
+   Local $secondItemPurple[1] = ["36.71:55.64 | 0x7a6197, 0x54436d"]
+   Local $secondItemGold[1] = ["36.71:55.64 | 0x895c3c, 0x583d2c"]
+   Local $fifthItem[1] = ["72.7:56.58 | 0x414F67 | 16 | 3"]
+
+   $clickCount = 0
+   For $sx = $region[0] To $region[0] + $region[2] - $buttonSizeRect[2] / 2 Step $buttonSizeRect[2]
+	  For $sy = $region[1] To $region[1] + $region[3] - $buttonSizeRect[3] / 2 Step $buttonSizeRect[3]
+
+		 Local $centerPos = [($sx + $buttonSizeRect[2] / 2), ($sy + $buttonSizeRect[3] / 2)]
+ 		 $clickCount += 1
+
+		 ClickPos($centerPos, 2)
+		 If _Sleep($Delay) Then Return False
+		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_TREASURE_START) Then
+			_log("FindTreasureDungeonLevelNumber found : " & $centerPos[0] & "x" & $centerPos[1])
+
+			$currLevel = 0
+			If CheckForPixelList($firstItemGreen) And Not CheckForPixelList($fifthItem) Then
+			   $currLevel = 1
+			ElseIf CheckForPixelList($firstItemGreen) And CheckForPixelList($secondItemBlue) Then
+			   $currLevel = 2
+			ElseIf CheckForPixelList($firstItemBlue) And CheckForPixelList($secondItemGreen) Then
+			   $currLevel = 3
+			ElseIf CheckForPixelList($firstItemPurple) And CheckForPixelList($secondItemBlue) Then
+			   $currLevel = 4
+			ElseIf CheckForPixelList($firstItemGold) And CheckForPixelList($secondItemPurple) Then
+			   $currLevel = 5
+			EndIf
+
+			If $currLevel >= 1 Then
+			   SetLog("Level " & $currLevel & " detected...", $COLOR_PINK)
+			Else
+			   SetLog("Level detect failed...", $COLOR_RED)
+			EndIf
+
+			If $number == $currLevel Then
+			   ; find it! do not close this menu
+			   Return $centerPos
+			EndIf
+
+			CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+			If _Sleep($Delay) Then Return False
+		 EndIf
+	  Next
+   Next
+
+   _log("FindTreasureDungeonLevelNumber total click count : " & $clickCount)
+   Return False
+EndFunc
 
 Func DoKillFieldMonster($troopNumber)
 
@@ -308,9 +368,9 @@ Func DoKillFieldMonster($troopNumber)
 		 ExitLoop
 	  EndIf
 
-	  If CheckForPixelList($CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE) Then
-		 SetLog("Charge Attack Point", $COLOR_RED)
-		 ClickControlPos($POS_BUTTON_CHARGE_ATTACK_POINT, 1)
+	  If CheckForPixelList($CHECK_BUTTON_USE_ATTACK_POINT_CLOSE) Then
+		 SetLog("Use Attack Point", $COLOR_RED)
+		 ClickControlPos($POS_BUTTON_USE_ATTACK_POINT, 1)
 		 If _Sleep(1200) Then Return False
 	  EndIf
 
@@ -345,7 +405,7 @@ Func DoKillFieldMonster($troopNumber)
 EndFunc
 
 
-Func DoDungeonSweep($level, $buttonPosList)
+Func DoDungeonSweep($tab, $level, $buttonPosList)
    $result = True
    $tryCount = 1
    SetLog("Dungeon Attack Begin : " & $level, $COLOR_DARKGREY)
@@ -355,11 +415,12 @@ Func DoDungeonSweep($level, $buttonPosList)
 	  $foundInitButton = False
 
 	  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
-	  CloseMenu("Charge-AttackPoint", $CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE)
+	  CloseMenu("Use-AttackPoint", $CHECK_BUTTON_USE_ATTACK_POINT_CLOSE)
 	  CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 	  CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
 
 	  ClickControlPos($buttonPosList[$i], 2)
+	  If _Sleep(800) Then Return False
 
 	  $tryCount = 1
 	  While $RunState And $tryCount < $MaxTryCount
@@ -386,22 +447,33 @@ Func DoDungeonSweep($level, $buttonPosList)
 
 		 If $setting_checked_use_point Then
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_INIT[0], 2)
-			If CheckForPixelList($CHECK_BUTTON_DUNGEON_CHARGE_POINT_DENY) Then
-			   SetLog("Can not charge point...", $COLOR_RED)
-			   ClickControlScreen($CHECK_BUTTON_DUNGEON_CHARGE_POINT_DENY[0])
+			If CheckForPixelList($CHECK_BUTTON_DUNGEON_USE_POINT_DENY) Then
+			   SetLog("Can not use point no more", $COLOR_RED)
+			   ClickControlScreen($CHECK_BUTTON_DUNGEON_USE_POINT_DENY[0])
 
 			   If _Sleep(800) Then Return False
 			   CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 			   ContinueLoop
 			Else
-			   OpenMenu("Charge-Point", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_INIT[0]), $CHECK_BUTTON_DUNGEON_CHARGE_POINT)
+			   OpenMenu("Use-Point", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_INIT[0]), $CHECK_BUTTON_DUNGEON_USE_POINT)
 			   If _Sleep(500) Then Return False
-			   ClickControlScreen($CHECK_BUTTON_DUNGEON_CHARGE_POINT[0], 2)
-			   If _Sleep(500) Then Return False
+			   ClickControlScreen($CHECK_BUTTON_DUNGEON_USE_POINT[0], 2)
+			   If _Sleep(1200) Then Return False
+
+			   If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
+				  SetLog("Out of point!", $COLOR_RED)
+				  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+				  If _Sleep(500) Then Return False
+				  ContinueLoop
+			   Else
+				  SetLog("Use Point!", $COLOR_BLUE)
+			   EndIf
+
 			   OpenMenu("Troop-Select", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_SWEEP[0]), $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 			EndIf
 		 Else
 			; Close Attack Menu
+			SetLog("Not-Use-Point Option On", $COLOR_RED)
 			CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 			If _Sleep(800) Then Return False
 			ContinueLoop
@@ -409,7 +481,7 @@ Func DoDungeonSweep($level, $buttonPosList)
 	  EndIf
 
 	  ; Select troop
-	  SelectTroop($setting_dungeon_troop_number)
+	  SelectTroop($setting_dungeon_sweep_troop)
 	  If _Sleep(400) Then Return False
 
 	  ; Start Attack!!
@@ -417,26 +489,30 @@ Func DoDungeonSweep($level, $buttonPosList)
 
 	  OpenMenu("Sweep-Start", $POS_BUTTON_START_ATTACK, $CHECK_BUTTON_DUNGEON_ATTACK_START)
 
-	  ClickControlPos($POS_BUTTON_DUNGEON_SWEEP_PLUS, 13, 100)	; 10 clicked
+	  ; Click end position in slider
+	  ClickControlPos("55.44:57.86", 2)
+	  ClickControlPos($POS_BUTTON_DUNGEON_SWEEP_PLUS, 3, 100)	; and click more to fill fully
 
 	  SetLog("Dungeon Sweep Attack!", $COLOR_PINK)
 	  ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
 	  If _Sleep(1200) Then Return False
 
-	  If $setting_checked_use_bread Then
-		 If CheckForPixelList($CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE) Then
+	  If CheckForPixelList($CHECK_BUTTON_USE_ATTACK_POINT_CLOSE) Then
+		 If $setting_checked_use_bread Then
 			; attack-button and use-bread button's position are almost same..
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
 			If _Sleep(1000) Then Return False
 
 			;ClickControlPos($POS_BUTTON_DUNGEON_SWEEP_PLUS, 13, 100)	; 10 clicked
 			;If _Sleep(800) Then Return False
-			SetLog("Dungeon Sweep Attack Again!", $COLOR_PINK)
+			SetLog("Use Bread!", $COLOR_BLUE)
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
+		 Else
+			SetLog("Not-Use-Bread Option On", $COLOR_RED)
+			CloseMenu("Use-Bread", $CHECK_BUTTON_USE_ATTACK_POINT_CLOSE)
+			$result = False
 		 EndIf
-	  Else
-		 CloseMenu("Charge-Bread", $CHECK_BUTTON_CHARGE_ATTACK_POINT_CLOSE)
-		 $result = False
+		 If _Sleep(1200) Then Return False
 	  EndIf
 
 	  ; Close Attack Menu
@@ -499,7 +575,7 @@ EndFunc
 Func MainDungeonSweep($tab)
    SetLog("Auto Dungeon Sweep Start : " & $tab, $COLOR_GREEN)
 
-   If Not CheckForPixel($CHECK_BUTTON_NEARBY[0]) Then
+   If Not CheckForPixelList($CHECK_MAIN_FIELD_VIEW) Then
 	  ReadyToAttackState()
 	  If _Sleep(800) Then Return False
    EndIf
@@ -515,19 +591,19 @@ Func MainDungeonSweep($tab)
    If _Sleep(800) Then Return False
 
    ; Level 15
-   If DoDungeonSweep(15, $POS_BUTTON_DUNGEON_15) Then
+   If DoDungeonSweep($tab, 15, $POS_BUTTON_DUNGEON_15) Then
 
 	  ClickControlPos($POS_BUTTON_DUNGEON_MOVE_LEFT, 2)
 	  If _Sleep(1200) Then Return False
 
 	  ; Level 14
-	  If DoDungeonSweep(14, $POS_BUTTON_DUNGEON_14) Then
+	  If DoDungeonSweep($tab, 14, $POS_BUTTON_DUNGEON_14) Then
 
 		 ClickControlPos($POS_BUTTON_DUNGEON_MOVE_LEFT, 2)
 		 If _Sleep(1200) Then Return False
 
 		 ; Level 13
-		 If DoDungeonSweep(13, $POS_BUTTON_DUNGEON_13) Then
+		 If DoDungeonSweep($tab, 13, $POS_BUTTON_DUNGEON_13) Then
 		 EndIf
 	  EndIf
    EndIf
@@ -535,4 +611,94 @@ Func MainDungeonSweep($tab)
    CloseMenu("Dungeon-Menu", $CHECK_BUTTON_TOP_CLOSE)
 
    SetLog("Auto Dungeon Sweep End : " & $tab, $COLOR_GREEN)
+EndFunc
+
+Func MainDungeonTreasure()
+   SetLog("Auto Dungeon Treasure Start", $COLOR_GREEN)
+
+   If Not CheckForPixelList($CHECK_MAIN_FIELD_VIEW) Then
+	  ReadyToAttackState()
+	  If _Sleep(800) Then Return False
+   EndIf
+
+   ClickControlPos($POS_BUTTON_DUNGEON, 2)
+   If _Sleep(800) Then Return False
+
+   ClickControlPos($POS_BUTTON_DUNGEON_TREASURE_TAB, 2)
+   If _Sleep(800) Then Return False
+
+   Local $levelButtonPos = FindTreasureDungeonLevelNumber($setting_dungeon_treasure_level_number)
+   If IsArray($levelButtonPos) = False Then
+	  Return False
+   EndIf
+
+   $tryCount = 0
+   While $RunState And $tryCount < $MaxTryCount
+
+	  If CheckForPixelList($CHECK_BUTTON_DUNGEON_TREASURE_START) Then
+
+		 Local Const $MaxAttackClickTryCount = 3
+		 $attackClickCount = 0
+		 While $attackClickCount < $MaxAttackClickTryCount
+			ClickControlScreen($CHECK_BUTTON_DUNGEON_TREASURE_START[0], 2)
+
+			If Not CheckForPixelList($CHECK_BUTTON_DUNGEON_TREASURE_START) Then
+			   ; OK
+			   ExitLoop
+			EndIf
+			If _Sleep(800) Then Return False
+			$attackClickCount += 1
+		 WEnd
+
+		 If $attackClickCount >= $MaxAttackClickTryCount Then
+			SetLog("Can not try Treasure Attack...", $COLOR_RED)
+			CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+			If _Sleep(800) Then Return False
+			ExitLoop
+		 EndIf
+	  Else
+		 $tryCount += 1
+		 SetLog("Click Treasure Level Button : " & $setting_dungeon_treasure_level_number, $COLOR_DARKGREY)
+		 ClickPos($levelButtonPos, 2)
+		 If _Sleep(1000) Then Return False
+		 ContinueLoop
+	  EndIf
+
+	  ; Select troop
+	  SelectTroop(1)
+	  If _Sleep(400) Then Return False
+
+	  SetLog("Treasure Attack!", $COLOR_PINK)
+	  If _Sleep(10000) Then Return False
+
+	  $win = True
+	  While $RunState
+		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_WIN_LEAVE) Then
+			SetLog("Treasure Attack Win!", $COLOR_BLUE)
+			ClickControlScreen($CHECK_BUTTON_DUNGEON_WIN_LEAVE[0], 2)
+			If _Sleep(3000) Then Return False
+			ExitLoop
+		 EndIf
+
+		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_LOSE_LEAVE) Then
+			$win = False
+			SetLog("Treasure Attack Lose!", $COLOR_RED)
+			ClickControlScreen($CHECK_BUTTON_DUNGEON_LOSE_LEAVE[0], 2)
+			If _Sleep(3000) Then Return False
+			ExitLoop
+		 EndIf
+
+		 ; Click Skip Button
+		 ClickControlPos("89.52:91.9", 3)
+
+		 If _Sleep(1500) Then Return False
+	  WEnd
+
+	  If Not $win Then
+		 ExitLoop
+	  EndIf
+   WEnd
+
+   CloseMenu("Dungeon-Menu", $CHECK_BUTTON_TOP_CLOSE)
+   SetLog("Auto Dungeon Treasure End", $COLOR_GREEN)
 EndFunc

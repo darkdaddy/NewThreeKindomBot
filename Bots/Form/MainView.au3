@@ -9,7 +9,7 @@ Local $gap = 10
 Local $generalRightHeight = 0
 Local $generalBottomHeight = 70
 Local $logViewWidth = 350
-Local $logViewHeight = 270
+Local $logViewHeight = 350
 Local $frameWidth = $contentPaneX + $logViewWidth + $gap + $generalRightHeight + $tabX
 Local $frameHeight = $contentPaneY + $logViewHeight + $gap + $generalBottomHeight + $tabY
 
@@ -80,6 +80,10 @@ $y += 26
 $checkAutoDungeonExpSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Exp. Sweep (13~15)", $x, $y, 250, 25)
 $y += 26
 
+; Auto Dungeon Treasure
+$checkAutoDungeonTreasureEnabled = GUICtrlCreateCheckbox("Auto Dungeon Treasure", $x, $y, 250, 25)
+$y += 26
+
 ; Auto Filed Attack
 $checkAutoFieldAttackEnabled = GUICtrlCreateCheckbox("Auto Filed Attack", $x, $y, $w, 25)
 $y += 26
@@ -94,12 +98,32 @@ $y += 35
 
 ; Attack Troop Count Combobox
 GUICtrlCreateLabel("Troop Count", $x, $y)
-$comboTroopCount = GUICtrlCreateCombo("", $x + 80, $y - 5, 100, $h)
+$comboTroopCount = GUICtrlCreateCombo("", $x + 80, $y - 5, 60, $h)
 GUICtrlSetData($comboTroopCount, "1")
 GUICtrlSetData($comboTroopCount, "2")
 GUICtrlSetData($comboTroopCount, "3")
 GUICtrlSetData($comboTroopCount, "4")
 _GUICtrlComboBox_SetCurSel($comboTroopCount, 2)
+$y += ($h + 10)
+
+; Dungeon Sweep Troop Combobox
+GUICtrlCreateLabel("Dungeon Sweep Troop", $x, $y)
+$comboDungeonSweepTroop = GUICtrlCreateCombo("", $x + 140, $y - 5, 60, $h)
+GUICtrlSetData($comboDungeonSweepTroop, "1")
+GUICtrlSetData($comboDungeonSweepTroop, "2")
+GUICtrlSetData($comboDungeonSweepTroop, "3")
+GUICtrlSetData($comboDungeonSweepTroop, "4")
+_GUICtrlComboBox_SetCurSel($comboDungeonSweepTroop, 2)
+$y += ($h + 10)
+
+; Dungeon Treasure Level
+GUICtrlCreateLabel("Dungeon Treasure Level", $x, $y)
+$comboDungeonTreasureLevel = GUICtrlCreateCombo("", $x + 150, $y - 5, 60, $h)
+GUICtrlSetData($comboDungeonTreasureLevel, "1")
+GUICtrlSetData($comboDungeonTreasureLevel, "2")
+GUICtrlSetData($comboDungeonTreasureLevel, "3")
+GUICtrlSetData($comboDungeonTreasureLevel, "4")
+_GUICtrlComboBox_SetCurSel($comboDungeonTreasureLevel, 2)
 $y += ($h + 10)
 
 ; Utilty Group Box
@@ -177,6 +201,11 @@ Func InitBot()
 	   _log("NoxTitleBarHeight : " & $NoxTitleBarHeight )
 	   _log("ThickFrameSize : " & $ThickFrameSize )
 	  SetLog("Nox : " & $WinRect[0] & "," & $WinRect[1] & " " & $WinRect[2] & "x" & $WinRect[3] & "(" & $setting_thick_frame_size & ")", $COLOR_ORANGE)
+
+	  If $WinRect[2] < $AppMinWinWidth Then
+		  SetLog("Nox Minimum Width = " & $AppMinWinWidth, $COLOR_RED)
+		  Return False
+	  EndIf
    Else
 	  SetLog("Nox Not Found", $COLOR_RED)
 	  btnStop()

@@ -9,7 +9,15 @@ Func AutoFlow()
    ;ClickMoveButton(4)
    ;DragControlPos("20:80", "80:10", 5);
    ;CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
+   ;CloseAllMenu()
+   ;FindTreasureDungeonLevelNumber(3)
    ;Return False
+
+   If $setting_checked_dungeon_treasure Then
+	  MainDungeonTreasure()
+	  If _Sleep(1200) Then Return False
+   EndIf
+
    If $setting_checked_dungeon_hero Then
 	  MainDungeonSweep("hero")
 	  If _Sleep(1200) Then Return False

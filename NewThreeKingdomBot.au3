@@ -63,7 +63,7 @@ Func findWindow()
 
 			$rect = WinGetPos( $winList[$w][1] )
 			If Not @error Then
-			   If $rect[2] > $MinWinSize AND $rect[3] > $MinWinSize Then
+			   If $rect[2] > $NoxMinWinSize AND $rect[3] > $NoxMinWinSize Then
 				  $Title = $winList[$w][0]
 				  $HWnD = $winList[$w][1]
 				  $found = True
@@ -173,7 +173,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 Func UpdateWindowRect()
    $r = WinGetPos($HWnD)
    If Not @error Then
-	  If $r[2] > $MinWinSize AND $r[3] > $MinWinSize Then
+	  If $r[2] > $NoxMinWinSize AND $r[3] > $NoxMinWinSize Then
 		 $WinRect = $r
 		 ;_log("Nox Rect : " & $WinRect[0] & "," & $WinRect[1] & " " & $WinRect[2] & "x" & $WinRect[3])
 	  EndIf
@@ -205,6 +205,20 @@ EndFunc
 Func ScreenToPosInfo($screenInfo)
    Local $infoArr = StringSplit($screenInfo, "|")
    Return $infoArr[1]
+EndFunc
+
+Func RegionToRect($regionInfo)
+   Local $posArr = StringSplit($regionInfo, "-")
+
+   Local $leftTopPos = ControlPos($posArr[1])
+   Local $rightBottomPos = ControlPos($posArr[2])
+
+   $x1 = $leftTopPos[0]
+   $y1 = $leftTopPos[1]
+   $x2 = $rightBottomPos[0]
+   $y2 = $rightBottomPos[1]
+   Local $rect = [$x1, $y1, $x2 - $x1 + 1, $y2 - $y1 + 1]
+   Return $rect
 EndFunc
 
 Func DragControlPos($posInfo1, $posInfo2, $step = 3, $delayMsec = 300)
@@ -241,20 +255,26 @@ EndFunc
 
 Func MyPixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)
 
+   Local $result = [0, 0]
    If $setting_capture_mode Then
 
 	  Local $aCoord = _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)
 	  If IsArray($aCoord) = True Then
-		 Return $aCoord
+		 $result = $aCoord
 	  EndIf
    Else
 
 	  Local $aCoord = PixelSearch($WinRect[0]+$iLeft, $WinRect[1]+$iTop, $WinRect[0]+$iRight, $WinRect[1]+$iBottom, $iColor, $iColorVariation)
 	  If Not @error Then
-		 Return $aCoord
+		 $aCoord[0] = $aCoord[0] - $WinRect[0]
+		 $aCoord[1] = $aCoord[1] - $WinRect[1]
+		 $result = $aCoord
 	  EndIf
    EndIf
 
+   If IsArray($aCoord) = True Then
+	  Return $result
+   EndIf
    Return 0
 EndFunc
 
@@ -269,7 +289,11 @@ Func CheckForPixel($screenInfo, $PixelTolerance = 15)
 	  $PixelTolerance = Number($infoArr[3])
    EndIf
 
-   Local Const $RegionSize = 1
+   Local $RegionSize = 1
+
+   If UBound($infoArr) - 1 >= 4 Then
+	  $RegionSize = Number($infoArr[4])
+   EndIf
 
    $okCount = 0
    For $p = 1 To UBound($posArr) - 1
