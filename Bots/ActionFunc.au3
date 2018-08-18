@@ -492,6 +492,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  ; Click end position in slider
 	  ClickControlPos("55.44:57.86", 2)
 	  ClickControlPos($POS_BUTTON_DUNGEON_SWEEP_PLUS, 3, 100)	; and click more to fill fully
+	  If _Sleep(200) Then Return False
 
 	  SetLog("Dungeon Sweep Attack!", $COLOR_PINK)
 	  ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
