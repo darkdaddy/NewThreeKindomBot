@@ -410,6 +410,11 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
    $tryCount = 1
    SetLog("Dungeon Attack Begin : " & $level, $COLOR_DARKGREY)
    For $i = 0 To 4
+
+	  saveConfig()
+	  loadConfig()
+	  applyConfig()
+
 	  SetLog("Dungeon Attack Stage : " & $i + 1, $COLOR_ORANGE)
 	  $foundSweepButton = False
 	  $foundInitButton = False
@@ -522,6 +527,9 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  If _Sleep(800) Then Return False
 	  If Not $result Then ExitLoop
    Next
+
+   ; Close Attack Menu one more
+   CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 
    SetLog("Dungeon Attack End : " & $level, $COLOR_PINK)
    Return $result
