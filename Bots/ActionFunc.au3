@@ -20,7 +20,7 @@ Func CloseAllMenu()
    CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
    CloseMenu("Field-Menu", $CHECK_BUTTON_FIELD_MENU_CLOSE)
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
-   CloseMenu("Use-ActionPoint", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
+   CloseMenu("Use-Point", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
    CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
    CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
    CloseMenu("Favorite", $CHECK_BUTTON_FAVORITE_CLOSE)
@@ -346,11 +346,14 @@ Func GoToResource($troopNumber)
 	  If ClickFavoriteResourceMoveButton($troopNumber) Then
 		 If _Sleep(1000) Then Return False
 		 ClickControlPos("50:50", 2)
+		 If _Sleep(500) Then Return False
+		 Return True
+	  EndIf
 
-	  ClickControlPos("50:50", 2)
-	  Return True
+	  ; Not found favorite button
+	  ; We don't have anthing to do no more...
+	  Return False
    WEnd
-
    Return False
 EndFunc
 
@@ -423,6 +426,7 @@ Func DoKillFieldMonster($troopNumber)
    GoToFieldNearByMyCastle()
 
    If Not GoToNearByEmemy($troopNumber) Then
+	  SetLog("Can not find any enemies...", $COLOR_RED)
 	  Return False
    EndIf
 
@@ -488,6 +492,7 @@ Func DoResourceGathering($troopNumber)
    GoToField()
 
    If Not GoToResource($troopNumber) Then
+	  SetLog("Can not find any favorites...", $COLOR_RED)
 	  Return False
    EndIf
 
@@ -561,7 +566,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  $foundInitButton = False
 
 	  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
-	  CloseMenu("Use-AttackPoint", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
+	  CloseMenu("Use-Cash", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 	  CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 	  CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
 
@@ -591,28 +596,28 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 		 OpenMenu("Troop-Select", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_SWEEP[0]), $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 	  ElseIf $foundInitButton Then
 
-		 If $setting_checked_use_point Then
+		 If $setting_checked_use_cash Then
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_INIT[0], 2)
-			If CheckForPixelList($CHECK_BUTTON_DUNGEON_USE_POINT_DENY) Then
-			   SetLog("Can not use point no more", $COLOR_RED)
-			   ClickControlScreen($CHECK_BUTTON_DUNGEON_USE_POINT_DENY[0])
+			If CheckForPixelList($CHECK_BUTTON_DUNGEON_USE_CASH_DENY) Then
+			   SetLog("Can not use cash no more", $COLOR_RED)
+			   ClickControlScreen($CHECK_BUTTON_DUNGEON_USE_CASH_DENY[0])
 
 			   If _Sleep(800) Then Return False
 			   CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 			   ContinueLoop
 			Else
-			   OpenMenu("Use-Point", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_INIT[0]), $CHECK_BUTTON_DUNGEON_USE_POINT)
+			   OpenMenu("Use-Cash", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_INIT[0]), $CHECK_BUTTON_DUNGEON_USE_CASH)
 			   If _Sleep(500) Then Return False
-			   ClickControlScreen($CHECK_BUTTON_DUNGEON_USE_POINT[0], 2)
+			   ClickControlScreen($CHECK_BUTTON_DUNGEON_USE_CASH[0], 2)
 			   If _Sleep(1200) Then Return False
 
 			   If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
-				  SetLog("Out of point!", $COLOR_RED)
+				  SetLog("Out of Cash!", $COLOR_RED)
 				  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 				  If _Sleep(500) Then Return False
 				  ContinueLoop
 			   Else
-				  SetLog("Use Point!", $COLOR_BLUE)
+				  SetLog("Use Cach!", $COLOR_BLUE)
 			   EndIf
 
 			   OpenMenu("Troop-Select", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_SWEEP[0]), $CHECK_BUTTON_SELECT_TROOPS_CLOSE)

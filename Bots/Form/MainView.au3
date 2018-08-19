@@ -101,7 +101,7 @@ $checkAutoResourceGatheringTroop4 = GUICtrlCreateCheckbox("4", $x + 260, $y, 30,
 $y += 26
 
 ; Use Point
-$checkUsePointEnabled = GUICtrlCreateCheckbox("Enable Use Point", $x, $y, $w, 25)
+$checkUseCashEnabled = GUICtrlCreateCheckbox("Enable Use Point", $x, $y, $w, 25)
 $y += 26
 
 ; Use Bread

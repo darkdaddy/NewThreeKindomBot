@@ -16,7 +16,7 @@ Global $setting_checked_dungeon_exp = False
 Global $setting_checked_dungeon_treasure = False
 Global $setting_checked_field_attack = False
 Global $setting_checked_resource_gathering = False
-Global $setting_checked_use_point = False
+Global $setting_checked_use_cash = False
 Global $setting_checked_use_bread = False
 Global $setting_dungeon_treasure_level_number = 3
 Global $setting_dungeon_sweep_troop = 2
@@ -42,7 +42,7 @@ Func loadConfig()
    $setting_checked_dungeon_treasure = IniRead($config, $setting_common_group, "enabled_dungeon_treasure", "False") == "True" ? True : False
    $setting_checked_field_attack = IniRead($config, $setting_common_group, "enabled_field_attack", "False") == "True" ? True : False
    $setting_checked_resource_gathering = IniRead($config, $setting_common_group, "enabled_resource_gathering", "False") == "True" ? True : False
-   $setting_checked_use_point = IniRead($config, $setting_common_group, "enabled_use_point", "False") == "True" ? True : False
+   $setting_checked_use_cash = IniRead($config, $setting_common_group, "enabled_use_cash", "False") == "True" ? True : False
    $setting_checked_use_bread = IniRead($config, $setting_common_group, "enabled_use_bread", "False") == "True" ? True : False
 
 EndFunc	;==>loadConfig
@@ -73,7 +73,7 @@ Func applyConfig()
    GUICtrlSetState($checkAutoDungeonTreasureEnabled, $setting_checked_dungeon_treasure ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoFieldAttackEnabled, $setting_checked_field_attack ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoResourceGatheringEnabled, $setting_checked_resource_gathering ? $GUI_CHECKED : $GUI_UNCHECKED)
-   GUICtrlSetState($checkUsePointEnabled, $setting_checked_use_point ? $GUI_CHECKED : $GUI_UNCHECKED)
+   GUICtrlSetState($checkUsePointEnabled, $setting_checked_use_cash ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkUseBreadEnabled, $setting_checked_use_bread ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 EndFunc	;==>applyConfig
@@ -100,7 +100,7 @@ Func saveConfig()
    IniWrite($config, $setting_common_group, "enabled_dungeon_treasure", _IsChecked($checkAutoDungeonTreasureEnabled))
    IniWrite($config, $setting_common_group, "enabled_field_attack", _IsChecked($checkAutoFieldAttackEnabled))
    IniWrite($config, $setting_common_group, "enabled_resource_gathering", _IsChecked($checkAutoResourceGatheringEnabled))
-   IniWrite($config, $setting_common_group, "enabled_use_point", _IsChecked($checkUsePointEnabled))
+   IniWrite($config, $setting_common_group, "enabled_use_cash", _IsChecked($checkUsePointEnabled))
    IniWrite($config, $setting_common_group, "enabled_use_bread", _IsChecked($checkUseBreadEnabled))
 
 EndFunc	;==>saveConfig
