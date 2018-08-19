@@ -11,6 +11,7 @@ Func AutoFlow()
    ;CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
    ;CloseAllMenu()
    ;FindTreasureDungeonLevelNumber(3)
+   ;DoResourceGathering(1)
    ;Return False
 
    If $setting_checked_dungeon_treasure Then
@@ -28,10 +29,11 @@ Func AutoFlow()
 	  If _Sleep(1200) Then Return False
    EndIf
 
-   If $setting_checked_field_attack Then
-	  MainFieldAttack()
+   If $setting_checked_field_attack OR $setting_checked_resource_gathering Then
+	  MainAutoFieldAction()
 	  If _Sleep(1200) Then Return False
    EndIf
+
    Return True
 EndFunc
 

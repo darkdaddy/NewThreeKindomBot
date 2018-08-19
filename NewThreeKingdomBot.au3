@@ -2,12 +2,12 @@
 
 #pragma compile(FileDescription, Raven Bot)
 #pragma compile(ProductName, Raven Bot)
-#pragma compile(ProductVersion, 0.3)
-#pragma compile(FileVersion, 0.3)
+#pragma compile(ProductVersion, 0.4)
+#pragma compile(FileVersion, 0.4)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.3"
+$sBotVersion = "0.4"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>

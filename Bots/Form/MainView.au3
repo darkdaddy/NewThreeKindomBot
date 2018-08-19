@@ -9,7 +9,7 @@ Local $gap = 10
 Local $generalRightHeight = 0
 Local $generalBottomHeight = 70
 Local $logViewWidth = 350
-Local $logViewHeight = 350
+Local $logViewHeight = 380
 Local $frameWidth = $contentPaneX + $logViewWidth + $gap + $generalRightHeight + $tabX
 Local $frameHeight = $contentPaneY + $logViewHeight + $gap + $generalBottomHeight + $tabY
 
@@ -86,6 +86,18 @@ $y += 26
 
 ; Auto Filed Attack
 $checkAutoFieldAttackEnabled = GUICtrlCreateCheckbox("Auto Filed Attack", $x, $y, $w, 25)
+$checkAutoFieldAttackTroop1 = GUICtrlCreateCheckbox("1", $x + 170, $y, 30, 25)
+$checkAutoFieldAttackTroop2 = GUICtrlCreateCheckbox("2", $x + 200, $y, 30, 25)
+$checkAutoFieldAttackTroop3 = GUICtrlCreateCheckbox("3", $x + 230, $y, 30, 25)
+$checkAutoFieldAttackTroop4 = GUICtrlCreateCheckbox("4", $x + 260, $y, 30, 25)
+$y += 26
+
+; Auto Resource Gathering
+$checkAutoResourceGatheringEnabled = GUICtrlCreateCheckbox("Auto Resource Gathering", $x, $y, 170, 25)
+$checkAutoResourceGatheringTroop1 = GUICtrlCreateCheckbox("1", $x + 170, $y, 30, 25)
+$checkAutoResourceGatheringTroop2 = GUICtrlCreateCheckbox("2", $x + 200, $y, 30, 25)
+$checkAutoResourceGatheringTroop3 = GUICtrlCreateCheckbox("3", $x + 230, $y, 30, 25)
+$checkAutoResourceGatheringTroop4 = GUICtrlCreateCheckbox("4", $x + 260, $y, 30, 25)
 $y += 26
 
 ; Use Point
@@ -95,16 +107,6 @@ $y += 26
 ; Use Bread
 $checkUseBreadEnabled = GUICtrlCreateCheckbox("Enable Use Bread", $x, $y, $w, 25)
 $y += 35
-
-; Attack Troop Count Combobox
-GUICtrlCreateLabel("Field Attact Troop Count", $x, $y)
-$comboTroopCount = GUICtrlCreateCombo("", $x + 150, $y - 5, 40, $h)
-GUICtrlSetData($comboTroopCount, "1")
-GUICtrlSetData($comboTroopCount, "2")
-GUICtrlSetData($comboTroopCount, "3")
-GUICtrlSetData($comboTroopCount, "4")
-_GUICtrlComboBox_SetCurSel($comboTroopCount, 2)
-$y += ($h + 10)
 
 ; Dungeon Sweep Troop Combobox
 GUICtrlCreateLabel("Dungeon Sweep Troop", $x, $y)
