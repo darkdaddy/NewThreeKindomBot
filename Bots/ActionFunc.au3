@@ -209,26 +209,37 @@ Func DoChargeBarrack()
    Return True
 EndFunc
 
-Func CheckTroopAvailable()
+Func CheckTroopAvailableList()
+
+   Local $result = [False, False, False, False]
+
    If Not OpenMenu("Status-Troops", $POS_BUTTON_STATUS_TROOPS, $CHECK_BUTTON_FIELD_MENU_CLOSE) Then
 	  CloseAllMenu()
 	  Return 0
    EndIf
    If _Sleep(800) Then Return 0
 
-   $result = 0
    If Not CheckForPixelList($CHECK_STATUS_ATTACK_TROOP1, $DefaultTolerance, True) Then
-	  $result = 1
-   ElseIf Not CheckForPixelList($CHECK_STATUS_ATTACK_TROOP2, $DefaultTolerance, True) Then
-	  $result = 2
-   ElseIf NOT CheckForPixelList($CHECK_STATUS_ATTACK_TROOP3, $DefaultTolerance, True) Then
-	  $result = 3
-   ElseIf NOT CheckForPixelList($CHECK_STATUS_ATTACK_TROOP4, $DefaultTolerance, True) Then
-	  $result = 4
+	  $result[0] = True
+   EndIf
+   If Not CheckForPixelList($CHECK_STATUS_ATTACK_TROOP2, $DefaultTolerance, True) Then
+	  $result[1] = True
+   EndIf
+   If NOT CheckForPixelList($CHECK_STATUS_ATTACK_TROOP3, $DefaultTolerance, True) Then
+	  $result[2] = True
+   EndIf
+   If NOT CheckForPixelList($CHECK_STATUS_ATTACK_TROOP4, $DefaultTolerance, True) Then
+	  $result[3] = True
    EndIf
 
-   If $result > 0 Then
-	  SetLog("Troop " & $result & " Available", $COLOR_PINK)
+   $troopStr = ""
+   For $i = 0 To 3
+	  If $result[$i] Then
+		 $troopStr = $troopStr & ($i + 1) & " "
+	  EndIf
+   Next
+   If StringLen($troopStr) > 0 Then
+	  SetLog("Troop Available : " & $troopStr, $COLOR_PINK)
    Else
 	  SetLog("All Troops Busy", $COLOR_PINK)
    EndIf
@@ -405,7 +416,7 @@ Func FindTreasureDungeonLevelNumber($number)
 EndFunc
 
 Func DoKillFieldMonster($troopNumber)
-
+   SetLog("Start Field Monster Attack : Troop " & $troopNumber, $COLOR_GREEN)
    Local $tryCount = 1
 
    GoToFieldNearByMyCastle()
@@ -468,7 +479,7 @@ EndFunc
 
 
 Func DoResourceGathering($troopNumber)
-
+   SetLog("Start Resource Gathering : Troop " & $troopNumber, $COLOR_GREEN)
    Local $tryCount = 1
 
    GoToField()
@@ -687,40 +698,38 @@ Func MainAutoFieldAction()
 	  CloseAllMenu()
 
 	  ; Checking available
-	  $troopNumber = CheckTroopAvailable()
+	  $troopList = CheckTroopAvailableList()
 
-	  $idle = False
-	  If $troopNumber > 0 Then
-		 ; Go!!
-		 If _Sleep(800) Then Return False
+	  If IsArray($troopList) Then
+		 For $troopIndex = 0 To 3
+			If $troopList[$troopIndex] Then
+			   ; Go!!
+			   If _Sleep(800) Then Return False
 
-		 If $setting_checked_field_attack And $setting_attack_troup_enabled[$troopNumber-1] Then
+			   If $setting_checked_field_attack And $setting_attack_troup_enabled[$troopIndex] Then
 
-			If DoKillFieldMonster($troopNumber) Then
-			   $attackCount = $attackCount + 1
-			   SetLog("Attack Count : " & $attackCount, $COLOR_BLUE)
+				  If DoKillFieldMonster($troopIndex+1) Then
+					 $attackCount = $attackCount + 1
+					 SetLog("Attack Count : " & $attackCount, $COLOR_BLUE)
+				  EndIf
+
+			   ElseIf $setting_checked_resource_gathering And $setting_gather_troup_enabled[$troopIndex] Then
+
+				  If DoResourceGathering($troopIndex+1) Then
+					 $gatheringCount = $gatheringCount + 1
+					 SetLog("Gathering Count : " & $gatheringCount, $COLOR_BLUE)
+				  EndIf
+
+			   Else
+				  ;SetLog("Nothing to do. check your setting", $COLOR_RED)
+			   EndIf
 			EndIf
-
-		 ElseIf $setting_checked_resource_gathering And $setting_gather_troup_enabled[$troopNumber-1] Then
-
-			If DoResourceGathering($troopNumber) Then
-			   $gatheringCount = $gatheringCount + 1
-			   SetLog("Gathering Count : " & $gatheringCount, $COLOR_BLUE)
-			EndIf
-
-		 Else
-			;SetLog("Nothing to do. check your setting", $COLOR_RED)
-			$idle = True
-		 EndIf
-	  Else
-		 $idle = True
+		 Next
 	  EndIf
 
-	  If $idle Then
-		 ; Idle 5 sec..
-		 SetLog("Idle " & $FieldActionIdleMSec & " Msec", $COLOR_BLACK)
-		 If _Sleep($FieldActionIdleMSec) Then Return False
-	  EndIf
+	  ; Idle 5 sec..
+	  SetLog("Idle " & $FieldActionIdleMSec & " Msec", $COLOR_BLACK)
+	  If _Sleep($FieldActionIdleMSec) Then Return False
 
 	  $loopCount = $loopCount + 1
 	  If _Sleep(1000) Then Return False
