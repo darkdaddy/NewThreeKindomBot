@@ -363,19 +363,23 @@ Func WaitForPixel($screenInfo)
    return False
 EndFunc
 
-Func CloseMenu($name, $checkScreenInfos)
+Func CloseMenu($name, $checkScreenInfos, $checkExtraScreenInfos = "")
    Local $screenInfo = $checkScreenInfos[0]
    Local $infoArr = StringSplit($screenInfo, "|")
 
-   While $RunState
+   For $i = 0 To 2
 	  If CheckForPixelList($checkScreenInfos) Then
-		 SetLog("Close " & $name & " Menu", $COLOR_DARKGREY)
-		 ClickControlPos($infoArr[1], 1, 800)
-		 If _Sleep(800) Then Return
+		 If Not IsArray($checkExtraScreenInfos) Or CheckForPixelList($checkExtraScreenInfos) Then
+			ClickControlPos($infoArr[1], 1, 800)
+			If _Sleep(800) Then Return
+			SetLog("Close " & $name & " Menu", $COLOR_DARKGREY)
+		 Else
+			Return
+		 EndIf
 	  Else
 		 Return
 	  EndIf
-   WEnd
+   Next
 EndFunc
 
 Func OpenMenu($name, $buttonPos, $checkScreenInfos)

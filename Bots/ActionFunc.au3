@@ -605,9 +605,9 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  $foundInitButton = False
 
 	  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+	  CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE, $CHECK_BUTTON_DUNGEON_ATTACK_START)
 	  CloseMenu("Use-Cash", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 	  CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
-	  CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
 
 	  ClickControlPos($buttonPosList[$i], 2)
 	  If _Sleep(800) Then Return False
@@ -663,7 +663,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 			EndIf
 		 Else
 			; Close Attack Menu
-			SetLog("Not-Use-Point Option On", $COLOR_RED)
+			SetLog("Need Cash (Option Off)", $COLOR_RED)
 			CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 			If _Sleep(800) Then Return False
 			ContinueLoop
@@ -677,6 +677,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  ; Start Attack!!
 	  ClickControlPos($POS_BUTTON_START_ACTION, 2)
 
+	  ; Open Sweep Start Popup (including Sweep count selection => $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
 	  OpenMenu("Sweep-Start", $POS_BUTTON_START_ACTION, $CHECK_BUTTON_DUNGEON_ATTACK_START)
 
 	  ; Click end position in slider
@@ -687,6 +688,18 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  SetLog("Dungeon Sweep Attack!", $COLOR_PINK)
 	  ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
 	  If _Sleep(1200) Then Return False
+
+	  If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
+		 SetLog("No Bread!", $COLOR_RED)
+
+		 CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+		 If _Sleep(500) Then Return False
+		 CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE, $CHECK_BUTTON_DUNGEON_ATTACK_START)
+		 If _Sleep(500) Then Return False
+		 CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+		 If _Sleep(500) Then Return False
+		 Return False
+	  EndIf
 
 	  If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then
 		 If $setting_checked_use_bread Then
@@ -699,7 +712,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 			SetLog("Use Bread!", $COLOR_BLUE)
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
 		 Else
-			SetLog("Not-Use-Bread Option On", $COLOR_RED)
+			SetLog("Need Bread (Option Off)", $COLOR_RED)
 			CloseMenu("Use-Bread", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 			$result = False
 		 EndIf
@@ -807,13 +820,13 @@ Func MainDungeonSweep($tab)
 
    ; Level 15
    If DoDungeonSweep($tab, 15, $POS_BUTTON_DUNGEON_15) Then
-
+	  If _Sleep(1500) Then Return False
 	  ClickControlPos($POS_BUTTON_DUNGEON_MOVE_LEFT, 2)
 	  If _Sleep(1200) Then Return False
 
 	  ; Level 14
 	  If DoDungeonSweep($tab, 14, $POS_BUTTON_DUNGEON_14) Then
-
+		 If _Sleep(1500) Then Return False
 		 ClickControlPos($POS_BUTTON_DUNGEON_MOVE_LEFT, 2)
 		 If _Sleep(1200) Then Return False
 

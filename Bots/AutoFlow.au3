@@ -1,10 +1,6 @@
 
 Func AutoFlow()
-   ;DragControlPos("70:30", "40:70");
    ;DragControlPos("30:70", "80:20", 5);
-   ;DragControlPos("70:70", "70:30");
-   ;DragControlPos("40:40", "70:70");
-   ;DragControlPos("70:70", "40:40");
    ;CollectResources()
    ;ClickMoveButton(4)
    ;DragControlPos("20:80", "80:10", 5);
@@ -12,6 +8,8 @@ Func AutoFlow()
    ;CloseAllMenu()
    ;FindTreasureDungeonLevelNumber(3)
    ;DoResourceGathering(1)
+   ;If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then SetLog("OK", $COLOR_DARKGREY)
+   ;DoDungeonSweep("hero", 14, $POS_BUTTON_DUNGEON_14)
    ;Return False
 
    If $setting_checked_dungeon_treasure Then
