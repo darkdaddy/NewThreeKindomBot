@@ -9,7 +9,7 @@ Local $gap = 10
 Local $generalRightHeight = 0
 Local $generalBottomHeight = 70
 Local $logViewWidth = 350
-Local $logViewHeight = 350
+Local $logViewHeight = 370
 Local $frameWidth = $contentPaneX + $logViewWidth + $gap + $generalRightHeight + $tabX
 Local $frameHeight = $contentPaneY + $logViewHeight + $gap + $generalBottomHeight + $tabY
 
@@ -100,8 +100,12 @@ $checkAutoResourceGatheringTroop3 = GUICtrlCreateCheckbox("3", $x + 230, $y, 30,
 $checkAutoResourceGatheringTroop4 = GUICtrlCreateCheckbox("4", $x + 260, $y, 30, 25)
 $y += 26
 
-; Use Point
+; Use Cash
 $checkUseCashEnabled = GUICtrlCreateCheckbox("Enable Use Point", $x, $y, $w, 25)
+$y += 26
+
+; Use MarchOrder
+$checkUseMarchOrderEnabled = GUICtrlCreateCheckbox("Enable Use MarchOrder", $x, $y, 170, 25)
 $y += 26
 
 ; Use Bread

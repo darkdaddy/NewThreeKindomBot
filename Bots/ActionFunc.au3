@@ -9,7 +9,9 @@
 #ce ----------------------------------------------------------------------------
 
 Func CloseAllMenu()
-
+   If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
+	  Return
+   EndIf
    CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
    CloseMenu("Event", $CHECK_BUTTON_EVENT_CLOSE)
    CloseMenu("NearBy", $CHECK_BUTTON_NEARBY_CLOSE)
@@ -254,6 +256,20 @@ Func GoToNearByEmemy($troopNumber)
    Local Const $MaxMoveCount = 5
    $tryCount = 0
 
+   Local $actualTroopMoveNumber = $troopNumber
+   Local $totalTroopCount = 0
+   For $i = 0 To 3
+	  If $setting_attack_troup_enabled[$i] Then
+		 $totalTroopCount += 1
+	  EndIf
+
+	  If ($i+1) == $troopNumber Then
+		 $actualTroopMoveNumber = $totalTroopCount
+	  EndIf
+   Next
+
+   SetLog("Finding Move Button " & $actualTroopMoveNumber & " for Troop " & $troopNumber, $COLOR_PINK)
+
    ; $direction = 1 : Up
    ; $direction = 2 : Down
    For $direction = 1 To 4
@@ -265,18 +281,20 @@ Func GoToNearByEmemy($troopNumber)
 			Return False
 		 EndIf
 
-		 ; Click Enemy Tab
-		 ClickControlPos($POS_BUTTON_NEARBY_ENEMY_TAB, 2)
-		 If _Sleep(800) Then Return False
+		 ; Click Enemy Tab (Try only one time)
+		 If $tryCount == 0 Then
+			ClickControlPos($POS_BUTTON_NEARBY_ENEMY_TAB, 2)
+			If _Sleep(800) Then Return False
+		 EndIf
 
 		 ; Click Move Button
-		 If ClickMoveButton($troopNumber) Then
+		 If ClickMoveButton($actualTroopMoveNumber) Then
 			Return True;
 		 Else
 			$tryCount = $tryCount + 1
 
 			; Not found "move" button
-			SetLog("Move button " & $troopNumber & " not found", $COLOR_RED)
+			SetLog("Move button " & $actualTroopMoveNumber & " not found", $COLOR_RED)
 
 			; this means that there is no more enemy in this near field.
 			; go to anywhere to dragging
@@ -380,7 +398,10 @@ Func FindTreasureDungeonLevelNumber($number)
 		 Local $centerPos = [($sx + $buttonSizeRect[2] / 2), ($sy + $buttonSizeRect[3] / 2)]
  		 $clickCount += 1
 
-		 ClickPos($centerPos, 2)
+		 Click($centerPos[0], $centerPos[1], 1)
+		 Click($centerPos[0] - 10, $centerPos[1], 1)
+		 Click($centerPos[0] + 10, $centerPos[1], 1)
+
 		 If _Sleep($Delay) Then Return False
 		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_TREASURE_START) Then
 			_log("FindTreasureDungeonLevelNumber found : " & $centerPos[0] & "x" & $centerPos[1])
@@ -449,9 +470,17 @@ Func DoKillFieldMonster($troopNumber)
 	  EndIf
 
 	  If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then
-		 SetLog("Use Action Point", $COLOR_RED)
-		 ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
-		 If _Sleep(1200) Then Return False
+		 If $setting_checked_use_march_order Then
+			SetLog("Use March Order", $COLOR_RED)
+			ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
+			If _Sleep(1200) Then Return False
+			$tryCount = 0
+		 Else
+			CloseMenu("Use-MarchOrder", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
+			If _Sleep(300) Then Return False
+			SetLog("Need March Order (Option Off)", $COLOR_RED)
+			Return False
+		 EndIf
 	  EndIf
 
 	  If $foundAttackButton == False Then
@@ -459,8 +488,10 @@ Func DoKillFieldMonster($troopNumber)
 	  EndIf
 
 	  $tryCount = $tryCount + 1
+	  If _Sleep(1000) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
+	  SetLog("Error..", $COLOR_RED)
 	  Return False
    EndIf
 
@@ -515,9 +546,17 @@ Func DoResourceGathering($troopNumber)
 	  EndIf
 
 	  If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then
-		 SetLog("Use Action Point", $COLOR_RED)
-		 ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
-		 If _Sleep(1200) Then Return False
+		 If $setting_checked_use_march_order Then
+			SetLog("Use March Order", $COLOR_RED)
+			ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
+			If _Sleep(1200) Then Return False
+			$tryCount = 0
+		 Else
+			CloseMenu("Use-MarchOrder", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
+			If _Sleep(300) Then Return False
+			SetLog("Need March Order (Option Off)", $COLOR_RED)
+			Return False
+		 EndIf
 	  EndIf
 
 	  If $foundAttackButton == False Then
@@ -525,8 +564,10 @@ Func DoResourceGathering($troopNumber)
 	  EndIf
 
 	  $tryCount = $tryCount + 1
+	  If _Sleep(1000) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
+	  SetLog("Error..", $COLOR_RED)
 	  Return False
    EndIf
 
@@ -843,6 +884,7 @@ Func MainDungeonTreasure()
 	  If _Sleep(400) Then Return False
 
 	  SetLog("Treasure Attack!", $COLOR_PINK)
+	  ClickControlPos($POS_BUTTON_START_ACTION, 3)
 	  If _Sleep(10000) Then Return False
 
 	  $win = True
