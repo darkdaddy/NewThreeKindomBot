@@ -670,6 +670,10 @@ Func MainAutoFieldAction()
    While $RunState
 	  SetLog("Loop Count : " & $loopCount + 1, $COLOR_ORANGE)
 
+	  saveConfig()
+	  loadConfig()
+	  applyConfig()
+
 	  If $loopCount > 0 Then
 		 If Mod($loopCount, 50) == 0 Then
 			CollectResources()
