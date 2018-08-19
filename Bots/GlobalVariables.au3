@@ -64,7 +64,7 @@ Global Const $SleepWaitMSec = 1500
 Global Const $ViewChangeWaitMSec = 4000
 Global Const $FieldActionIdleMSec = 5000
 Global Const $DefaultTolerance = 21
-Global Const $MaxTryCount = 5
+Global Const $MaxTryCount = 10
 
 ; ---------- COLORS ------------
 Global Const $COLOR_ORANGE = 0xFFA500

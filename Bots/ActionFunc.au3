@@ -455,7 +455,7 @@ Func DoKillFieldMonster($troopNumber)
    $tryCount = 1
    $foundAttackButton = False
    While $RunState And $tryCount < $MaxTryCount
-	  If _Sleep(500) Then Return False
+	  If _Sleep(600) Then Return False
 
 	  If CheckForPixelList($CHECK_BUTTON_FIELD_ACTION) Then
 		 ClickControlPos($POS_BUTTON_FIELD_ACTION, 1)
@@ -488,7 +488,6 @@ Func DoKillFieldMonster($troopNumber)
 	  EndIf
 
 	  $tryCount = $tryCount + 1
-	  If _Sleep(1000) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
 	  SetLog("Error..", $COLOR_RED)
@@ -531,7 +530,7 @@ Func DoResourceGathering($troopNumber)
    $tryCount = 1
    $foundAttackButton = False
    While $RunState And $tryCount < $MaxTryCount
-	  If _Sleep(500) Then Return False
+	  If _Sleep(600) Then Return False
 
 	  If CheckForPixelList($CHECK_BUTTON_FIELD_ACTION) Then
 		 ClickControlPos($POS_BUTTON_FIELD_ACTION, 1)
@@ -564,7 +563,6 @@ Func DoResourceGathering($troopNumber)
 	  EndIf
 
 	  $tryCount = $tryCount + 1
-	  If _Sleep(1000) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
 	  SetLog("Error..", $COLOR_RED)
