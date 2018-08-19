@@ -343,8 +343,9 @@ Func GoToResource($troopNumber)
 	  If _Sleep(500) Then Return False
 
 	  ; Click Favorite Resource
-	  ClickFavoriteResourceMoveButton($troopNumber)
-	  If _Sleep(500) Then Return False
+	  If ClickFavoriteResourceMoveButton($troopNumber) Then
+		 If _Sleep(1000) Then Return False
+		 ClickControlPos("50:50", 2)
 
 	  ClickControlPos("50:50", 2)
 	  Return True
@@ -421,7 +422,9 @@ Func DoKillFieldMonster($troopNumber)
 
    GoToFieldNearByMyCastle()
 
-   GoToNearByEmemy($troopNumber)
+   If Not GoToNearByEmemy($troopNumber) Then
+	  Return False
+   EndIf
 
    ; Click Attack Button & Open Select-Troup Menu
    $tryCount = 1
@@ -484,7 +487,9 @@ Func DoResourceGathering($troopNumber)
 
    GoToField()
 
-   GoToResource($troopNumber)
+   If Not GoToResource($troopNumber) Then
+	  Return False
+   EndIf
 
    ; Click Attack Button & Open Select-Troup Menu
    $tryCount = 1
