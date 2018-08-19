@@ -846,11 +846,12 @@ Func MainDungeonTreasure()
    EndIf
 
    $tryCount = 0
+   Local Const $MaxAttackClickTryCount = 3
+
    While $RunState And $tryCount < $MaxTryCount
 
 	  If CheckForPixelList($CHECK_BUTTON_DUNGEON_TREASURE_START) Then
 
-		 Local Const $MaxAttackClickTryCount = 3
 		 $attackClickCount = 0
 		 While $attackClickCount < $MaxAttackClickTryCount
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_TREASURE_START[0], 2)
@@ -864,7 +865,7 @@ Func MainDungeonTreasure()
 		 WEnd
 
 		 If $attackClickCount >= $MaxAttackClickTryCount Then
-			SetLog("Can not try Treasure Attack...", $COLOR_RED)
+			SetLog("Can not try treasure attack...", $COLOR_RED)
 			CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 			If _Sleep(800) Then Return False
 			ExitLoop
