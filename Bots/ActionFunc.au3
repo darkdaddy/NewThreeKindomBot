@@ -416,7 +416,7 @@ Func FindTreasureDungeonLevelNumber($number)
 EndFunc
 
 Func DoKillFieldMonster($troopNumber)
-   SetLog("Start Field Monster Attack : Troop " & $troopNumber, $COLOR_GREEN)
+   SetLog("Go Field Monster Attack : Troop " & $troopNumber, $COLOR_PURPLE)
    Local $tryCount = 1
 
    GoToFieldNearByMyCastle()
@@ -479,7 +479,7 @@ EndFunc
 
 
 Func DoResourceGathering($troopNumber)
-   SetLog("Start Resource Gathering : Troop " & $troopNumber, $COLOR_GREEN)
+   SetLog("Go Resource Gathering : Troop " & $troopNumber, $COLOR_OLIVE)
    Local $tryCount = 1
 
    GoToField()
