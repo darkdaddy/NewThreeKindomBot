@@ -872,7 +872,9 @@ Func MainDungeonTreasure()
 	  Else
 		 $tryCount += 1
 		 SetLog("Click Treasure Level Button : " & $setting_dungeon_treasure_level_number, $COLOR_DARKGREY)
-		 ClickPos($levelButtonPos, 2)
+		 Click($levelButtonPos[0], $levelButtonPos[1], 1)
+		 Click($levelButtonPos[0] - 10, $levelButtonPos[1], 1)
+		 Click($levelButtonPos[0] + 10, $levelButtonPos[1], 1)
 		 If _Sleep(1000) Then Return False
 		 ContinueLoop
 	  EndIf
