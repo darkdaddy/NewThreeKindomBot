@@ -465,7 +465,7 @@ Func DoKillFieldMonster($troopNumber)
 	  If _Sleep(800) Then Return False
 
 	  If CheckForPixelList($CHECK_BUTTON_SELECT_TROOPS_CLOSE) Then
-		 SetLog("Open Select Troop Menu", $COLOR_PINK)
+		 SetLog("Open Select Troop Menu", $COLOR_DARKGREY)
 		 ExitLoop
 	  EndIf
 
