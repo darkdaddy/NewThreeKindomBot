@@ -743,16 +743,11 @@ Func MainAutoFieldAction()
    While $RunState
 	  SetLog("Loop Count : " & $loopCount + 1, $COLOR_ORANGE)
 
-	  saveConfig()
-	  loadConfig()
-	  applyConfig()
-
 	  If $loopCount > 0 Then
-		 If Mod($loopCount, 50) == 0 Then
+		 If Mod($loopCount, 20) == 0 Then
 			CollectResources()
 			; already go out to field
-		 EndIf
-		 If Mod($loopCount, 20) == 0 Then
+
 			DoChargeBarrack()
 		 EndIf
 	  EndIf
@@ -767,6 +762,10 @@ Func MainAutoFieldAction()
 			If $troopList[$troopIndex] Then
 			   ; Go!!
 			   If _Sleep(800) Then Return False
+
+			   saveConfig()
+			   loadConfig()
+			   applyConfig()
 
 			   If $setting_checked_field_attack And $setting_attack_troup_enabled[$troopIndex] Then
 
@@ -859,6 +858,7 @@ Func MainDungeonTreasure()
    EndIf
 
    $tryCount = 0
+   $loseCount = 0
    Local Const $MaxAttackClickTryCount = 3
 
    While $RunState And $tryCount < $MaxTryCount
@@ -907,6 +907,7 @@ Func MainDungeonTreasure()
 			SetLog("Treasure Attack Win!", $COLOR_BLUE)
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_WIN_LEAVE[0], 2)
 			If _Sleep(3000) Then Return False
+			$loseCount = 0
 			ExitLoop
 		 EndIf
 
@@ -915,6 +916,7 @@ Func MainDungeonTreasure()
 			SetLog("Treasure Attack Lose!", $COLOR_RED)
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_LOSE_LEAVE[0], 2)
 			If _Sleep(3000) Then Return False
+			$loseCount += 1
 			ExitLoop
 		 EndIf
 
@@ -924,7 +926,7 @@ Func MainDungeonTreasure()
 		 If _Sleep(1500) Then Return False
 	  WEnd
 
-	  If Not $win Then
+	  If Not $win And $loseCount >= 3 Then
 		 ExitLoop
 	  EndIf
    WEnd
