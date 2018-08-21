@@ -835,6 +835,10 @@ Func MainAutoFieldAction()
 	  SetLog("Idle " & $FieldActionIdleMSec & " Msec", $COLOR_BLACK)
 	  If _Sleep($FieldActionIdleMSec) Then Return False
 
+	  saveConfig()
+	  loadConfig()
+	  applyConfig()
+
 	  $loopCount = $loopCount + 1
 	  If _Sleep(1000) Then Return False
    WEnd
