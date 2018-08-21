@@ -249,6 +249,8 @@ Func btnStart()
 	  Return
    EndIf
 
+   GUICtrlSetState($btnReboot, $GUI_DISABLE)
+
    runBot()
 
 EndFunc
@@ -266,6 +268,8 @@ Func btnStop()
    $Restart = False
    $RunState = False
    $PauseBot = True
+
+   GUICtrlSetState($btnReboot, $GUI_ENABLE)
 
    SetLog("Bot has stopped", $COLOR_ORANGE)
 EndFunc
@@ -352,10 +356,16 @@ Func btnReboot()
 	  WinActivate($HWnD)
    EndIf
 
-   $orgValue = $RunState
+   btnStop()
+
+   $orgValue1 = $RunState
+   $orgValue2 = $PauseBot
    $RunState = True
+   $PauseBot = False
+
    RebootNox()
-   $RunState = $orgValue
+   $RunState = $orgValue1
+   $PauseBot = $orgValue2
 EndFunc
 
 ; System callback
