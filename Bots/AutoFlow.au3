@@ -8,8 +8,9 @@ Func AutoFlow()
    ;CloseAllMenu()
    ;FindTreasureDungeonLevelNumber(3)
    ;DoResourceGathering(1)
-   ;If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then SetLog("OK", $COLOR_DARKGREY)
+   ;If CheckForPixelList($CHECK_MAIN_FIELD_VIEW) Then SetLog("OK", $COLOR_DARKGREY)
    ;DoDungeonSweep("hero", 14, $POS_BUTTON_DUNGEON_14)
+   ;RebootNox()
    ;Return False
 
    If $setting_checked_dungeon_treasure Then

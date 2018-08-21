@@ -5,14 +5,18 @@ Func ClickPos($pos, $delay = 500, $times = 1)
 EndFunc
 
 Func Click($x, $y, $times = 1, $speed = 0)
+   ClickHandle($HWnD, $x, $y, $times, $speed)
+ EndFunc   ;==>Click
+
+ Func ClickHandle($handle, $x, $y, $times = 1, $speed = 0)
    ;_log($x & "x" & $y & " clicked" )
    If $times <> 1 Then
 		For $i = 0 To ($times - 1)
-			ControlClick($HWnD, "", "", "left", "1", $x, $y)
+			ControlClick($handle, "", "", "left", "1", $x, $y)
 			If _Sleep($speed) Then ExitLoop
 		Next
 	Else
-		ControlClick($HWnD, "", "", "left", "1", $x, $y)
+		ControlClick($handle, "", "", "left", "1", $x, $y)
 	EndIf
 EndFunc   ;==>Click
 

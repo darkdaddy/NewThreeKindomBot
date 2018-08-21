@@ -2,12 +2,12 @@
 
 #pragma compile(FileDescription, Raven Bot)
 #pragma compile(ProductName, Raven Bot)
-#pragma compile(ProductVersion, 0.4)
-#pragma compile(FileVersion, 0.4)
+#pragma compile(ProductVersion, 0.5)
+#pragma compile(FileVersion, 0.5)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.4"
+$sBotVersion = "0.5"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>
@@ -53,7 +53,7 @@ Func findWindow()
 
    Local $found = False
    Local $arr = StringSplit($setting_win_title, "|")
-
+   Local $foundNoxRect;
    For $i = 1 To $arr[0]
 	  $rect = WinGetPos($arr[$i])
 	  If Not @error Then
@@ -66,8 +66,8 @@ Func findWindow()
 			   If $rect[2] > $NoxMinWinSize AND $rect[3] > $NoxMinWinSize Then
 				  $Title = $winList[$w][0]
 				  $HWnD = $winList[$w][1]
+				  $foundNoxRect = $rect
 				  $found = True
-				  UpdateWindowRect()
 			   EndIf
 			EndIf
 
@@ -81,6 +81,19 @@ Func findWindow()
 		 EndIf
 	  EndIf
    Next
+
+   $winList = WinList("nox")
+   $count = $winList[0][0]
+   For $w = 1 To $count
+	  $rect = WinGetPos( $winList[$w][1] )
+	  If $rect[0] == $foundNoxRect[0] + $foundNoxRect[2] Then
+		 $HWnDTool = $winList[$w][1]
+	  EndIf
+   Next
+
+   If $found Then
+	  UpdateWindowRect()
+   EndIf
 
    Return $found
 EndFunc
@@ -178,11 +191,21 @@ Func UpdateWindowRect()
 		 ;_log("Nox Rect : " & $WinRect[0] & "," & $WinRect[1] & " " & $WinRect[2] & "x" & $WinRect[3])
 	  EndIf
    EndIf
+
+   $r = WinGetPos($HWnDTool)
+   If Not @error Then
+	  $WinRectTool = $r
+	  ;_log("Nox Tool Rect : " & $WinRectTool[0] & "," & $WinRectTool[1] & " " & $WinRectTool[2] & "x" & $WinRectTool[3])
+   EndIf
 EndFunc
 
 Func ControlPos($posInfo)
 
    Local $xy = StringSplit($posInfo, $PosXYSplitter)
+   If $xy[0] <= 1 Then
+	  Local $pos = [-1, -1]
+	  Return $pos
+   EndIf
 
    Local $x = Round(Number($xy[1]) * ($WinRect[2] + ($ThickFrameSize * 2)) / 100)
    Local $y = Round(Number($xy[2]) * ($WinRect[3] - $NoxTitleBarHeight - $ThickFrameSize) / 100)
@@ -224,6 +247,7 @@ EndFunc
 Func DragControlPos($posInfo1, $posInfo2, $step = 3, $delayMsec = 300)
    $p1 = ControlPos($posInfo1)
    $p2 = ControlPos($posInfo2)
+
    ControlMouseDrag($HWnD, $p1[0], $p1[1], $p2[0], $p2[1], "left", $step, $delayMsec);
 EndFunc
 

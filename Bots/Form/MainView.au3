@@ -9,7 +9,7 @@ Local $gap = 10
 Local $generalRightHeight = 0
 Local $generalBottomHeight = 70
 Local $logViewWidth = 350
-Local $logViewHeight = 370
+Local $logViewHeight = 420
 Local $frameWidth = $contentPaneX + $logViewWidth + $gap + $generalRightHeight + $tabX
 Local $frameHeight = $contentPaneY + $logViewHeight + $gap + $generalBottomHeight + $tabY
 
@@ -47,6 +47,7 @@ $x = $contentPaneX
 Local $btnWidth = 90
 $btnStart = GUICtrlCreateButton("Start Bot", $x, $generalBottomY, $btnWidth, 50)
 $btnStop = GUICtrlCreateButton("Stop Bot", $x, $generalBottomY, $btnWidth, 50)
+$btnReboot = GUICtrlCreateButton("Reboot Game", $x + $btnWidth + 10, $generalBottomY, 100, 50)
 
 ;-----------------------------------------------------------
 ; Tab : Option
@@ -69,7 +70,19 @@ $y += 30
 $Label_2 = GUICtrlCreateLabel("Thick Frame", $x, $y + 5, 100, 20)
 $x += 80
 $inputThickFraemSize = GUICtrlCreateInput("", $x, $y, 200, 20)
-$y += 40
+
+; Game Icon Position
+$x = $contentPaneX
+$y += 30
+$Label_2 = GUICtrlCreateLabel("Game Icon Position", $x, $y + 5, 120, 20)
+$x += 120
+$inputGameIconPos = GUICtrlCreateInput("", $x, $y, 100, 20)
+$y += 25
+
+; Auto Dungeon Hero Sweep
+$x = $contentPaneX
+$checkBotCaptureModeEnabled = GUICtrlCreateCheckbox("Bot Capture Mode", $x, $y, 250, 25)
+$y += 26
 
 ; Auto Dungeon Hero Sweep
 $x = $contentPaneX
@@ -169,6 +182,7 @@ GUICtrlSetOnEvent($btnStart, "btnStart")
 GUICtrlSetOnEvent($btnStop, "btnStop")	; already handled in GUIControl
 GUICtrlSetOnEvent($idTab, "tabChanged")
 GUICtrlSetOnEvent($btnCalcPos, "btnCalcPos")
+GUICtrlSetOnEvent($btnReboot, "btnReboot")
 GUICtrlSetOnEvent($btnTestColor, "btnTestColor")
 
 GUICtrlSetState($btnStart, $GUI_SHOW)
@@ -207,6 +221,9 @@ Func InitBot()
 	   _log("NoxTitleBarHeight : " & $NoxTitleBarHeight )
 	   _log("ThickFrameSize : " & $ThickFrameSize )
 	  SetLog("Nox : " & $WinRect[0] & "," & $WinRect[1] & " " & $WinRect[2] & "x" & $WinRect[3] & "(" & $setting_thick_frame_size & ")", $COLOR_ORANGE)
+	  If $HWndTool Then
+		 SetLog("NoxTool : " & $WinRectTool[0] & "," & $WinRectTool[1] & " " & $WinRectTool[2] & "x" & $WinRectTool[3], $COLOR_ORANGE)
+	  EndIf
 
 	  If $WinRect[2] < $AppMinWinWidth Then
 		  SetLog("Nox Minimum Width = " & $AppMinWinWidth, $COLOR_RED)
@@ -324,6 +341,21 @@ Func btnTestColor()
    _log( $pos[0] & "(" & $x & ")" & "x" & $pos[1] & "(" & $y & ")" & " => " & $answerColor)
 
    GUICtrlSetData($inputTestColor, "0x" & $answerColor);
+EndFunc
+
+Func btnReboot()
+   saveConfig()
+   loadConfig()
+   applyConfig()
+
+   If findWindow() Then
+	  WinActivate($HWnD)
+   EndIf
+
+   $orgValue = $RunState
+   $RunState = True
+   RebootNox()
+   $RunState = $orgValue
 EndFunc
 
 ; System callback

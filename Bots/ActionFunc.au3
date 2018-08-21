@@ -8,6 +8,41 @@
 
 #ce ----------------------------------------------------------------------------
 
+Func RebootNox()
+   If Not $HWnDTool Or StringLen($setting_game_icon_pos) <= 0 Then
+	  ; Nothing to do
+	  Return True
+   EndIf
+
+   SetLog("Reboot Starting...", $COLOR_GREEN)
+
+   ; Kill Current Game
+   ClickHandle($HWnDTool, $WinRectTool[2]/2, $WinRectTool[3] - 35 )
+   If _Sleep(1000) Then Return False
+   DragControlPos("80:50", "80:10", 5);
+   If _Sleep(1000) Then Return False
+
+   ; Restart
+   ClickControlPos($setting_game_icon_pos, 3)
+
+   ; Check Castle view
+   Local $tryCount = 1
+   While $RunState And $tryCount < 60
+	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
+		 SetLog("Reboot OK", $COLOR_RED)
+		 Return True
+	  EndIf
+  	  ClickControlPos($POS_BUTTON_NOTICE_CLOSE, 1)
+	  ClickControlPos($POS_BUTTON_GAME_START, 1)
+
+	  If _Sleep(1500) Then Return False
+	  $tryCount += 1
+   WEnd
+
+   SetLog("Reboot Failure", $COLOR_RED)
+   Return False
+EndFunc
+
 Func CloseAllMenu()
    If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
 	  Return
@@ -26,6 +61,7 @@ Func CloseAllMenu()
    CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
    CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
    CloseMenu("Favorite", $CHECK_BUTTON_FAVORITE_CLOSE)
+   CloseMenu("Help", $CHECK_BUTTON_HELP_CLOSE)
 EndFunc
 
 
@@ -744,7 +780,14 @@ Func MainAutoFieldAction()
 	  SetLog("Loop Count : " & $loopCount + 1, $COLOR_ORANGE)
 
 	  If $loopCount > 0 Then
-		 If Mod($loopCount, 20) == 0 Then
+		 If Mod($loopCount, $LoopCount_Reboot) == 0 Then
+
+			If Not RebootNox() Then
+			   Return False
+			EndIf
+		 EndIf
+
+		 If Mod($loopCount, $LoopCount_CollectResource) == 0 Then
 			CollectResources()
 			; already go out to field
 

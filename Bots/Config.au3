@@ -7,6 +7,7 @@ Local $setting_common_group = "Default"
 
 Global $setting_win_title = "녹스 안드로이드 앱플레이어"
 Global $setting_thick_frame_size = "36:2"
+Global $setting_game_icon_pos = ""
 Global $setting_attack_troup_enabled[4] = [False, False, False, False]
 Global $setting_gather_troup_enabled[4] = [False, False, False, False]
 Global $setting_delay_rate = 1.0
@@ -26,6 +27,8 @@ Func loadConfig()
 
    $setting_win_title = IniRead($config, $setting_common_group, "win_title", $setting_win_title)
    $setting_thick_frame_size = IniRead($config, $setting_common_group, "thick_frame_size", $setting_thick_frame_size)
+   $setting_game_icon_pos = IniRead($config, $setting_common_group, "game_icon_pos", $setting_game_icon_pos)
+   $setting_capture_mode = IniRead($config, $setting_common_group, "enabled_capture_mode", "False") == "True" ? True : False
    $setting_attack_troup_enabled[0] = IniRead($config, $setting_common_group, "enabled_attack_troup_1", "False") == "True" ? True : False
    $setting_attack_troup_enabled[1] = IniRead($config, $setting_common_group, "enabled_attack_troup_2", "False") == "True" ? True : False
    $setting_attack_troup_enabled[2] = IniRead($config, $setting_common_group, "enabled_attack_troup_3", "False") == "True" ? True : False
@@ -52,12 +55,15 @@ Func applyConfig()
 
    GUICtrlSetData($inputNoxTitle, $setting_win_title)
    GUICtrlSetData($inputThickFraemSize, $setting_thick_frame_size)
+   GUICtrlSetData($inputGameIconPos, $setting_game_icon_pos)
    _GUICtrlComboBox_SetCurSel($comboDungeonTreasureLevel, Int($setting_dungeon_treasure_level_number) - 1)
    _GUICtrlComboBox_SetCurSel($comboDungeonSweepTroop, Int($setting_dungeon_sweep_troop) - 1)
 
    Local $arr = StringSplit($setting_thick_frame_size, ":")
    $NoxTitleBarHeight = Number($arr[1])
    $ThickFrameSize = Number($arr[2])
+
+   GUICtrlSetState($checkBotCaptureModeEnabled, $setting_capture_mode ? $GUI_CHECKED : $GUI_UNCHECKED)
 
    GUICtrlSetState($checkAutoFieldAttackTroop1, $setting_attack_troup_enabled[0] ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoFieldAttackTroop2, $setting_attack_troup_enabled[1] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -84,8 +90,11 @@ Func saveConfig()
 
    IniWrite($config, $setting_common_group, "win_title", GUICtrlRead($inputNoxTitle))
    IniWrite($config, $setting_common_group, "thick_frame_size", GUICtrlRead($inputThickFraemSize))
+   IniWrite($config, $setting_common_group, "game_icon_pos", GUICtrlRead($inputGameIconPos))
    IniWrite($config, $setting_common_group, "dungeon_treasure_level", _GUICtrlComboBox_GetCurSel($comboDungeonTreasureLevel) + 1)
    IniWrite($config, $setting_common_group, "dungeon_sweep_troop", _GUICtrlComboBox_GetCurSel($comboDungeonSweepTroop) + 1)
+
+   IniWrite($config, $setting_common_group, "enabled_capture_mode", _IsChecked($checkBotCaptureModeEnabled))
 
    IniWrite($config, $setting_common_group, "enabled_attack_troup_1", _IsChecked($checkAutoFieldAttackTroop1))
    IniWrite($config, $setting_common_group, "enabled_attack_troup_2", _IsChecked($checkAutoFieldAttackTroop2))

@@ -29,12 +29,14 @@ Global $ThickFrameSize = 2
 Global Const $NoxMinWinSize = 220
 Global Const $AppMinWinWidth = 560
 Global $WinRect = [0, 0, 0, 0]
+Global $WinRectTool = [0, 0, 0, 0]
 Global $WindowClass = "[Qt5QWindowIcon]"
 Global $Title
 
 Global $PosXYSplitter = ":"
 
 Global $HWnD = WinGetHandle($Title) ;Handle for Bluestacks window
+Global $HWnDTool = WinGetHandle($Title) ;Handle for Bluestacks window
 
 Global $Compiled
 If @Compiled Then
@@ -65,6 +67,8 @@ Global Const $ViewChangeWaitMSec = 4000
 Global Const $FieldActionIdleMSec = 5000
 Global Const $DefaultTolerance = 21
 Global Const $MaxTryCount = 10
+Global Const $LoopCount_CollectResource = 20
+Global Const $LoopCount_Reboot = 150
 
 ; ---------- COLORS ------------
 Global Const $COLOR_ORANGE = 0xFFA500
@@ -110,18 +114,21 @@ Global const $POS_BUTTON_FAVORITE_MOVE2 = "48.14:62.47"
 Global const $POS_BUTTON_FAVORITE_MOVE3 = "48.14:87.40"
 Global const $POS_BUTTON_FAVORITE_MOVE4 = "48.14:82.31"
 Global const $POS_BUTTON_NEARBY_ENEMY_TAB = "87.18:26.27"
+Global const $POS_BUTTON_NOTICE_CLOSE = "87.46:13"
+Global const $POS_BUTTON_GAME_START = "49.41:80.9"
 
 ; ---------- Screen Check ------------
-Global const $CHECK_BUTTON_NEARBY[1] = ["94.6:2.3 | 0x0172128"]
+Global const $CHECK_BUTTON_NEARBY[1] = ["94.6:2.3 | 0x172128"]
 Global const $CHECK_BUTTON_TOP_CLOSE[2] = ["96.15:5.26 | 0x965B39", "93.84:5.26 | 0x965B3A"]
-Global const $CHECK_BUTTON_EVENT_CLOSE[2] = ["94:12 | 0x09D5B3A", "91.4:12.4 | 0x0925837"]
-Global const $CHECK_BUTTON_NEARBY_CLOSE[2] = ["85.1:11.6 | 0x0915D3A", "82.7:12.4 | 0x0925637"]
+Global const $CHECK_BUTTON_EVENT_CLOSE[2] = ["94:12 | 0x9D5B3A", "91.4:12.4 | 0x925837"]
+Global const $CHECK_BUTTON_NEARBY_CLOSE[2] = ["85.1:11.6 | 0x915D3A", "82.7:12.4 | 0x925637"]
 Global const $CHECK_BUTTON_ALERT_CLOSE[2] = ["71.96:27.41 | 0x995A39", "69.69:27.41 | 0x965938"]
 Global const $CHECK_BUTTON_FIELD_MENU_CLOSE[2] = ["88.85:12.8 | 0x955B3A", "86.65:12.8 | 0x955B3A"]
 Global const $CHECK_BUTTON_CENTER_BATTLE_EVENT_CLOSE[2] = ["88.19:14.78 | 0x995A38", "85.68:14.78 | 0x9A5B39"]
 Global const $CHECK_BUTTON_CAPITAL_TREASURE_CLOSE[2] = ["86.4:14.35 | 0x9C5C3A", "84.13:14.35 | 0x9B5B39"]
 Global const $CHECK_BUTTON_CLAN_MISSION_CLOSE[2] = ["80.55:11.56 | 0x965938", "78.16:11.56 | 0x975939"]
 Global const $CHECK_BUTTON_HERO_COLLECTION_CLOSE[2] = ["86.34:13.55 | 0x9C5B3A", "83.78:13.55 | 0x925636"]
+Global const $CHECK_BUTTON_HELP_CLOSE[2] = ["84.66:8.22 | 0x985A39", "82.3:8.22 | 0x995A39"]
 Global const $CHECK_BUTTON_SELECT_TROOPS_CLOSE[2] = ["89.24:7.04 | 0x955B39", "86.9:7.04 | 0x955B3A"]
 Global const $CHECK_BUTTON_FAVORITE_CLOSE[2] = ["86.97:12.37 | 0x9E5D3A", "84.63:12.37 | 0x9D5C39"]
 Global const $CHECK_BUTTON_USE_ACTION_POINT_CLOSE[2] = ["71.62:22.83 | 0x955B3A", "69.48:22.83 | 0x955B3A"]
@@ -134,8 +141,8 @@ Global const $CHECK_BUTTON_DUNGEON_TREASURE_START[2] = ["77.92:79.23 | 0x8A553D"
 Global const $CHECK_BUTTON_DUNGEON_USE_CASH[2] = ["53.06:68.64 | 0x4D743B", "44.99:68.64 | 0x4D743B"]
 Global const $CHECK_BUTTON_DUNGEON_USE_CASH_DENY[2] = ["44.38:65.35 | 0x4D733B", "35.82:65.35 | 0x4D733B"]
 Global const $CHECK_MAIN_CASTLE_VIEW[3] = ["96.46:15.49 | 0x76765F", "88.1:14.26 | 0x7F7F68", "29.78:4.37 | 0x73927C"]
-Global const $CHECK_MAIN_FIELD_VIEW[4] = ["43.51:3.98 | 0x1E282B", "52.51:3.98 | 0x1E282B", "72.57:3.98 | 0xE0CEAD", "94.6:2.3 | 0x0172128"]
-Global const $CHECK_BUTTON_GREEN_MOVE1[2] = ["77.4:30.2 | 0x04C723A", "70.9:30.2 | 0x0486A39"]
+Global const $CHECK_MAIN_FIELD_VIEW[4] = ["43.51:3.98 | 0x1E282B", "52.51:3.98 | 0x1E282B", "72.57:3.98 | 0xE0CEAD", "94.6:2.3 | 0x172128"]
+Global const $CHECK_BUTTON_GREEN_MOVE1[2] = ["77.4:30.2 | 0x4C723A", "70.9:30.2 | 0x486A39"]
 Global const $CHECK_BUTTON_GREEN_MOVE2[2] = ["77.12:50.85 | 0x4D733B", "71.4:50.85 | 0x4D733B"]
 Global const $CHECK_BUTTON_GREEN_MOVE3[2] = ["77.31:70.82 | 0x4D743B", "71.31:70.82 | 0x4D743B"]
 Global const $CHECK_BUTTON_GREEN_MOVE4[1] = ["77.66:87.92 | 0xA8C4A3,0x51655E | 30"]
