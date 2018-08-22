@@ -421,10 +421,10 @@ Func FindTreasureDungeonLevelNumber($number)
    Local $firstItemBlue[1] = ["24.58:56.53 | 0x485770, 0x323e56"]
    Local $firstItemPurple[1] = ["24.58:56.53 | 0x7a6197, 0x54436d, 0x694d80"]
    Local $firstItemGold[1] = ["24.58:56.53 | 0x895c3c, 0x583d2c"]
-   Local $secondItemGreen[1] = ["36.71:55.64 | 0x41705e, 0x569785"]
-   Local $secondItemBlue[1] = ["36.71:55.64 | 0x485770, 0x323e56"]
-   Local $secondItemPurple[1] = ["36.71:55.64 | 0x7a6197, 0x54436d"]
-   Local $secondItemGold[1] = ["36.71:55.64 | 0x895c3c, 0x583d2c"]
+   Local $secondItemGreen[1] = ["36.69:55.64 | 0x41705e, 0x569785 | 21 | 3"]
+   Local $secondItemBlue[1] = ["36.69:55.64 | 0x485770, 0x323e56| 21 | 3"]
+   Local $secondItemPurple[1] = ["36.69:55.64 | 0x7a6197, 0x54436d| 21 | 3"]
+   Local $secondItemGold[1] = ["36.69:55.64 | 0x895c3c, 0x583d2c| 21 | 3"]
    Local $fifthItem[1] = ["72.7:56.58 | 0x414F67 | 16 | 3"]
 
    $clickCount = 0
