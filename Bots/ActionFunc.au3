@@ -43,6 +43,108 @@ Func RebootNox()
    Return False
 EndFunc
 
+Func HireFreeHero()
+   SetLog("Hire Free Hero", $COLOR_BLUE)
+   ClickControlPos("74.48:48.54", 1)
+   If _Sleep(1000) Then Return False
+
+   If Not CheckForPixelList($CHECK_BUTTON_HIRE_FREE_HERO) Then
+	  CloseMenu("Pub", $CHECK_BUTTON_TOP_CLOSE)
+	  Return False
+   EndIf
+
+   ; First hire!
+   ClickControlScreen($CHECK_BUTTON_HIRE_FREE_HERO[0], 1)
+   $hireCount = 1
+   SetLog("Hired here : " & $hireCount, $COLOR_PINK)
+
+   Local Const $MaxHireCount = 5
+   While $RunState
+	  ; Click Skip Button
+	  ClickControlPos("89.52:91.9", 3)
+
+	  If CheckForPixelList($CHECK_BUTTON_HIRE_FREE_HERO_ONE_MORE) Then
+		 If $hireCount >= $MaxHireCount Then
+			ClickControlPos("37.35:92.33", 2)
+			ExitLoop
+		 EndIf
+
+		 ClickControlScreen($CHECK_BUTTON_HIRE_FREE_HERO_ONE_MORE[0], 1)
+		 $hireCount += 1
+		 SetLog("Hired here : " & $hireCount, $COLOR_PINK)
+	  EndIf
+	  If _Sleep(500) Then Return False
+   WEnd
+   If _Sleep(1200) Then Return False
+   CloseMenu("Pub", $CHECK_BUTTON_TOP_CLOSE)
+   Return True
+EndFunc
+
+Func GetMySalary()
+   SetLog("Get My Salary", $COLOR_BLUE)
+
+   ; Get my salary
+   ClickControlPos($POS_BUTTON_MY_PROFILE_ICON, 1)
+   If _Sleep(800) Then Return False
+   ClickControlPos("23.82:83.33", 2)
+   If _Sleep(1000) Then Return False
+   CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+   If _Sleep(800) Then Return False
+   CloseMenu("MyProfile", $CHECK_BUTTON_FIELD_MENU_CLOSE)
+   If _Sleep(800) Then Return False
+
+   ; Get my monthly point
+   ClickControlPos($POS_BUTTON_MONTHLY_POINT, 1)
+   If _Sleep(800) Then Return False
+   ClickControlPos("43.68:81.75", 2)	; button 1
+   If _Sleep(300) Then Return False
+   ClickControlPos("68.82:81.75", 2)	; button 2
+   If _Sleep(800) Then Return False
+   ClickControlPos("85.88:26.98", 2)	; close
+EndFunc
+
+
+Func AltarResource()
+   SetLog("Altar All Resources", $COLOR_BLUE)
+
+   Local Const $startButton = "49.85:83.86"
+
+   ; Tab 1
+   If _Sleep(800) Then Return False
+   ClickControlPos("19.56:30.95", 2)
+   If _Sleep(500) Then Return False
+   ClickControlPos($startButton, 2)
+   If _Sleep(800) Then Return False
+   CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+
+    ; Tab 2
+   If _Sleep(800) Then Return False
+   ClickControlPos("19.56:46.95", 2)
+   If _Sleep(500) Then Return False
+   ClickControlPos($startButton, 2)
+   If _Sleep(800) Then Return False
+   CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+
+    ; Tab 3
+   If _Sleep(800) Then Return False
+   ClickControlPos("19.56:60.95", 2)
+   If _Sleep(500) Then Return False
+   ClickControlPos($startButton, 2)
+   If _Sleep(800) Then Return False
+   CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+
+    ; Tab 4
+   If _Sleep(800) Then Return False
+   ClickControlPos("19.56:74.95", 2)
+   If _Sleep(500) Then Return False
+   ClickControlPos($startButton, 2)
+   If _Sleep(800) Then Return False
+   CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
+
+   CloseMenu("Altar", $CHECK_BUTTON_FIELD_MENU_CLOSE)
+EndFunc
+
+
 Func CloseAllMenu()
    If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
 	  Return
@@ -157,6 +259,7 @@ Func CollectResources()
 		 If _Sleep($ViewChangeWaitMSec) Then Return False
 	  EndIf
    WEnd
+   If $tryCount == $MaxTryCount Then Return False
 
    Local Const $Delay = 500
    ClickControlPos("25.34:44.24", 2)	; click Barrack
@@ -224,9 +327,7 @@ Func GoToField()
 
 	  $tryCount = $tryCount + 1
    WEnd
-   If $tryCount == $MaxTryCount Then
-	  Return False
-   EndIf
+   If $tryCount == $MaxTryCount Then Return False
    Return True
 
 EndFunc
@@ -980,4 +1081,40 @@ Func MainDungeonTreasure()
 
    CloseMenu("Dungeon-Menu", $CHECK_BUTTON_TOP_CLOSE)
    SetLog("Auto Dungeon Treasure End", $COLOR_GREEN)
+EndFunc
+
+
+Func DoTodayJob()
+   SetLog("Auto Today Job Start", $COLOR_GREEN)
+
+   ; Go to castle initial view
+   ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
+   If _Sleep($ViewChangeWaitMSec) Then Return False
+
+   Local $tryCount = 1
+   While $RunState And $tryCount < $MaxTryCount
+	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
+		 ExitLoop
+	  Else
+		 CloseAllMenu()
+		 If _Sleep(500) Then Return False
+		 ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
+		 If _Sleep($ViewChangeWaitMSec) Then Return False
+	  EndIf
+   WEnd
+   If $tryCount == $MaxTryCount Then Return False
+
+   ClickControlPos($POS_BUTTON_PUB, 2)
+   If _Sleep(2000) Then Return False
+   HireFreeHero()
+   If _Sleep(800) Then Return False
+
+   GetMySalary()
+   If _Sleep(800) Then Return False
+
+   ClickControlPos("34.26:64.55", 2)	; altar button from pub view
+   AltarResource()
+   If _Sleep(800) Then Return False
+
+   SetLog("Auto Today Job End", $COLOR_GREEN)
 EndFunc

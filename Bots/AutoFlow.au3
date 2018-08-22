@@ -5,12 +5,17 @@ Func AutoFlow()
    ;ClickMoveButton(4)
    ;DragControlPos("20:80", "80:10", 5);
    ;CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
+   ;CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
    ;CloseAllMenu()
    ;FindTreasureDungeonLevelNumber(3)
    ;DoResourceGathering(1)
    ;If CheckForPixelList($CHECK_MAIN_FIELD_VIEW) Then SetLog("OK", $COLOR_DARKGREY)
    ;DoDungeonSweep("hero", 14, $POS_BUTTON_DUNGEON_14)
    ;RebootNox()
+   ;CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
+   ;HireFreeHero()
+   ;GetMySalary()
+   ;AltarResource()
    ;Return False
 
    If $setting_checked_dungeon_treasure Then

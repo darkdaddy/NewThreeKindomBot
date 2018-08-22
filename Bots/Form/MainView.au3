@@ -47,7 +47,10 @@ $x = $contentPaneX
 Local $btnWidth = 90
 $btnStart = GUICtrlCreateButton("Start Bot", $x, $generalBottomY, $btnWidth, 50)
 $btnStop = GUICtrlCreateButton("Stop Bot", $x, $generalBottomY, $btnWidth, 50)
-$btnReboot = GUICtrlCreateButton("Reboot Game", $x + $btnWidth + 10, $generalBottomY, 100, 50)
+$x += $btnWidth + 10
+$btnReboot = GUICtrlCreateButton("Reboot Game", $x, $generalBottomY, 100, 50)
+$x += 110
+$btnTodayJob = GUICtrlCreateButton("Today Job", $x, $generalBottomY, 100, 50)
 
 ;-----------------------------------------------------------
 ; Tab : Option
@@ -183,6 +186,7 @@ GUICtrlSetOnEvent($btnStop, "btnStop")	; already handled in GUIControl
 GUICtrlSetOnEvent($idTab, "tabChanged")
 GUICtrlSetOnEvent($btnCalcPos, "btnCalcPos")
 GUICtrlSetOnEvent($btnReboot, "btnReboot")
+GUICtrlSetOnEvent($btnTodayJob, "btnTodayJob")
 GUICtrlSetOnEvent($btnTestColor, "btnTestColor")
 
 GUICtrlSetState($btnStart, $GUI_SHOW)
@@ -364,6 +368,29 @@ Func btnReboot()
    $PauseBot = False
 
    RebootNox()
+
+   $RunState = $orgValue1
+   $PauseBot = $orgValue2
+EndFunc
+
+Func btnTodayJob()
+   saveConfig()
+   loadConfig()
+   applyConfig()
+
+   If findWindow() Then
+	  WinActivate($HWnD)
+   EndIf
+
+   btnStop()
+
+   $orgValue1 = $RunState
+   $orgValue2 = $PauseBot
+   $RunState = True
+   $PauseBot = False
+
+   DoTodayJob()
+
    $RunState = $orgValue1
    $PauseBot = $orgValue2
 EndFunc

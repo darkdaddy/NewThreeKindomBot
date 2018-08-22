@@ -165,8 +165,6 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 			   mainViewClose()
 			Case $btnStop
 			   btnStop()
-			Case $btnReboot
-			   btnReboot()
 			EndSwitch
 	  Case 274
 		 Switch $wParam
