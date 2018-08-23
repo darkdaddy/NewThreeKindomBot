@@ -35,6 +35,8 @@ Func RebootNox()
   	  ClickControlPos($POS_BUTTON_NOTICE_CLOSE, 1)
 	  ClickControlPos($POS_BUTTON_GAME_START, 1)
 
+	  CloseMenu("Help", $CHECK_BUTTON_HELP_CLOSE)
+
 	  If _Sleep(1500) Then Return False
 	  $tryCount += 1
    WEnd
