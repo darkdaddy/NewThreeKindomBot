@@ -9,7 +9,7 @@ Local $gap = 10
 Local $generalRightHeight = 0
 Local $generalBottomHeight = 70
 Local $logViewWidth = 350
-Local $logViewHeight = 420
+Local $logViewHeight = 450
 Local $frameWidth = $contentPaneX + $logViewWidth + $gap + $generalRightHeight + $tabX
 Local $frameHeight = $contentPaneY + $logViewHeight + $gap + $generalBottomHeight + $tabY
 
@@ -98,7 +98,7 @@ $y += 26
 
 ; Auto Dungeon Treasure
 $checkAutoDungeonTreasureEnabled = GUICtrlCreateCheckbox("Auto Dungeon Treasure", $x, $y, 250, 25)
-$y += 26
+$y += 32
 
 ; Auto Filed Attack
 $checkAutoFieldAttackEnabled = GUICtrlCreateCheckbox("Auto Filed Attack", $x, $y, $w, 25)
@@ -115,6 +115,14 @@ $checkAutoResourceGatheringTroop2 = GUICtrlCreateCheckbox("2", $x + 200, $y, 30,
 $checkAutoResourceGatheringTroop3 = GUICtrlCreateCheckbox("3", $x + 230, $y, 30, 25)
 $checkAutoResourceGatheringTroop4 = GUICtrlCreateCheckbox("4", $x + 260, $y, 30, 25)
 $y += 26
+
+; Auto Explore Castle
+$checkAutoExploreCastleEnabled = GUICtrlCreateCheckbox("Auto Explore Castle", $x, $y, 170, 25)
+$checkAutoExploreCastleTroop1 = GUICtrlCreateCheckbox("1", $x + 170, $y, 30, 25)
+$checkAutoExploreCastleTroop2 = GUICtrlCreateCheckbox("2", $x + 200, $y, 30, 25)
+$checkAutoExploreCastleTroop3 = GUICtrlCreateCheckbox("3", $x + 230, $y, 30, 25)
+$checkAutoExploreCastleTroop4 = GUICtrlCreateCheckbox("4", $x + 260, $y, 30, 25)
+$y += 32
 
 ; Use Cash
 $checkUseCashEnabled = GUICtrlCreateCheckbox("Enable Use Point", $x, $y, $w, 25)
@@ -254,7 +262,7 @@ Func btnStart()
    EndIf
 
    GUICtrlSetState($btnReboot, $GUI_DISABLE)
-
+   GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
    runBot()
 
 EndFunc
@@ -274,6 +282,7 @@ Func btnStop()
    $PauseBot = True
 
    GUICtrlSetState($btnReboot, $GUI_ENABLE)
+   GUICtrlSetState($btnTodayJob, $GUI_ENABLE)
 
    SetLog("Bot has stopped", $COLOR_ORANGE)
 EndFunc
@@ -352,47 +361,25 @@ Func btnTestColor()
 EndFunc
 
 Func btnReboot()
-   saveConfig()
-   loadConfig()
-   applyConfig()
-
-   If findWindow() Then
-	  WinActivate($HWnD)
+   If InitBot() = False Then
+	  Return
    EndIf
 
-   btnStop()
-
-   $orgValue1 = $RunState
-   $orgValue2 = $PauseBot
-   $RunState = True
-   $PauseBot = False
+   GUICtrlSetState($btnReboot, $GUI_DISABLE)
+   GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
 
    RebootNox()
-
-   $RunState = $orgValue1
-   $PauseBot = $orgValue2
 EndFunc
 
 Func btnTodayJob()
-   saveConfig()
-   loadConfig()
-   applyConfig()
-
-   If findWindow() Then
-	  WinActivate($HWnD)
+   If InitBot() = False Then
+	  Return
    EndIf
 
-   btnStop()
+   GUICtrlSetState($btnReboot, $GUI_DISABLE)
+   GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
 
-   $orgValue1 = $RunState
-   $orgValue2 = $PauseBot
-   $RunState = True
-   $PauseBot = False
-
-   DoTodayJob()
-
-   $RunState = $orgValue1
-   $PauseBot = $orgValue2
+   MainTodayJob()
 EndFunc
 
 ; System callback

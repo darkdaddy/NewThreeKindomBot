@@ -8,14 +8,16 @@ Func AutoFlow()
    ;CloseAllMenu()
    ;FindTreasureDungeonLevelNumber(3)
    ;DoResourceGathering(1)
-   ;If CheckForPixelList($CHECK_MAIN_FIELD_VIEW) Then SetLog("OK", $COLOR_DARKGREY)
+   ;If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then SetLog("OK", $COLOR_DARKGREY)
    ;DoDungeonSweep("hero", 14, $POS_BUTTON_DUNGEON_14)
    ;RebootNox()
-   ;CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
+   ;CloseMenu("Main", $CHECK_BUTTON_HELP_CLOSE)
    ;HireFreeHero()
    ;GetMySalary()
    ;AltarResource()
    ;MainDungeonSweep("hero")
+   ;pullOutAllResourceTroops()
+   ;DoExploreCastle(2)
    ;Return False
 
    If $setting_checked_dungeon_treasure Then

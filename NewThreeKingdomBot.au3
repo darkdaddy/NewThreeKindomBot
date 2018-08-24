@@ -1,13 +1,13 @@
 #RequireAdmin
 
-#pragma compile(FileDescription, Raven Bot)
-#pragma compile(ProductName, Raven Bot)
-#pragma compile(ProductVersion, 0.5)
-#pragma compile(FileVersion, 0.5)
+#pragma compile(FileDescription, New ThreeKingdom Bot)
+#pragma compile(ProductName, New ThreeKingdom Bot)
+#pragma compile(ProductVersion, 0.6)
+#pragma compile(FileVersion, 0.6)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.5"
+$sBotVersion = "0.6"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>
