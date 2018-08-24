@@ -395,8 +395,8 @@ Func GoToField()
 
 EndFunc
 
-Func DoChargeBarrack()
-   SetLog("Recharge troop barrack...", $COLOR_PINK)
+Func DoRecruitBarrack()
+   SetLog("Recruit troop barrack...", $COLOR_PINK)
    If Not OpenMenu("Barrack", $POS_BUTTON_BARRACK_MENU, $CHECK_BUTTON_FIELD_MENU_CLOSE) Then
 	  Return False
    EndIf
@@ -1094,9 +1094,10 @@ Func MainAutoFieldAction()
 
 		 If Mod($loopCount, $LoopCount_CollectResource) == 0 Then
 			CollectResources()
-			; already go out to field
+		 EndIf
 
-			DoChargeBarrack()
+		 If Mod($loopCount, $LoopCount_RecruitTroop) == 0 Then
+			DoRecruitBarrack()
 		 EndIf
 
 		 If Mod($loopCount, $LoopCount_ForcePullOut) == 0 Then
@@ -1106,12 +1107,17 @@ Func MainAutoFieldAction()
 
 	  CloseAllMenu()
 
-	  ; Checking Barrack's Red Mark -> We need to call DoChargeBarrack()
+	  ; do jobs only one first time
+	  If $loopCount == 0 Then
+		 DoRecruitBarrack()
+	  EndIf
+
+	  ; Checking Barrack's Red Mark -> We need to call DoRecruitBarrack()
 	  If CheckForPixelList($CHECK_BUTTON_BARRACK_RED_MARK) Then
 		 SetLog("Barrack Red Mark Detected...", $COLOR_RED)
 		 ClickControlScreen($CHECK_BUTTON_BARRACK_RED_MARK[0])
 		 If _Sleep(800) Then Return False
-		 DoChargeBarrack()
+		 DoRecruitBarrack()
 	  EndIf
 
 	  ; Checking available

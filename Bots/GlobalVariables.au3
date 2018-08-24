@@ -68,6 +68,7 @@ Global Const $FieldActionIdleMSec = 5000
 Global Const $DefaultTolerance = 21
 Global Const $MaxTryCount = 10
 Global Const $LoopCount_CollectResource = 360	; 30min
+Global Const $LoopCount_RecruitTroop = 60	; 5min
 Global Const $LoopCount_Reboot = 1500	; 2hour 5min
 Global Const $LoopCount_ForcePullOut = 2160	; 3hour
 
