@@ -369,6 +369,8 @@ Func btnReboot()
    GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
 
    RebootNox()
+
+   btnStop()
 EndFunc
 
 Func btnTodayJob()
@@ -380,6 +382,8 @@ Func btnTodayJob()
    GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
 
    MainTodayJob()
+
+   btnStop()
 EndFunc
 
 ; System callback

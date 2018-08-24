@@ -176,6 +176,7 @@ EndFunc
 Func AltarResourceInternal()
    SetLog("Altar All Resources", $COLOR_BLUE)
 
+   Local Const $AlterDelay = 1600
    Local Const $startButton = "49.85:83.86"
 
    ; Tab 1
@@ -183,7 +184,7 @@ Func AltarResourceInternal()
    ClickControlPos("19.56:30.95", 2)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
-   If _Sleep(800) Then Return False
+   If _Sleep($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
     ; Tab 2
@@ -191,7 +192,7 @@ Func AltarResourceInternal()
    ClickControlPos("19.56:46.95", 2)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
-   If _Sleep(800) Then Return False
+   If _Sleep($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
     ; Tab 3
@@ -199,7 +200,7 @@ Func AltarResourceInternal()
    ClickControlPos("19.56:60.95", 2)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
-   If _Sleep(800) Then Return False
+   If _Sleep($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
     ; Tab 4
@@ -207,7 +208,7 @@ Func AltarResourceInternal()
    ClickControlPos("19.56:74.95", 2)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
-   If _Sleep(800) Then Return False
+   If _Sleep($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
    CloseMenu("Altar", $CHECK_BUTTON_FIELD_MENU_CLOSE)
