@@ -67,7 +67,7 @@ Global Const $ViewChangeWaitMSec = 4000
 Global Const $FieldActionIdleMSec = 5000
 Global Const $DefaultTolerance = 21
 Global Const $MaxTryCount = 10
-Global Const $LoopCount_CollectResource = 20
+Global Const $LoopCount_CollectResource = 360	; 30min
 Global Const $LoopCount_Reboot = 1500	; 2hour 5min
 Global Const $LoopCount_ForcePullOut = 2160	; 3hour
 
@@ -171,6 +171,7 @@ Global const $CHECK_BUTTON_DUNGEON_WIN_LEAVE[3] = ["75.33:67.62 | 0x4D733B", "84
 Global const $CHECK_BUTTON_DUNGEON_LOSE_LEAVE[3] = ["84.88:88.81 | 0x4C713A", "75.07:88.81 | 0x4C713A", "39.12:88.81 | 0x4C723B"]
 Global const $CHECK_BUTTON_HIRE_FREE_HERO[1] = ["48.82:86.47 | 0x4E733B"]
 Global const $CHECK_BUTTON_HIRE_FREE_HERO_ONE_MORE[2] = ["66.32:92.33 | 0x4C723B", "56.76:92.33 | 0x4C723B"]
+Global const $CHECK_BUTTON_BARRACK_RED_MARK[1] = ["6.15:58.69 | 0xB92929"]
 
 Global const $CHECK_STATUS_ATTACK_TROOP1[2] = ["33.75:33.79 | 0x4B5152", "33.75:33.79 | 0x38A3BC"]
 Global const $CHECK_STATUS_ATTACK_TROOP2[2] = ["33.75:50.68 | 0x4B5152", "33.75:50.68 | 0x38A3BC"]

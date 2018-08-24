@@ -1106,6 +1106,14 @@ Func MainAutoFieldAction()
 
 	  CloseAllMenu()
 
+	  ; Checking Barrack's Red Mark -> We need to call DoChargeBarrack()
+	  If CheckForPixelList($CHECK_BUTTON_BARRACK_RED_MARK) Then
+		 SetLog("Barrack Red Mark Detected...", $COLOR_RED)
+		 ClickControlScreen($CHECK_BUTTON_BARRACK_RED_MARK[0])
+		 If _Sleep(800) Then Return False
+		 DoChargeBarrack()
+	  EndIf
+
 	  ; Checking available
 	  $troopList = CheckTroopAvailableList()
 
