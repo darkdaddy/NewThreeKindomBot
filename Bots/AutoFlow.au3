@@ -5,7 +5,6 @@ Func AutoFlow()
    ;ClickMoveButton(4)
    ;DragControlPos("20:80", "80:10", 5);
    ;CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
-   ;CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
    ;CloseAllMenu()
    ;FindTreasureDungeonLevelNumber(3)
    ;DoResourceGathering(1)
@@ -16,6 +15,7 @@ Func AutoFlow()
    ;HireFreeHero()
    ;GetMySalary()
    ;AltarResource()
+   ;MainDungeonSweep("hero")
    ;Return False
 
    If $setting_checked_dungeon_treasure Then

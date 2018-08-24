@@ -93,7 +93,7 @@ $checkAutoDungeonExpSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Exp. Swee
 $y += 26
 
 ; Auto Dungeon Exp Sweep
-$checkAutoDungeonHeroSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Hero Sweep (13~15)", $x, $y, 250, 25)
+$checkAutoDungeonHeroSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Hero Sweep (7~15)", $x, $y, 250, 25)
 $y += 26
 
 ; Auto Dungeon Treasure

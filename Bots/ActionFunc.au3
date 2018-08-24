@@ -748,7 +748,20 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  CloseMenu("Use-Cash", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 	  CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 
-	  ClickControlPos($buttonPosList[$i], 2)
+	  Local $enable = True
+	  Local $posInfo = $buttonPosList[$i]
+	  Local $infoArr = StringSplit($buttonPosList[$i], "|")
+	  If $infoArr[0] == 2 Then
+		 $posInfo = $infoArr[1]
+		 $enable = $infoArr[2] == "0" ? False : True
+	  EndIf
+
+	  If $enable == False Then
+		 SetLog("Dungeon Attack Skipped : " & $i + 1, $COLOR_PINK)
+		 ContinueLoop
+	  EndIf
+
+	  ClickControlPos($posInfo, 2)
 	  If _Sleep(800) Then Return False
 
 	  $tryCount = 1
@@ -763,7 +776,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 			SetLog("Init Button Found", $COLOR_DARKGREY)
 			ExitLoop
 		 Else
-			ClickControlPos($buttonPosList[$i], 2)
+			ClickControlPos($posInfo, 2)
 		 EndIf
 		 If _Sleep(500) Then Return False
 		 $tryCount = $tryCount + 1
@@ -960,30 +973,39 @@ Func MainDungeonSweep($tab)
    ClickControlPos($POS_BUTTON_DUNGEON, 2)
    If _Sleep(800) Then Return False
 
+   Local $toStageNumber = 13
    If $tab == "exp" Then
 	  ClickControlPos($POS_BUTTON_DUNGEON_EXP_TAB, 2)
    ElseIf $tab == "hero" Then
 	  ClickControlPos($POS_BUTTON_DUNGEON_HERO_TAB, 2)
+	  $toStageNumber = 7
    EndIf
    If _Sleep(800) Then Return False
 
-   ; Level 15
-   If DoDungeonSweep($tab, 15, $POS_BUTTON_DUNGEON_15) Then
-	  If _Sleep(1500) Then Return False
-	  ClickControlPos($POS_BUTTON_DUNGEON_MOVE_LEFT, 2)
-	  If _Sleep(1200) Then Return False
+   Local $dungeonButtonArray[9];
+   $dungeonButtonArray[0] = $POS_BUTTON_DUNGEON_15
+   $dungeonButtonArray[1] = $POS_BUTTON_DUNGEON_14
+   $dungeonButtonArray[2] = $POS_BUTTON_DUNGEON_13
+   $dungeonButtonArray[3] = $POS_BUTTON_DUNGEON_12
+   $dungeonButtonArray[4] = $POS_BUTTON_DUNGEON_11
+   $dungeonButtonArray[5] = $POS_BUTTON_DUNGEON_10
+   $dungeonButtonArray[6] = $POS_BUTTON_DUNGEON_09
+   $dungeonButtonArray[7] = $POS_BUTTON_DUNGEON_08
+   $dungeonButtonArray[8] = $POS_BUTTON_DUNGEON_07
 
-	  ; Level 14
-	  If DoDungeonSweep($tab, 14, $POS_BUTTON_DUNGEON_14) Then
+   For $index = 0 To UBound($dungeonButtonArray) - 1
+
+	  $stageNumber = 15 - $index
+	  If DoDungeonSweep($tab, $stageNumber, $dungeonButtonArray[$index]) Then
 		 If _Sleep(1500) Then Return False
 		 ClickControlPos($POS_BUTTON_DUNGEON_MOVE_LEFT, 2)
 		 If _Sleep(1200) Then Return False
-
-		 ; Level 13
-		 If DoDungeonSweep($tab, 13, $POS_BUTTON_DUNGEON_13) Then
-		 EndIf
 	  EndIf
-   EndIf
+
+	  If $stageNumber == $toStageNumber Then
+		 ExitLoop
+	  EndIf
+   Next
 
    CloseMenu("Dungeon-Menu", $CHECK_BUTTON_TOP_CLOSE)
 
