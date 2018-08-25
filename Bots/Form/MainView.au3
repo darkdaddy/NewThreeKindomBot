@@ -87,13 +87,13 @@ $x = $contentPaneX
 $checkBotCaptureModeEnabled = GUICtrlCreateCheckbox("Bot Capture Mode", $x, $y, 250, 25)
 $y += 26
 
+; Auto Dungeon Exp Sweep
+$checkAutoDungeonHeroSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Hero Sweep (7~15)", $x, $y, 250, 25)
+$y += 26
+
 ; Auto Dungeon Hero Sweep
 $x = $contentPaneX
 $checkAutoDungeonExpSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Exp. Sweep (13~15)", $x, $y, 250, 25)
-$y += 26
-
-; Auto Dungeon Exp Sweep
-$checkAutoDungeonHeroSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Hero Sweep (7~15)", $x, $y, 250, 25)
 $y += 26
 
 ; Auto Dungeon Treasure
@@ -154,6 +154,10 @@ GUICtrlSetData($comboDungeonTreasureLevel, "2")
 GUICtrlSetData($comboDungeonTreasureLevel, "3")
 GUICtrlSetData($comboDungeonTreasureLevel, "4")
 _GUICtrlComboBox_SetCurSel($comboDungeonTreasureLevel, 2)
+
+; Dungeon Treasure Main Skill Tick Count
+$x = $x + 200
+$inputTreasureDungeonMainSkillTickCount = GUICtrlCreateInput("", $x, $y - 5, 30, 20)
 $y += ($h + 10)
 
 ; Utilty Group Box

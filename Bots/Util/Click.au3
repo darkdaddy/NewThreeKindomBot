@@ -1,7 +1,9 @@
 
-Func ClickPos($pos, $delay = 500, $times = 1)
-   If _Sleep($delay) Then Return
-   Click($pos[0], $pos[1], $times, 200)
+Func ClickPos($pos, $delay = 500, $times = 1, $speed = 200)
+   If $speed > 0 Then
+	  If _Sleep($delay) Then Return
+   EndIf
+   Click($pos[0], $pos[1], $times, $speed)
 EndFunc
 
 Func Click($x, $y, $times = 1, $speed = 0)

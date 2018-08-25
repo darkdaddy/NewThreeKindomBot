@@ -29,6 +29,7 @@ Func CloseAllMenu()
    CloseMenu("Favorite", $CHECK_BUTTON_FAVORITE_CLOSE)
    CloseMenu("Help", $CHECK_BUTTON_HELP_CLOSE)
    CloseMenu("Castle-Menu", $CHECK_BUTTON_CASTLE_MENU_CLOSE)
+   CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE)
 EndFunc
 
 
@@ -43,6 +44,8 @@ Func RebootNox()
    ; Kill Current Game
    ClickHandle($HWnDTool, $WinRectTool[2]/2, $WinRectTool[3] - 35 )
    If _Sleep(1000) Then Return False
+   DragControlPos("90:50", "90:10", 5);
+   If _Sleep(300) Then Return False
    DragControlPos("90:50", "90:10", 5);
    If _Sleep(1000) Then Return False
 
@@ -211,7 +214,8 @@ Func AltarResourceInternal()
    If _Sleep($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
-   CloseMenu("Altar", $CHECK_BUTTON_FIELD_MENU_CLOSE)
+   If _Sleep(1000) Then Return False
+   CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE)
 EndFunc
 
 
@@ -1029,7 +1033,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 
 	  SetLog("Dungeon Sweep Attack!", $COLOR_PINK)
 	  ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
-	  If _Sleep(1200) Then Return False
+	  If _Sleep(1500) Then Return False
 
 	  ; alert OR still sweep start window with full slider state..
 	  If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) OR CheckForPixelList("48.73:58.17 | 0x359EBA") Then
@@ -1251,6 +1255,8 @@ Func MainDungeonTreasure()
    $tryCount = 0
    $loseCount = 0
    Local Const $MaxAttackClickTryCount = 3
+   Local $HeroButtonPosList[6] = ["53.86:88.13", "61.00:88.13", "69.00:88.13", "77.00:88.13", "85.00:88.13", "93.00:88.13"]
+   Local $SkillButtonPosList[2] = ["5.33:71.97", "5.33:91.97"]
 
    While $RunState And $tryCount < $MaxTryCount
 
@@ -1292,6 +1298,7 @@ Func MainDungeonTreasure()
 	  ClickControlPos($POS_BUTTON_START_ACTION, 3)
 	  If _Sleep(10000) Then Return False
 
+	  $tickCount = 0
 	  $win = True
 	  While $RunState
 		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_WIN_LEAVE) Then
@@ -1311,10 +1318,28 @@ Func MainDungeonTreasure()
 			ExitLoop
 		 EndIf
 
-		 ; Click Skip Button
-		 ClickControlPos("89.52:91.9", 3)
+		 ; Cast Hero's Skills Forward
+		 For $i = 0 To 5
+			ClickControlPos($HeroButtonPosList[$i], 3, 0, 50)
+		 Next
 
-		 If _Sleep(1500) Then Return False
+		 ; Cast My Two Skills
+		 If $tickCount >= $setting_dungeon_treasure_main_skill_tick_count Then
+			For $i = 0 To 1
+			   ClickControlPos($SkillButtonPosList[$i], 2, 0, 100)
+			Next
+		 EndIf
+
+		  ; Cast Hero's Skills Backward
+		 For $i = 5 To 0 Step -1
+			ClickControlPos($HeroButtonPosList[$i], 3, 0, 50)
+		 Next
+
+		 ; Click Skip Button
+		 ClickControlPos("89.52:91.9", 1, 0, 100)
+
+		 $tickCount += 1
+		 SetLog("Attack Tick Count : " & $tickCount & "(" & $setting_dungeon_treasure_main_skill_tick_count & ")", $COLOR_DARKGREY)
 	  WEnd
 
 	  If Not $win And $loseCount >= 3 Then

@@ -2,12 +2,12 @@
 
 #pragma compile(FileDescription, New ThreeKingdom Bot)
 #pragma compile(ProductName, New ThreeKingdom Bot)
-#pragma compile(ProductVersion, 0.6)
-#pragma compile(FileVersion, 0.6)
+#pragma compile(ProductVersion, 0.7)
+#pragma compile(FileVersion, 0.7)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.6"
+$sBotVersion = "0.7"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>
@@ -216,13 +216,13 @@ Func ControlPos($posInfo)
    return $pos
 EndFunc
 
-Func ClickControlPos($posInfo, $clickCount = 1, $delayMsec = 300)
-   ClickPos(ControlPos($posInfo), $delayMsec * $setting_delay_rate, $clickCount)
+Func ClickControlPos($posInfo, $clickCount = 1, $delayMsec = 300, $speed = 300)
+   ClickPos(ControlPos($posInfo), $delayMsec * $setting_delay_rate, $clickCount, $speed)
 EndFunc
 
-Func ClickControlScreen($screenInfo, $clickCount = 1, $delayMsec = 300)
+Func ClickControlScreen($screenInfo, $clickCount = 1, $delayMsec = 300, $speed = 300)
    Local $infoArr = StringSplit($screenInfo, "|")
-   ClickPos(ControlPos($infoArr[1]), $delayMsec * $setting_delay_rate, $clickCount)
+   ClickPos(ControlPos($infoArr[1]), $delayMsec * $setting_delay_rate, $clickCount, $speed)
 EndFunc
 
 Func ScreenToPosInfo($screenInfo)
@@ -354,6 +354,11 @@ Func CheckForPixel($screenInfo, $PixelTolerance = 15)
 EndFunc
 
 Func CheckForPixelList($screenInfoList, $PixelTolerance = $DefaultTolerance, $orMode = False)
+
+   If IsArray($screenInfoList) = False Then
+	  Return CheckForPixel($screenInfoList, $PixelTolerance)
+   EndIf
+
    For $p = 0 To UBound($screenInfoList) - 1
 	  If CheckForPixel($screenInfoList[$p], $PixelTolerance) Then
 		 If $orMode Then
