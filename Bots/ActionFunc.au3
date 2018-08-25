@@ -955,7 +955,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 		 ContinueLoop
 	  EndIf
 
-	  ClickControlPos($posInfo, 2)
+	  ClickControlPos($posInfo, 1)
 	  If _Sleep(800) Then Return False
 
 	  $tryCount = 1
@@ -970,12 +970,15 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 			SetLog("Init Button Found", $COLOR_DARKGREY)
 			ExitLoop
 		 Else
-			ClickControlPos($posInfo, 2)
+			ClickControlPos($posInfo, 1)
 		 EndIf
 		 If _Sleep(500) Then Return False
 		 $tryCount = $tryCount + 1
 	  WEnd
-	  If $tryCount == $MaxTryCount Then Return False
+	  If $tryCount == $MaxTryCount Then
+		 SetLog("Can not find sweep button...", $COLOR_RED)
+		 Return False
+	  EndIf
 
 	  If $foundSweepButton Then
 		 OpenMenu("Troop-Select", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_SWEEP[0]), $CHECK_BUTTON_SELECT_TROOPS_CLOSE)

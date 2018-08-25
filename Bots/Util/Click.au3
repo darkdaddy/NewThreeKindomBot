@@ -1,6 +1,6 @@
 
 Func ClickPos($pos, $delay = 500, $times = 1, $speed = 200)
-   If $speed > 0 Then
+   If $delay > 0 Then
 	  If _Sleep($delay) Then Return
    EndIf
    Click($pos[0], $pos[1], $times, $speed)
