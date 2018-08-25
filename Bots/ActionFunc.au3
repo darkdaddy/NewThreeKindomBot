@@ -922,6 +922,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
    $result = True
    $tryCount = 1
    SetLog("Dungeon Attack Begin : " & $level, $COLOR_DARKGREY)
+
    For $i = 0 To 4
 
 	  saveConfig()
@@ -1030,7 +1031,8 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
 	  If _Sleep(1200) Then Return False
 
-	  If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
+	  ; alert OR still sweep start window with full slider state..
+	  If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) OR CheckForPixelList("48.73:58.17 | 0x359EBA") Then
 		 SetLog("No Bread!", $COLOR_RED)
 
 		 CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
@@ -1215,6 +1217,8 @@ Func MainDungeonSweep($tab)
 		 If _Sleep(1500) Then Return False
 		 ClickControlPos($POS_BUTTON_DUNGEON_MOVE_LEFT, 2)
 		 If _Sleep(1200) Then Return False
+	  Else
+		 ExitLoop
 	  EndIf
 
 	  If $stageNumber == $toStageNumber Then
