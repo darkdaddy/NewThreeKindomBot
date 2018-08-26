@@ -158,11 +158,12 @@ _GUICtrlComboBox_SetCurSel($comboDungeonTreasureLevel, 2)
 ; Dungeon Treasure Main Skill Tick Count
 $x = $x + 200
 $inputTreasureDungeonMainSkillTickCount = GUICtrlCreateInput("", $x, $y - 5, 30, 20)
+GUICtrlCreateLabel("Main Skill Tick", $x + 35, $y)
 $y += ($h + 10)
 
 ; Utilty Group Box
 $y += 10
-GUICtrlCreateGroup("Utility", 20, $y, 345, 80)
+GUICtrlCreateGroup("Utility", 20, $y, 347, 80)
 $x = $contentPaneX + 10
 $y += 20
 
@@ -177,7 +178,7 @@ $inputCalcPosY = GUICtrlCreateInput("", $x, $y, 30, 20)
 $x += 40
 $btnCalcPos = GUICtrlCreateButton("Calc", $x, $y, 40, 20)
 $x += 50
-$inputCalcResult = GUICtrlCreateInput("", $x, $y, 130, 20)
+$inputCalcResult = GUICtrlCreateInput("", $x, $y, 140, 20)
 $y += 30
 
 $x = $contentPaneX + 10
@@ -255,6 +256,41 @@ Func InitBot()
    Return True
 EndFunc
 
+
+Func calcPos()
+   $orgPosX = Int(GUICtrlRead($inputCalcPosX))
+   $orgPosY = Int(GUICtrlRead($inputCalcPosY))
+
+   $posX = $orgPosX - $ThickFrameSize
+   $posY = $orgPosY - $NoxTitleBarHeight
+
+   $org = WinGetPos($HWnD)
+   $r = $org
+   If Not @error Then
+
+	  $r[0] = $r[0] + $ThickFrameSize
+	  $r[1] = $r[1] + $NoxTitleBarHeight
+	  $r[2] = $r[2] + ($ThickFrameSize * 2)
+	  $r[3] = $r[3] - $NoxTitleBarHeight - $ThickFrameSize
+
+	  $x = Round($posX * 100.0 / $r[2], 2)
+	  $y = Round($posY * 100.0 / $r[3], 2)
+
+	  $result = $x & $PosXYSplitter & $y
+	  ClipPut($result)
+
+	  $color = GetPixelColor($orgPosX, $orgPosY);
+	  $result = $result & " | " & "0x" & $color
+	  Local $bgColor = Number("0x" & $color)
+
+	  GUICtrlSetData($inputCalcResult, $result)
+	  GUICtrlSetBkColor($btnCalcPos, $bgColor)
+   Else
+	  GUICtrlSetData($inputCalcResult, "Nox Not Found")
+   EndIf
+EndFunc
+
+
 Func btnStart()
    _log("START BUTTON CLICKED" )
 
@@ -301,39 +337,7 @@ Func btnCalcPos()
 	  WinActivate($HWnD)
    EndIf
 
-   $orgPosX = Int(GUICtrlRead($inputCalcPosX))
-   $orgPosY = Int(GUICtrlRead($inputCalcPosY))
-
-   $posX = $orgPosX - $ThickFrameSize
-   $posY = $orgPosY - $NoxTitleBarHeight
-
-   $org = WinGetPos($HWnD)
-   $r = $org
-   If Not @error Then
-
-	  $r[0] = $r[0] + $ThickFrameSize
-	  $r[1] = $r[1] + $NoxTitleBarHeight
-	  $r[2] = $r[2] + ($ThickFrameSize * 2)
-	  $r[3] = $r[3] - $NoxTitleBarHeight - $ThickFrameSize
-
-	  $x = Round($posX * 100.0 / $r[2], 2)
-	  $y = Round($posY * 100.0 / $r[3], 2)
-
-	  $result = $x & $PosXYSplitter & $y
-
-	  ClipPut($result)
-
-	  $color = GetPixelColor($orgPosX, $orgPosY);
-	  $result = $result & " | " & "0x" & $color
-
-	  _log( "WinSize [" & $org[2] & "," & $org[3] & "] => (" & $orgPosX & "," & $orgPosY & ") => " & $result & ", color = " & Hex($color))
-
-	  GUICtrlSetData($inputCalcResult, $result)
-
-	  CheckForPixel($result)
-   Else
-	  GUICtrlSetData($inputCalcResult, "Nox Not Found")
-   EndIf
+   calcPos()
 EndFunc
 
 Func btnTestColor()
@@ -396,5 +400,10 @@ Func mainViewClose()
    saveConfig()
    _GDIPlus_Shutdown()
    _GUICtrlRichEdit_Destroy($txtLog)
+   DllCall("user32.dll", "int", "UnhookWindowsHookEx", "hwnd", $hM_Hook[0])
+   $hM_Hook[0] = 0
+   DllCallbackFree($hKey_Proc)
+   $hKey_Proc = 0
+
    Exit
 EndFunc

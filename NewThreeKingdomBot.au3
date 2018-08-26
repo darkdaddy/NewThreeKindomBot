@@ -28,6 +28,7 @@ $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 #include <Bots/AutoFlow.au3>
 #include <Bots/ActionFunc.au3>
 #include <Bots/Form/MainView.au3>
+#include <String.au3>
 #include-once
 
 Opt("MouseCoordMode", 2)
@@ -48,6 +49,23 @@ CreateLogFile()
 
 loadConfig()
 applyConfig()
+
+HotKeySet("c", "reactionFunction")
+
+Func reactionFunction()
+   Opt("MouseCoordMode", 1)
+   Local $aPos = MouseGetPos()
+   Opt("MouseCoordMode", 2)
+
+   saveConfig()
+   loadConfig()
+   applyConfig()
+   If findWindow() Then
+	  GUICtrlSetData($inputCalcPosX, $aPos[0] - $WinRect[0])
+	  GUICtrlSetData($inputCalcPosY, $aPos[1] - $WinRect[1])
+	  calcPos()
+   EndIf
+EndFunc
 
 Func findWindow()
 
@@ -119,10 +137,6 @@ Func runBot()
       loadConfig()
 	  applyConfig()
 
-	  ; For Test
-	  ;ClickControlPos($POS_TOPMENU_BAG)
-	  ;ExitLoop
-
 	  Local $res = AutoFlow()
 
 	  If $res = False OR $RunState = False Then
@@ -174,7 +188,6 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 	EndSwitch
 	Return $GUI_RUNDEFMSG
  EndFunc   ;==>GUIControl
-
 
 
 ;------------------------------------------------------------------------------
