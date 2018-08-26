@@ -50,9 +50,9 @@ CreateLogFile()
 loadConfig()
 applyConfig()
 
-HotKeySet("^+c", "reactionFunction")
+HotKeySet("^+c", "calcHotKeyFunc")
 
-Func reactionFunction()
+Func calcHotKeyFunc()
    Opt("MouseCoordMode", 1)
    Local $aPos = MouseGetPos()
    Opt("MouseCoordMode", 2)

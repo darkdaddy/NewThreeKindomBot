@@ -135,7 +135,9 @@ Global const $POS_BUTTON_GAME_START = "49.41:80.9"
 Global const $POS_BUTTON_PUB = "61.65:35.01"
 Global const $POS_BUTTON_MY_PROFILE_ICON = "5:8.73"
 Global const $POS_BUTTON_MONTHLY_POINT = "56.62:25.66"
+Global const $POS_BUTTON_GUILD = "72.84:90.39"
 Global const $POS_BUTTON_ALERT_OK = "58.64:66.5"
+
 
 ; ---------- Screen Check ------------
 Global const $CHECK_BUTTON_NEARBY[1] = ["94.6:2.3 | 0x172128"]

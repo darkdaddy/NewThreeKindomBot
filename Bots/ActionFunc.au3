@@ -97,13 +97,12 @@ Func PullOutAllResourceTroops()
 			SetLog("Pull Out Troop : " & ($i+1), $COLOR_BLUE)
 
 			SelectTroopInStatusMenu($i+1)
-			If _Sleep(800) Then Return False
+			If _Sleep(300) Then Return False
 
-			ClickControlPos($POS_BUTTON_STATUS_TROOPS_PULLOUT, 3)
-			If _Sleep(1000) Then Return False
+			ClickControlPos($POS_BUTTON_STATUS_TROOPS_PULLOUT, 2)
+			If _Sleep(600) Then Return False
 
 			If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
-			   If _Sleep(300) Then Return False
 			   ClickControlPos($POS_BUTTON_ALERT_OK, 2)
 			EndIf
 		 EndIf
@@ -156,7 +155,7 @@ Func GetMySalaryInternal()
    SetLog("Get My Salary", $COLOR_BLUE)
 
    ; Get my salary
-   ClickControlPos($POS_BUTTON_MY_PROFILE_ICON, 1)
+   ClickControlPos($POS_BUTTON_MY_PROFILE_ICON, 2)
    If _Sleep(800) Then Return False
    ClickControlPos("23.82:83.33", 2)
    If _Sleep(1000) Then Return False
@@ -173,6 +172,19 @@ Func GetMySalaryInternal()
    ClickControlPos("68.82:81.75", 2)	; button 2
    If _Sleep(800) Then Return False
    ClickControlPos("85.88:26.98", 2)	; close
+
+   ; Get guild salary
+   ClickControlPos($POS_BUTTON_GUILD, 1)
+   If _Sleep(800) Then Return False
+   ClickControlPos("79.15:40.89", 2)	; salary button
+   If _Sleep(800) Then Return False
+   ClickControlPos("15.5:78.08", 2)		; donate button
+   If _Sleep(800) Then Return False
+   ClickControlPos("68.59:48.03", 2)	; gold donate
+
+   CloseMenu("Field-Menu", $CHECK_BUTTON_FIELD_MENU_CLOSE)
+   If _Sleep(800) Then Return False
+   CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
 EndFunc
 
 
@@ -929,9 +941,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 
    For $i = 0 To 4
 
-	  saveConfig()
-	  loadConfig()
-	  applyConfig()
+	  reloadConfig()
 
 	  SetLog("Dungeon Attack Stage : " & $i + 1, $COLOR_ORANGE)
 	  $foundSweepButton = False
@@ -1139,9 +1149,7 @@ Func MainAutoFieldAction()
 			   ; Go!!
 			   If _Sleep(800) Then Return False
 
-			   saveConfig()
-			   loadConfig()
-			   applyConfig()
+			   reloadConfig()
 
 			   If $setting_checked_field_attack And $setting_attack_troup_enabled[$troopIndex] Then
 
@@ -1175,9 +1183,7 @@ Func MainAutoFieldAction()
 	  SetLog("Idle " & $FieldActionIdleMSec & " Msec", $COLOR_BLACK)
 	  If _Sleep($FieldActionIdleMSec) Then Return False
 
-	  saveConfig()
-	  loadConfig()
-	  applyConfig()
+	  reloadConfig()
 
 	  $loopCount = $loopCount + 1
 	  If _Sleep(1000) Then Return False

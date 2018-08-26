@@ -45,12 +45,14 @@ $txtLog = _GUICtrlRichEdit_Create($mainView, "", $contentPaneX, $contentPaneY, $
 ; Start/Stop Button
 $x = $contentPaneX
 Local $btnWidth = 90
-$btnStart = GUICtrlCreateButton("Start Bot", $x, $generalBottomY, $btnWidth, 50)
-$btnStop = GUICtrlCreateButton("Stop Bot", $x, $generalBottomY, $btnWidth, 50)
+$btnStart = GUICtrlCreateButton("Start Bot", $x, $generalBottomY, $btnWidth, 55)
+$btnStop = GUICtrlCreateButton("Stop Bot", $x, $generalBottomY, $btnWidth, 55)
 $x += $btnWidth + 10
-$btnReboot = GUICtrlCreateButton("Reboot Game", $x, $generalBottomY, 100, 50)
-$x += 110
-$btnTodayJob = GUICtrlCreateButton("Today Job", $x, $generalBottomY, 100, 50)
+$btnReboot = GUICtrlCreateButton("Reboot Game", $x, $generalBottomY, 100, 25)
+$btnTodayJob = GUICtrlCreateButton("Today Job", $x, $generalBottomY + 30, 100, 25)
+
+$x += 100 + 10
+$btnPullout = GUICtrlCreateButton("Pullout", $x, $generalBottomY, 100, 25)
 
 ;-----------------------------------------------------------
 ; Tab : Option
@@ -199,6 +201,7 @@ GUICtrlSetOnEvent($btnStop, "btnStop")	; already handled in GUIControl
 GUICtrlSetOnEvent($idTab, "tabChanged")
 GUICtrlSetOnEvent($btnCalcPos, "btnCalcPos")
 GUICtrlSetOnEvent($btnReboot, "btnReboot")
+GUICtrlSetOnEvent($btnPullout, "btnPullout")
 GUICtrlSetOnEvent($btnTodayJob, "btnTodayJob")
 GUICtrlSetOnEvent($btnTestColor, "btnTestColor")
 
@@ -219,6 +222,7 @@ Func tabChanged()
 	  ControlHide($mainView, "", $txtLog)
    EndIf
 EndFunc
+
 
 Func InitBot()
    $RunState = True
@@ -252,6 +256,9 @@ Func InitBot()
    EndIf
 
    UpdateWindowRect()
+   GUICtrlSetState($btnReboot, $GUI_DISABLE)
+   GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
+   GUICtrlSetState($btnPullout, $GUI_DISABLE)
 
    Return True
 EndFunc
@@ -277,11 +284,15 @@ Func calcPos()
 	  $y = Round($posY * 100.0 / $r[3], 2)
 
 	  $result = $x & $PosXYSplitter & $y
-	  ClipPut($result)
+	  GUICtrlSetData($inputPosInfo, $result)
 
 	  $color = GetPixelColor($orgPosX, $orgPosY);
-	  $result = $result & " | " & "0x" & $color
-	  Local $bgColor = Number("0x" & $color)
+	  $colorStr = "0x" & $color
+	  $result = $result & " | " & $colorStr
+
+	  ClipPut($result)
+
+	  Local $bgColor = Number($colorStr)
 
 	  GUICtrlSetData($inputCalcResult, $result)
 	  GUICtrlSetBkColor($btnCalcPos, $bgColor)
@@ -301,8 +312,6 @@ Func btnStart()
 	  Return
    EndIf
 
-   GUICtrlSetState($btnReboot, $GUI_DISABLE)
-   GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
    runBot()
 
 EndFunc
@@ -323,6 +332,7 @@ Func btnStop()
 
    GUICtrlSetState($btnReboot, $GUI_ENABLE)
    GUICtrlSetState($btnTodayJob, $GUI_ENABLE)
+   GUICtrlSetState($btnPullout, $GUI_ENABLE)
 
    SetLog("Bot has stopped", $COLOR_ORANGE)
 EndFunc
@@ -365,16 +375,14 @@ Func btnTestColor()
 
    _log( $pos[0] & "(" & $x & ")" & "x" & $pos[1] & "(" & $y & ")" & " => " & $answerColor)
 
-   GUICtrlSetData($inputTestColor, "0x" & $answerColor);
+   GUICtrlSetData($inputTestColor, "0x" & $answerColor)
+   GUICtrlSetBkColor($btnTestColor, Number("0x" & $answerColor))
 EndFunc
 
 Func btnReboot()
    If InitBot() = False Then
 	  Return
    EndIf
-
-   GUICtrlSetState($btnReboot, $GUI_DISABLE)
-   GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
 
    RebootNox()
 
@@ -386,10 +394,17 @@ Func btnTodayJob()
 	  Return
    EndIf
 
-   GUICtrlSetState($btnReboot, $GUI_DISABLE)
-   GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
-
    MainTodayJob()
+
+   btnStop()
+EndFunc
+
+Func btnPullout()
+   If InitBot() = False Then
+	  Return
+   EndIf
+
+   PullOutAllResourceTroops()
 
    btnStop()
 EndFunc

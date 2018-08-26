@@ -28,6 +28,10 @@ Global $setting_dungeon_treasure_level_number = 3
 Global $setting_dungeon_treasure_main_skill_tick_count = 13
 Global $setting_dungeon_sweep_troop = 2
 
+Func reloadConfig()
+   saveConfig()
+   loadConfig()
+EndFunc
 
 Func loadConfig()
 
@@ -36,6 +40,10 @@ Func loadConfig()
    $setting_game_icon_pos = IniRead($config, $setting_common_group, "game_icon_pos", $setting_game_icon_pos)
    $setting_capture_mode = IniRead($config, $setting_common_group, "enabled_capture_mode", "False") == "True" ? True : False
    $setting_dungeon_treasure_main_skill_tick_count = Int(IniRead($config, $setting_common_group, "treasure_main_skill_tickcount", $setting_dungeon_treasure_main_skill_tick_count))
+
+   Local $arr = StringSplit($setting_thick_frame_size, ":")
+   $NoxTitleBarHeight = Number($arr[1])
+   $ThickFrameSize = Number($arr[2])
 
    $setting_attack_troup_enabled[0] = IniRead($config, $setting_common_group, "enabled_attack_troup_1", "False") == "True" ? True : False
    $setting_attack_troup_enabled[1] = IniRead($config, $setting_common_group, "enabled_attack_troup_2", "False") == "True" ? True : False
@@ -74,10 +82,6 @@ Func applyConfig()
 
    _GUICtrlComboBox_SetCurSel($comboDungeonTreasureLevel, Int($setting_dungeon_treasure_level_number) - 1)
    _GUICtrlComboBox_SetCurSel($comboDungeonSweepTroop, Int($setting_dungeon_sweep_troop) - 1)
-
-   Local $arr = StringSplit($setting_thick_frame_size, ":")
-   $NoxTitleBarHeight = Number($arr[1])
-   $ThickFrameSize = Number($arr[2])
 
    GUICtrlSetState($checkBotCaptureModeEnabled, $setting_capture_mode ? $GUI_CHECKED : $GUI_UNCHECKED)
 
