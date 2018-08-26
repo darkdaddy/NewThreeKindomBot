@@ -178,6 +178,10 @@ Func GetMySalaryInternal()
    If _Sleep(800) Then Return False
    ClickControlPos("79.15:40.89", 2)	; salary button
    If _Sleep(800) Then Return False
+   ClickControlPos("49.52:81.2", 2)		; salary button
+   If _Sleep(1000) Then Return False
+   CloseMenu("Guild-Salary", $CHECK_BUTTON_FIELD_MENU_CLOSE)
+   If _Sleep(300) Then Return False
    ClickControlPos("15.5:78.08", 2)		; donate button
    If _Sleep(800) Then Return False
    ClickControlPos("68.59:48.03", 2)	; gold donate
