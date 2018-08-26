@@ -50,7 +50,7 @@ CreateLogFile()
 loadConfig()
 applyConfig()
 
-HotKeySet("c", "reactionFunction")
+HotKeySet("^+c", "reactionFunction")
 
 Func reactionFunction()
    Opt("MouseCoordMode", 1)
