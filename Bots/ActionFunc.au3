@@ -1268,8 +1268,8 @@ Func MainDungeonTreasure()
    $tryCount = 0
    $loseCount = 0
    Local Const $MaxAttackClickTryCount = 3
-   Local $HeroButtonPosList[6] = ["53.86:88.13", "61.00:88.13", "69.00:88.13", "77.00:88.13", "85.00:88.13", "93.00:88.13"]
-   Local $SkillButtonPosList[2] = ["5.33:71.97", "5.33:91.97"]
+   Local $HeroButtonPosList[6] = ["54:94.2", "61:94", "69:94", "77:94", "85:94", "93:94"]
+   Local $SkillButtonPosList[2] = ["5:72", "5:92"]
 
    While $RunState And $tryCount < $MaxTryCount
 
@@ -1308,8 +1308,10 @@ Func MainDungeonTreasure()
 	  If _Sleep(400) Then Return False
 
 	  SetLog("Treasure Attack!", $COLOR_PINK)
-	  ClickControlPos($POS_BUTTON_START_ACTION, 3)
-	  If _Sleep(10000) Then Return False
+	  ClickControlPos($POS_BUTTON_START_ACTION, 2)
+	  If _Sleep(1000) Then Return False
+	  ClickControlPos($POS_BUTTON_START_ACTION, 2)
+	  If _Sleep(16000) Then Return False
 
 	  $tickCount = 0
 	  $win = True
