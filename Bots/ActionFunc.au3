@@ -1272,6 +1272,7 @@ Func MainDungeonTreasure()
    Local $SkillButtonPosList[2] = ["5:72", "5:92"]
 
    While $RunState And $tryCount < $MaxTryCount
+	  reloadConfig()
 
 	  If CheckForPixelList($CHECK_BUTTON_DUNGEON_TREASURE_START) Then
 
@@ -1311,11 +1312,13 @@ Func MainDungeonTreasure()
 	  ClickControlPos($POS_BUTTON_START_ACTION, 2)
 	  If _Sleep(1000) Then Return False
 	  ClickControlPos($POS_BUTTON_START_ACTION, 2)
-	  If _Sleep(16000) Then Return False
+	  If _Sleep(6000) Then Return False
 
 	  $tickCount = 0
 	  $win = True
 	  While $RunState
+		 reloadConfig()
+
 		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_WIN_LEAVE) Then
 			SetLog("Treasure Attack Win!", $COLOR_BLUE)
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_WIN_LEAVE[0], 2)
