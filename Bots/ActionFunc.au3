@@ -1185,7 +1185,7 @@ Func MainAutoFieldAction()
 
 	  ; Idle 5 sec..
 	  SetLog("Idle " & $FieldActionIdleMSec & " Msec", $COLOR_BLACK)
-	  If _Sleep($FieldActionIdleMSec) Then Return False
+	  If _SleepAbs($FieldActionIdleMSec) Then Return False
 
 	  reloadConfig()
 
