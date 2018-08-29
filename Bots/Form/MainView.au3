@@ -9,7 +9,7 @@ Local $gap = 10
 Local $generalRightHeight = 0
 Local $generalBottomHeight = 70
 Local $logViewWidth = 350
-Local $logViewHeight = 450
+Local $logViewHeight = 480
 Local $frameWidth = $contentPaneX + $logViewWidth + $gap + $generalRightHeight + $tabX
 Local $frameHeight = $contentPaneY + $logViewHeight + $gap + $generalBottomHeight + $tabY
 
@@ -82,6 +82,16 @@ $y += 30
 $Label_2 = GUICtrlCreateLabel("Game Icon Position", $x, $y + 5, 120, 20)
 $x += 120
 $inputGameIconPos = GUICtrlCreateInput("", $x, $y, 100, 20)
+$y += 25
+
+$x = $contentPaneX
+GUICtrlCreateLabel("Game Speed", $x, $y+5, 100, 20)
+$x += 120
+$sliderGameSpeed = GUICtrlCreateSlider($x, $y, 110, 20)
+GUICtrlSetLimit(-1, 100, 0) ; change min/max value
+GUICtrlSetData($sliderGameSpeed, 50)
+$x += 120
+$inputGameSpeed = GUICtrlCreateInput("", $x, $y, 30, 20)
 $y += 25
 
 ; Auto Dungeon Hero Sweep
@@ -196,6 +206,7 @@ $inputTestColor = GUICtrlCreateInput("", $x, $y, 60, 20)
 ; Control Initial setting
 ;==================================
 
+GUISetOnEvent($GUI_EVENT_CLOSE, "mainViewClose", $mainView)
 GUICtrlSetOnEvent($btnStart, "btnStart")
 GUICtrlSetOnEvent($btnStop, "btnStop")	; already handled in GUIControl
 GUICtrlSetOnEvent($idTab, "tabChanged")
@@ -204,6 +215,8 @@ GUICtrlSetOnEvent($btnReboot, "btnReboot")
 GUICtrlSetOnEvent($btnPullout, "btnPullout")
 GUICtrlSetOnEvent($btnTodayJob, "btnTodayJob")
 GUICtrlSetOnEvent($btnTestColor, "btnTestColor")
+GUICtrlSetOnEvent($sliderGameSpeed, "sliderGameSpeedEvent")
+GUICtrlSetOnEvent($inputGameSpeed, "inputGameSpeed")
 
 GUICtrlSetState($btnStart, $GUI_SHOW)
 GUICtrlSetState($btnStop, $GUI_HIDE)
@@ -415,10 +428,28 @@ Func mainViewClose()
    saveConfig()
    _GDIPlus_Shutdown()
    _GUICtrlRichEdit_Destroy($txtLog)
-   DllCall("user32.dll", "int", "UnhookWindowsHookEx", "hwnd", $hM_Hook[0])
-   $hM_Hook[0] = 0
-   DllCallbackFree($hKey_Proc)
    $hKey_Proc = 0
 
    Exit
+EndFunc
+
+Func sliderGameSpeedEvent()
+   $v = (GUICtrlRead($sliderGameSpeed) - 50) / 50;
+   $rate = 1.0 + $v
+   GUICtrlSetData($inputGameSpeed, $rate)
+   changeGameSpeed($rate)
+EndFunc
+
+Func inputGameSpeed()
+   $rate = Number(GUICtrlRead($inputGameSpeed), $NUMBER_DOUBLE)
+   $v = ($rate - 1.0) * 50 + 50
+   GUICtrlSetData($sliderGameSpeed, $v)
+   changeGameSpeed($rate)
+EndFunc
+
+Func changeGameSpeed($newSpeed)
+   If $newSpeed <> $setting_game_speed_rate Then
+	  SetLog("Game speed : " & $setting_game_speed_rate & " => " & $newSpeed, $COLOR_BLUE)
+	  $setting_game_speed_rate = $newSpeed
+   EndIf
 EndFunc

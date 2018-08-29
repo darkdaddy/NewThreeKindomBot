@@ -12,7 +12,7 @@ Global $setting_attack_troup_enabled[4] = [False, False, False, False]
 Global $setting_gather_troup_enabled[4] = [False, False, False, False]
 Global $setting_explore_troup_enabled[4] = [False, False, False, False]
 
-Global $setting_delay_rate = 1.0
+Global $setting_game_speed_rate = 1.0
 Global $setting_capture_mode = False
 Global $setting_checked_dungeon_hero = False
 Global $setting_checked_dungeon_exp = False
@@ -40,6 +40,7 @@ Func loadConfig()
    $setting_game_icon_pos = IniRead($config, $setting_common_group, "game_icon_pos", $setting_game_icon_pos)
    $setting_capture_mode = IniRead($config, $setting_common_group, "enabled_capture_mode", "False") == "True" ? True : False
    $setting_dungeon_treasure_main_skill_tick_count = Int(IniRead($config, $setting_common_group, "treasure_main_skill_tickcount", $setting_dungeon_treasure_main_skill_tick_count))
+   $setting_game_speed_rate = IniRead($config, $setting_common_group, "game_speed_rate", $setting_game_speed_rate)
 
    Local $arr = StringSplit($setting_thick_frame_size, ":")
    $NoxTitleBarHeight = Number($arr[1])
@@ -79,6 +80,10 @@ Func applyConfig()
    GUICtrlSetData($inputThickFraemSize, $setting_thick_frame_size)
    GUICtrlSetData($inputGameIconPos, $setting_game_icon_pos)
    GUICtrlSetData($inputTreasureDungeonMainSkillTickCount, $setting_dungeon_treasure_main_skill_tick_count)
+   GUICtrlSetData($inputGameSpeed, $setting_game_speed_rate)
+   $rate = Number(GUICtrlRead($inputGameSpeed), $NUMBER_DOUBLE)
+   $v = ($rate - 1.0) * 50 + 50
+   GUICtrlSetData($sliderGameSpeed, $v)
 
    _GUICtrlComboBox_SetCurSel($comboDungeonTreasureLevel, Int($setting_dungeon_treasure_level_number) - 1)
    _GUICtrlComboBox_SetCurSel($comboDungeonSweepTroop, Int($setting_dungeon_sweep_troop) - 1)
@@ -117,6 +122,7 @@ Func saveConfig()
    IniWrite($config, $setting_common_group, "win_title", GUICtrlRead($inputNoxTitle))
    IniWrite($config, $setting_common_group, "thick_frame_size", GUICtrlRead($inputThickFraemSize))
    IniWrite($config, $setting_common_group, "game_icon_pos", GUICtrlRead($inputGameIconPos))
+   IniWrite($config, $setting_common_group, "game_speed_rate", GUICtrlRead($inputGameSpeed))
    IniWrite($config, $setting_common_group, "treasure_main_skill_tickcount", GUICtrlRead($inputTreasureDungeonMainSkillTickCount))
 
    IniWrite($config, $setting_common_group, "dungeon_treasure_level", _GUICtrlComboBox_GetCurSel($comboDungeonTreasureLevel) + 1)

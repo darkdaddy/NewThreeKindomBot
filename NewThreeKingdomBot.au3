@@ -2,12 +2,12 @@
 
 #pragma compile(FileDescription, New ThreeKingdom Bot)
 #pragma compile(ProductName, New ThreeKingdom Bot)
-#pragma compile(ProductVersion, 0.7)
-#pragma compile(FileVersion, 0.7)
+#pragma compile(ProductVersion, 0.8)
+#pragma compile(FileVersion, 0.8)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.7"
+$sBotVersion = "0.8"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>
@@ -37,7 +37,6 @@ Opt("GUIResizeMode", 1)
 Opt("GUIOnEventMode", 1)
 Opt("TrayIconHide", 1)
 
-GUISetOnEvent($GUI_EVENT_CLOSE, "mainViewClose", $mainView)
 GUIRegisterMsg($WM_COMMAND, "GUIControl")
 GUIRegisterMsg($WM_SYSCOMMAND, "GUIControl")
 
@@ -167,12 +166,12 @@ Func runBot()
 EndFunc
 
 Func GUIControl($hWind, $iMsg, $wParam, $lParam)
-	Local $nNotifyCode = BitShift($wParam, 16)
-	Local $nID = BitAND($wParam, 0x0000FFFF)
-	Local $hCtrl = $lParam
-	#forceref $hWind, $iMsg, $wParam, $lParam
+   Local $nNotifyCode = BitShift($wParam, 16)
+   Local $nID = BitAND($wParam, 0x0000FFFF)
+   Local $hCtrl = $lParam
+   #forceref $hWind, $iMsg, $wParam, $lParam
 
-    Switch $iMsg
+   Switch $iMsg
 	  Case 273
 		Switch $nID
 			Case $GUI_EVENT_CLOSE
@@ -185,8 +184,8 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 			Case 0xf060
 			   mainViewClose()
 		 EndSwitch
-	EndSwitch
-	Return $GUI_RUNDEFMSG
+   EndSwitch
+   Return $GUI_RUNDEFMSG
  EndFunc   ;==>GUIControl
 
 
@@ -230,12 +229,12 @@ Func ControlPos($posInfo)
 EndFunc
 
 Func ClickControlPos($posInfo, $clickCount = 1, $delayMsec = 300, $speed = 300)
-   ClickPos(ControlPos($posInfo), $delayMsec * $setting_delay_rate, $clickCount, $speed)
+   ClickPos(ControlPos($posInfo), $delayMsec, $clickCount, $speed)
 EndFunc
 
 Func ClickControlScreen($screenInfo, $clickCount = 1, $delayMsec = 300, $speed = 300)
    Local $infoArr = StringSplit($screenInfo, "|")
-   ClickPos(ControlPos($infoArr[1]), $delayMsec * $setting_delay_rate, $clickCount, $speed)
+   ClickPos(ControlPos($infoArr[1]), $delayMsec, $clickCount, $speed)
 EndFunc
 
 Func ScreenToPosInfo($screenInfo)
