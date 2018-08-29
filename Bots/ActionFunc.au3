@@ -1310,9 +1310,9 @@ Func MainDungeonTreasure()
 
 	  SetLog("Treasure Attack!", $COLOR_PINK)
 	  ClickControlPos($POS_BUTTON_START_ACTION, 2)
-	  If _Sleep(1000) Then Return False
+	  If _SleepAbs(1000) Then Return False
 	  ClickControlPos($POS_BUTTON_START_ACTION, 2)
-	  If _Sleep(6000) Then Return False
+	  If _SleepAbs(6000) Then Return False
 
 	  $tickCount = 0
 	  $win = True

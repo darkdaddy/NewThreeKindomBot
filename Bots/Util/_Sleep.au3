@@ -1,14 +1,22 @@
-Func _Sleep($iDelay, $bAllowPause = True)
+Func _Sleep($iDelay, $bAllowPause = True, $bApplySpeedRate = True)
    Local $iBegin = TimerInit()
-   $actualDelay = $iDelay - ($iDelay * ($setting_game_speed_rate - 1.0))
-   _console("Sleep : " & $iDelay & "(" & $actualDelay & ")")
-   While TimerDiff($iBegin) < $actualDelay
+   Local $iActualDelay = $iDelay
+   If $bApplySpeedRate Then
+	  $iActualDelay = $iDelay - ($iDelay * ($setting_game_speed_rate - 1.0))
+   EndIf
+   _console("Sleep : " & $iDelay & "(" & $iActualDelay & ")")
+   While TimerDiff($iBegin) < $iActualDelay
 	  If $RunState = False Then Return True
 	  While ($PauseBot And $bAllowPause)
 		 Sleep(1000)
 	  WEnd
 	  tabChanged()
-	  Sleep(($actualDelay > 50) ? 50 : 1)
+	  Sleep(($iActualDelay > 50) ? 50 : 1)
    WEnd
    Return False
 EndFunc   ;==>_Sleep
+
+
+Func _SleepAbs($iDelay)
+   Return _Sleep($iDelay, True, False)
+EndFunc
