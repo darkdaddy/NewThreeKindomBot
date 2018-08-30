@@ -203,7 +203,7 @@ Func AltarResourceInternal()
    ClickControlPos("19.56:30.95", 2)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
-   If _Sleep($AlterDelay) Then Return False
+   If _SleepAbs($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
     ; Tab 2
@@ -211,7 +211,7 @@ Func AltarResourceInternal()
    ClickControlPos("19.56:46.95", 2)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
-   If _Sleep($AlterDelay) Then Return False
+   If _SleepAbs($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
     ; Tab 3
@@ -219,7 +219,7 @@ Func AltarResourceInternal()
    ClickControlPos("19.56:60.95", 2)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
-   If _Sleep($AlterDelay) Then Return False
+   If _SleepAbs($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
     ; Tab 4
@@ -227,7 +227,7 @@ Func AltarResourceInternal()
    ClickControlPos("19.56:74.95", 2)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
-   If _Sleep($AlterDelay) Then Return False
+   If _SleepAbs($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
    If _Sleep(1000) Then Return False
