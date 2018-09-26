@@ -8,6 +8,7 @@
 
 #ce ----------------------------------------------------------------------------
 
+Global $ActivatedClanMissionMenu = False
 
 Func CloseAllMenu()
    If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
@@ -30,6 +31,8 @@ Func CloseAllMenu()
    CloseMenu("Help", $CHECK_BUTTON_HELP_CLOSE)
    CloseMenu("Castle-Menu", $CHECK_BUTTON_CASTLE_MENU_CLOSE)
    CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE)
+   CloseMenu("History-Battle", $CHECK_BUTTON_HISTORY_BATTLE_CLOSE)
+   CloseMenu("Attack-BUFF", $CHECK_BUTTON_ATTACK_BUFF_CLOSE)
 EndFunc
 
 
@@ -387,21 +390,27 @@ Func GoToFieldNearByMyCastle()
    GoToField()
 EndFunc
 
-Func GoToField()
-   SetLog("Go to field view..", $COLOR_DARKGREY)
+Func GoToField($silent = False)
+   If Not $silent Then
+	  SetLog("Go to field view..", $COLOR_DARKGREY)
+   EndIf
    Local $tryCount = 1
    While $RunState And $tryCount < $MaxTryCount
 	  If _Sleep(300) Then Return False
 
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
-		 SetLog("Castle view detected...", $COLOR_BLUE)
+		 If Not $silent Then
+			SetLog("Castle view detected...", $COLOR_BLUE)
+		 EndIf
 
 		 ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
 		 If _Sleep($ViewChangeWaitMSec) Then Return False
 	  EndIf
 
 	  If CheckForPixelList($CHECK_MAIN_FIELD_VIEW) Then
-		 SetLog("Field view detected...", $COLOR_BLUE)
+		 If Not $silent Then
+			SetLog("Field view detected...", $COLOR_BLUE)
+		 EndIf
 		 ExitLoop
 	  EndIf
 
@@ -532,25 +541,25 @@ Func GoToNearByEmemy($troopNumber)
 			   If Mod($tryCount, 2) == 0 Then
 				  DragControlPos("20:20", "90:90", $DragSpeed);
 			   Else
-				  DragControlPos("80:20", "10:80", $DragSpeed);
+				  DragControlPos("80:40", "10:99", $DragSpeed);
 			   EndIf
 			ElseIf $direction == 2 Then	; Down
 			   If Mod($tryCount, 2) == 0 Then
 				  DragControlPos("80:80", "10:10", $DragSpeed);
 			   Else
-				  DragControlPos("20:80", "80:10", $DragSpeed);
+				  DragControlPos("20:80", "80:35", $DragSpeed);
 			   EndIf
 			ElseIf $direction == 3 Then	; Right
 			   If Mod($tryCount, 2) == 0 Then
-				  DragControlPos("80:30", "10:50", $DragSpeed);
+				  DragControlPos("80:40", "10:50", $DragSpeed);
 			   Else
 				  DragControlPos("80:50", "10:30", $DragSpeed);
 			   EndIf
 			ElseIf $direction == 4 Then	; Left
 			   If Mod($tryCount, 2) == 0 Then
-				  DragControlPos("20:20", "80:30", $DragSpeed);
+				  DragControlPos("20:20", "90:35", $DragSpeed);
 			   Else
-				  DragControlPos("20:50", "80:30", $DragSpeed);
+				  DragControlPos("20:50", "90:35", $DragSpeed);
 			   EndIf
 			EndIf
 		 EndIf
@@ -702,6 +711,11 @@ Func DoKillFieldMonster($troopNumber)
 
    If _Sleep(1100) Then Return False
 
+   Return DoKillFieldMonsterCommon($troopNumber)
+EndFunc
+
+
+Func DoKillFieldMonsterCommon($troopNumber)
    ; Click Attack Button & Open Select-Troup Menu
    $tryCount = 1
    $foundAttackButton = False
@@ -1100,12 +1114,156 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 EndFunc
 
 
+Func CheckClanMissionMenu($closeMenu = True)
+
+   CloseAllMenu()
+
+   If _SleepAbs(800) Then Return False
+
+   GoToField(True)
+
+   If _SleepAbs(800) Then Return False
+
+   ClickControlPos("42.89:13.11")
+
+   If _SleepAbs(800) Then Return False
+
+   If Not CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
+	  SetLog("Clan Mission Not found", $COLOR_PINK)
+	  CloseAllMenu()
+	  Return False
+   EndIf
+
+   If Not CheckForPixel("59.02:21.54 | 0x2E576D") Then
+	  SetLog("Clan Mission Not found(2)", $COLOR_PINK)
+	  CloseAllMenu()
+	  Return False
+   EndIf
+
+   If $closeMenu Then
+	  CloseMenu("Clan-Mission", $CHECK_BUTTON_CLAN_MISSION_CLOSE, "", True)
+   EndIf
+
+   SetLog("Clan Mission Menu Found", $COLOR_BLUE)
+   Return True
+EndFunc
+
+Func DoClanMissionJob($troopNumber)
+
+   $ActivatedClanMissionMenu = CheckClanMissionMenu(False)
+
+   If Not $ActivatedClanMissionMenu Then
+	  CloseMenu("Clan-Mission", $CHECK_BUTTON_CLAN_MISSION_CLOSE)
+	  Return False
+   EndIf
+
+   Local const $DoneButtonInfo1[2] = ["69.94:31.56 | 0x4E743C", "75.31:31.15 | 0x50773D"]
+   Local const $DoneButtonInfo2[2] = ["69.94:53.56 | 0x4E743C", "75.31:53.15 | 0x50773D"]
+   Local const $DoneButtonInfo3[2] = ["69.94:75.56 | 0x4E743C", "75.31:75.15 | 0x50773D"]
+   Local const $Mission1[2] = ["23.45:29.44 | 0xD8D8C8", "26.52:29.44 | 0xD8D8C8"]
+   Local const $Mission2[2] = ["23.45:52.05 | 0xD8D8C8", "26.52:52.05 | 0xD8D8C8"]
+   Local const $Mission3[2] = ["23.45:74.80 | 0xD8D8C8", "26.52:74.80 | 0xD8D8C8"]
+   Local const $GoButtonPosArray[3] = ["70:35", "70:57", "70:79"]
+
+   Local $MissionArray[3]
+   Local $DoneButtonInfoArray[3]
+   $MissionArray[0] = $Mission1
+   $MissionArray[1] = $Mission2
+   $MissionArray[2] = $Mission3
+   $DoneButtonInfoArray[0] = $DoneButtonInfo1
+   $DoneButtonInfoArray[1] = $DoneButtonInfo2
+   $DoneButtonInfoArray[2] = $DoneButtonInfo3
+
+   ; Complete mission!
+   $i = 2
+   While $i >= 0
+	  If CheckForPixelList($DoneButtonInfoArray[$i]) Then
+		 SetLog("Mission Completed : " & ($i + 1), $COLOR_GREEN)
+
+		 $doneInfo = $DoneButtonInfoArray[$i]
+		 ClickControlScreen($doneInfo[0])
+
+		 If _SleepAbs(1500) Then Return False
+	  EndIf
+	  $i = $i - 1
+   WEnd
+
+   If _SleepAbs(800) Then Return False
+
+   Local $detectedMission[3] = [False, False, False]
+   $i = 0
+   While $i < 3
+	  _log("Mission Loop " & ($i + 1))
+	  $detectedMission[$i] = CheckForPixelList($MissionArray[$i])
+	  $i = $i + 1
+   WEnd
+
+   $missionStr = ""
+   For $i = 0 To 2
+	  If $detectedMission[$i] Then
+		 $missionStr = $missionStr & ($i + 1) & " "
+	  EndIf
+   Next
+   If StringLen($missionStr) > 0 Then
+	  SetLog("Mission Detected : " & $missionStr, $COLOR_BLUE)
+
+	  $troopIndex = Mod($troopNumber-1, 3)
+
+	  $troopMatched = False
+	  $firstMissionIndex = -1
+	  $missionIndex = 0
+	  For $i = 0 To 2
+		 If $detectedMission[$i] Then
+			If $firstMissionIndex < 0 Then
+			   $firstMissionIndex = $i
+			EndIf
+
+			If $missionIndex = $troopIndex Then
+			   $troopMatched = True
+			   ExitLoop
+			EndIf
+
+			$missionIndex = $missionIndex + 1
+		 EndIf
+	  Next
+
+	  If Not $troopMatched Then
+		 $missionIndex = $firstMissionIndex
+	  EndIf
+
+	  If $missionIndex < 0 Then
+		 SetLog("Mission Not Found (Unexpected..)", $COLOR_RED)
+		 Return False
+	  EndIf
+
+	  SetLog("Go Mission " & ($missionIndex+1), $COLOR_PINK)
+
+	  ClickControlPos($GoButtonPosArray[$missionIndex], 2)
+
+	  If _Sleep(800) Then Return False
+
+	  Return DoKillFieldMonsterCommon($troopNumber)
+   Else
+	  SetLog("Mission Not Found", $COLOR_RED)
+   EndIf
+
+   Return False
+EndFunc
+
+
 Func MainAutoFieldAction()
    SetLog("Auto Field Action Start", $COLOR_GREEN)
    Local $attackCount = 0
    Local $gatheringCount = 0
    Local $exploreCount = 0
+   Local $missionAttackCount = 0
    Local $loopCount = 0
+
+   GoToFieldNearByMyCastle()
+
+   If $setting_checked_mission_attack Then
+	  $ActivatedClanMissionMenu = CheckClanMissionMenu()
+   EndIf
 
    While $RunState
 	  SetLog("Loop Count : " & $loopCount + 1, $COLOR_ORANGE)
@@ -1157,7 +1315,14 @@ Func MainAutoFieldAction()
 
 			   reloadConfig()
 
-			   If $setting_checked_field_attack And $setting_attack_troup_enabled[$troopIndex] Then
+			   If $ActivatedClanMissionMenu And $setting_checked_mission_attack And $setting_attack_troup_enabled[$troopIndex] Then
+
+				  If DoClanMissionJob($troopIndex+1) Then
+					 $missionAttackCount = $missionAttackCount + 1
+					 SetLog("Mission Attack Count : " & $missionAttackCount, $COLOR_BLUE)
+				  EndIf
+
+			   ElseIf $setting_checked_field_attack And $setting_attack_troup_enabled[$troopIndex] Then
 
 				  If DoKillFieldMonster($troopIndex+1) Then
 					 $attackCount = $attackCount + 1

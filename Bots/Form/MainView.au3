@@ -9,7 +9,7 @@ Local $gap = 10
 Local $generalRightHeight = 0
 Local $generalBottomHeight = 70
 Local $logViewWidth = 350
-Local $logViewHeight = 480
+Local $logViewHeight = 500
 Local $frameWidth = $contentPaneX + $logViewWidth + $gap + $generalRightHeight + $tabX
 Local $frameHeight = $contentPaneY + $logViewHeight + $gap + $generalBottomHeight + $tabY
 
@@ -94,9 +94,13 @@ $x += 120
 $inputGameSpeed = GUICtrlCreateInput("", $x, $y, 30, 20)
 $y += 25
 
-; Auto Dungeon Hero Sweep
+; Bot Capture Mode
 $x = $contentPaneX
 $checkBotCaptureModeEnabled = GUICtrlCreateCheckbox("Bot Capture Mode", $x, $y, 250, 25)
+$y += 26
+
+; Auto Dungeon Treasure
+$checkAutoDungeonTreasureEnabled = GUICtrlCreateCheckbox("Auto Dungeon Treasure", $x, $y, 250, 25)
 $y += 26
 
 ; Auto Dungeon Exp Sweep
@@ -106,14 +110,18 @@ $y += 26
 ; Auto Dungeon Hero Sweep
 $x = $contentPaneX
 $checkAutoDungeonExpSweepEnabled = GUICtrlCreateCheckbox("Auto Dungeon Exp. Sweep (13~15)", $x, $y, 250, 25)
-$y += 26
-
-; Auto Dungeon Treasure
-$checkAutoDungeonTreasureEnabled = GUICtrlCreateCheckbox("Auto Dungeon Treasure", $x, $y, 250, 25)
 $y += 32
 
+; Auto Mission Attack
+$checkAutoMissionAttackEnabled = GUICtrlCreateCheckbox("Auto Mission Attack", $x, $y, 170, 25)
+$checkAutoMissionAttackTroop1 = GUICtrlCreateCheckbox("1", $x + 170, $y, 30, 25)
+$checkAutoMissionAttackTroop2 = GUICtrlCreateCheckbox("2", $x + 200, $y, 30, 25)
+$checkAutoMissionAttackTroop3 = GUICtrlCreateCheckbox("3", $x + 230, $y, 30, 25)
+$checkAutoMissionAttackTroop4 = GUICtrlCreateCheckbox("4", $x + 260, $y, 30, 25)
+$y += 26
+
 ; Auto Filed Attack
-$checkAutoFieldAttackEnabled = GUICtrlCreateCheckbox("Auto Filed Attack", $x, $y, $w, 25)
+$checkAutoFieldAttackEnabled = GUICtrlCreateCheckbox("Auto Field Attack", $x, $y, $w, 25)
 $checkAutoFieldAttackTroop1 = GUICtrlCreateCheckbox("1", $x + 170, $y, 30, 25)
 $checkAutoFieldAttackTroop2 = GUICtrlCreateCheckbox("2", $x + 200, $y, 30, 25)
 $checkAutoFieldAttackTroop3 = GUICtrlCreateCheckbox("3", $x + 230, $y, 30, 25)

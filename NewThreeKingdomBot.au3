@@ -2,12 +2,12 @@
 
 #pragma compile(FileDescription, New ThreeKingdom Bot)
 #pragma compile(ProductName, New ThreeKingdom Bot)
-#pragma compile(ProductVersion, 0.8)
-#pragma compile(FileVersion, 0.8)
+#pragma compile(ProductVersion, 0.9)
+#pragma compile(FileVersion, 0.9)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.8"
+$sBotVersion = "0.9"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>
@@ -126,40 +126,20 @@ Func runBot()
 
    Local $errorCount = 0
 
-   While $RunState
-	  Local $hTimer = TimerInit()
+   Local $hTimer = TimerInit()
 
-	  $Restart = False
+   $Restart = False
 
-	  ; Config re-apply
-      saveConfig()
-      loadConfig()
-	  applyConfig()
+   ; Config re-apply
+   saveConfig()
+   loadConfig()
+   applyConfig()
 
-	  Local $res = AutoFlow()
+   Local $res = AutoFlow()
 
-	  If $res = False OR $RunState = False Then
+   Local $time = _TicksToTime(Int(TimerDiff($hTimer)), $iHour, $iMin, $iSec)
 
-		 If $res = False Then
-			SetLog("Error occurred..", $COLOR_RED)
-			$errorCount = $errorCount + 1
-		 EndIf
-
-		 If $errorCount > 3 Then
-			SetLog("Too many error occurred..", $COLOR_RED)
-			SaveImageToFile()
-			ExitLoop
-		 EndIf
-	  Else
-		 $errorCount = 0
-
-		 Local $time = _TicksToTime(Int(TimerDiff($hTimer)), $iHour, $iMin, $iSec)
-
-		 $lastElapsed = StringFormat("%02i:%02i:%02i", $iHour, $iMin, $iSec)
-	  EndIf
-
-	  ExitLoop ; for one loop test
-   WEnd
+   $lastElapsed = StringFormat("%02i:%02i:%02i", $iHour, $iMin, $iSec)
 
    _log("Bye" )
    btnStop()
@@ -404,7 +384,7 @@ Func WaitForPixel($screenInfo)
    return False
 EndFunc
 
-Func CloseMenu($name, $checkScreenInfos, $checkExtraScreenInfos = "")
+Func CloseMenu($name, $checkScreenInfos, $checkExtraScreenInfos = "", $silent = False)
    Local $screenInfo = $checkScreenInfos[0]
    Local $infoArr = StringSplit($screenInfo, "|")
 
@@ -413,7 +393,9 @@ Func CloseMenu($name, $checkScreenInfos, $checkExtraScreenInfos = "")
 		 If Not IsArray($checkExtraScreenInfos) Or CheckForPixelList($checkExtraScreenInfos) Then
 			ClickControlPos($infoArr[1], 1, 800)
 			If _Sleep(800) Then Return
-			SetLog("Close " & $name & " Menu", $COLOR_DARKGREY)
+			If Not $silent Then
+			   SetLog("Close " & $name & " Menu", $COLOR_DARKGREY)
+			EndIf
 		 Else
 			Return
 		 EndIf

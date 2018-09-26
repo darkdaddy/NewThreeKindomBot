@@ -19,6 +19,9 @@ Func AutoFlow()
    ;DoExploreCastle(2)
    ;GetMySalaryInternal()
    ;Return False
+   ;CheckClanMissionMenu()
+   ;DoClanMissionJob(2)
+   ;Return False
 
    If $setting_checked_dungeon_treasure Then
 	  MainDungeonTreasure()

@@ -11,6 +11,7 @@ Global $setting_game_icon_pos = ""
 Global $setting_attack_troup_enabled[4] = [False, False, False, False]
 Global $setting_gather_troup_enabled[4] = [False, False, False, False]
 Global $setting_explore_troup_enabled[4] = [False, False, False, False]
+Global $setting_mission_attack_troup_enabled[4] = [False, False, False, False]
 
 Global $setting_game_speed_rate = 1.0
 Global $setting_capture_mode = False
@@ -20,6 +21,7 @@ Global $setting_checked_dungeon_treasure = False
 Global $setting_checked_field_attack = False
 Global $setting_checked_resource_gathering = False
 Global $setting_checked_explore_castle = False
+Global $setting_checked_mission_attack = False
 
 Global $setting_checked_use_cash = False
 Global $setting_checked_use_bread = False
@@ -61,6 +63,11 @@ Func loadConfig()
    $setting_explore_troup_enabled[2] = IniRead($config, $setting_common_group, "enabled_explore_troup_3", "False") == "True" ? True : False
    $setting_explore_troup_enabled[3] = IniRead($config, $setting_common_group, "enabled_explore_troup_4", "False") == "True" ? True : False
 
+   $setting_mission_attack_troup_enabled[0] = IniRead($config, $setting_common_group, "enabled_mission_attack_troup_1", "False") == "True" ? True : False
+   $setting_mission_attack_troup_enabled[1] = IniRead($config, $setting_common_group, "enabled_mission_attack_troup_2", "False") == "True" ? True : False
+   $setting_mission_attack_troup_enabled[2] = IniRead($config, $setting_common_group, "enabled_mission_attack_troup_3", "False") == "True" ? True : False
+   $setting_mission_attack_troup_enabled[3] = IniRead($config, $setting_common_group, "enabled_mission_attack_troup_4", "False") == "True" ? True : False
+
    $setting_dungeon_sweep_troop = Int(IniRead($config, $setting_common_group, "dungeon_sweep_troop", "3"))
    $setting_dungeon_treasure_level_number = Int(IniRead($config, $setting_common_group, "dungeon_treasure_level", "3"))
    $setting_checked_dungeon_hero = IniRead($config, $setting_common_group, "enabled_dungeon_hero", "False") == "True" ? True : False
@@ -69,6 +76,7 @@ Func loadConfig()
    $setting_checked_field_attack = IniRead($config, $setting_common_group, "enabled_field_attack", "False") == "True" ? True : False
    $setting_checked_resource_gathering = IniRead($config, $setting_common_group, "enabled_resource_gathering", "False") == "True" ? True : False
    $setting_checked_explore_castle = IniRead($config, $setting_common_group, "enabled_explore_castle", "False") == "True" ? True : False
+   $setting_checked_mission_attack = IniRead($config, $setting_common_group, "enabled_mission_attack", "False") == "True" ? True : False
    $setting_checked_use_cash = IniRead($config, $setting_common_group, "enabled_use_cash", "False") == "True" ? True : False
    $setting_checked_use_bread = IniRead($config, $setting_common_group, "enabled_use_bread", "False") == "True" ? True : False
    $setting_checked_use_march_order = IniRead($config, $setting_common_group, "enabled_use_march_order", "False") == "True" ? True : False
@@ -105,12 +113,18 @@ Func applyConfig()
    GUICtrlSetState($checkAutoExploreCastleTroop3, $setting_explore_troup_enabled[2] ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoExploreCastleTroop4, $setting_explore_troup_enabled[3] ? $GUI_CHECKED : $GUI_UNCHECKED)
 
+   GUICtrlSetState($checkAutoMissionAttackTroop1, $setting_mission_attack_troup_enabled[0] ? $GUI_CHECKED : $GUI_UNCHECKED)
+   GUICtrlSetState($checkAutoMissionAttackTroop2, $setting_mission_attack_troup_enabled[1] ? $GUI_CHECKED : $GUI_UNCHECKED)
+   GUICtrlSetState($checkAutoMissionAttackTroop3, $setting_mission_attack_troup_enabled[2] ? $GUI_CHECKED : $GUI_UNCHECKED)
+   GUICtrlSetState($checkAutoMissionAttackTroop4, $setting_mission_attack_troup_enabled[3] ? $GUI_CHECKED : $GUI_UNCHECKED)
+
    GUICtrlSetState($checkAutoDungeonHeroSweepEnabled, $setting_checked_dungeon_hero ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoDungeonExpSweepEnabled, $setting_checked_dungeon_exp ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoDungeonTreasureEnabled, $setting_checked_dungeon_treasure ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoFieldAttackEnabled, $setting_checked_field_attack ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoResourceGatheringEnabled, $setting_checked_resource_gathering ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoExploreCastleEnabled, $setting_checked_explore_castle ? $GUI_CHECKED : $GUI_UNCHECKED)
+   GUICtrlSetState($checkAutoMissionAttackEnabled, $setting_checked_mission_attack ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkUseCashEnabled, $setting_checked_use_cash ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkUseBreadEnabled, $setting_checked_use_bread ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkUseMarchOrderEnabled, $setting_checked_use_march_order ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -145,12 +159,18 @@ Func saveConfig()
    IniWrite($config, $setting_common_group, "enabled_explore_troup_3", _IsChecked($checkAutoExploreCastleTroop3))
    IniWrite($config, $setting_common_group, "enabled_explore_troup_4", _IsChecked($checkAutoExploreCastleTroop4))
 
+   IniWrite($config, $setting_common_group, "enabled_mission_attack_troup_1", _IsChecked($checkAutoMissionAttackTroop1))
+   IniWrite($config, $setting_common_group, "enabled_mission_attack_troup_2", _IsChecked($checkAutoMissionAttackTroop2))
+   IniWrite($config, $setting_common_group, "enabled_mission_attack_troup_3", _IsChecked($checkAutoMissionAttackTroop3))
+   IniWrite($config, $setting_common_group, "enabled_mission_attack_troup_4", _IsChecked($checkAutoMissionAttackTroop4))
+
    IniWrite($config, $setting_common_group, "enabled_dungeon_hero", _IsChecked($checkAutoDungeonHeroSweepEnabled))
    IniWrite($config, $setting_common_group, "enabled_dungeon_exp", _IsChecked($checkAutoDungeonExpSweepEnabled))
    IniWrite($config, $setting_common_group, "enabled_dungeon_treasure", _IsChecked($checkAutoDungeonTreasureEnabled))
    IniWrite($config, $setting_common_group, "enabled_field_attack", _IsChecked($checkAutoFieldAttackEnabled))
    IniWrite($config, $setting_common_group, "enabled_resource_gathering", _IsChecked($checkAutoResourceGatheringEnabled))
    IniWrite($config, $setting_common_group, "enabled_explore_castle", _IsChecked($checkAutoExploreCastleEnabled))
+   IniWrite($config, $setting_common_group, "enabled_mission_attack", _IsChecked($checkAutoMissionAttackEnabled))
 
    IniWrite($config, $setting_common_group, "enabled_use_cash", _IsChecked($checkUseCashEnabled))
    IniWrite($config, $setting_common_group, "enabled_use_bread", _IsChecked($checkUseBreadEnabled))
