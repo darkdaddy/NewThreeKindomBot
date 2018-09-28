@@ -61,6 +61,7 @@ Global $config = @ScriptDir & "\config.ini"
 
 Global $BSpos[2] ; Inside BlueStacks positions relative to the screen
 
+; ---------- Settings -----------
 Global Const $RetryWaitCount = 30
 Global Const $SleepWaitMSec = 1500
 Global Const $ViewChangeWaitMSec = 4000
@@ -76,6 +77,12 @@ Global Const $LoopCount_ForcePullOut = 2160	; 3hour
 Global Const $COLOR_ORANGE = 0xFFA500
 Global Const $COLOR_PINK = 0xf1735f
 Global Const $COLOR_DARKGREY = 0x555555
+
+
+; ---------- STATS ---------------
+Global $Stats_EnemyAttackRecall = 0
+Global $Stats_ResourceCollect = 0
+Global $Stats_AttackFieldMonster = 0
 
 
 ; ---------- Positions ------------
@@ -138,6 +145,7 @@ Global const $POS_BUTTON_MONTHLY_POINT = "56.62:25.66"
 Global const $POS_BUTTON_GUILD = "72.84:90.39"
 Global const $POS_BUTTON_ALERT_OK = "58.64:66.5"
 Global const $POS_BUTTON_ALERT_YES = "59.64:64.53"
+Global const $POS_BUTTON_FIELD_FIRST_MENU = "42.89:13.11"
 
 
 ; ---------- Screen Check ------------
@@ -152,6 +160,7 @@ Global const $CHECK_BUTTON_CASTLE_MENU_CLOSE[2] = ["91.7:11 | 0x985A39 | 13", "8
 Global const $CHECK_BUTTON_CENTER_BATTLE_EVENT_CLOSE[2] = ["88.19:14.78 | 0x995A38", "85.68:14.78 | 0x9A5B39"]
 Global const $CHECK_BUTTON_CAPITAL_TREASURE_CLOSE[2] = ["86.4:14.35 | 0x9C5C3A", "84.13:14.35 | 0x9B5B39"]
 Global const $CHECK_BUTTON_CLAN_MISSION_CLOSE[2] = ["80.55:11.56 | 0x965938", "78.16:11.56 | 0x975939"]
+Global const $CHECK_BUTTON_SPECIAL_STORE_CLOSE[2] = ["84.05:11.24 | 0x9C5C3A", "86.36:11.24 | 0x9E5D3A"]
 Global const $CHECK_BUTTON_HERO_COLLECTION_CLOSE[2] = ["86.34:13.55 | 0x9C5B3A", "83.78:13.55 | 0x925636"]
 Global const $CHECK_BUTTON_HELP_CLOSE[2] = ["84.66:8.22 | 0x985A39 | 13", "82.3:8.22 | 0x995A39 | 13"]
 Global const $CHECK_BUTTON_SELECT_TROOPS_CLOSE[2] = ["89.24:7.04 | 0x955B39", "86.9:7.04 | 0x955B3A"]
@@ -160,6 +169,7 @@ Global const $CHECK_BUTTON_USE_ACTION_POINT_CLOSE[2] = ["71.62:22.83 | 0x955B3A"
 Global const $CHECK_BUTTON_ALTAR_CLOSE[2] = ["88.92:11.11 | 0x995A38", "86.4:11.11 | 0x985A38"]
 Global const $CHECK_BUTTON_ATTACK_BUFF_CLOSE[2] = ["85.03:11.48 | 0x9C5B39", "87.43:11.07 | 0xA25F3A"]
 Global const $CHECK_BUTTON_HISTORY_BATTLE_CLOSE[2] = ["79.56:12.21 | 0xA05E3D", "81.66:12.03 | 0xA15F3E"]
+Global const $CHECK_BUTTON_ENEMY_ATTACK_CLOSE[2] =  ["73.9:11 | 0xA35F3B", "76.4:11 | 0xA15E3B"]
 Global const $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE[2] = ["71.76:23.46 | 0x955938", "69.32:23.46 | 0x945737"]
 Global const $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE[2] = ["82.89:13.16 | 0x9A5A3A", "80.56:13.16 | 0x975939"]
 Global const $CHECK_BUTTON_DUNGEON_ATTACK_SWEEP[2] = ["62.35:76.97 | 0x4D733B", "54.4:76.97 | 0x4D733B"]

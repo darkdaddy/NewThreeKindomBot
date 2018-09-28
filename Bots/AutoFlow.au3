@@ -10,7 +10,7 @@ Func AutoFlow()
    ;If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then SetLog("OK", $COLOR_DARKGREY)
    ;DoDungeonSweep("hero", 13, $POS_BUTTON_DUNGEON_13)
    ;RebootNox()
-   ;CloseMenu("Main", $CHECK_BUTTON_HELP_CLOSE)
+   ;CloseMenu("Main", $CHECK_BUTTON_ALERT_YES_NO_CLOSE)
    ;HireFreeHero()
    ;GetMySalary()
    ;AltarResource()
@@ -21,7 +21,8 @@ Func AutoFlow()
    ;Return False
    ;CheckClanMissionMenu()
    ;DoClanMissionJob(2)
-   ;Return False
+   ;CheckEnemyAttack()
+   ;Return True
 
    If $setting_checked_dungeon_treasure Then
 	  MainDungeonTreasure()

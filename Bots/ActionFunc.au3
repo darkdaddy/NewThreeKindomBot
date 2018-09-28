@@ -33,6 +33,8 @@ Func CloseAllMenu()
    CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE)
    CloseMenu("History-Battle", $CHECK_BUTTON_HISTORY_BATTLE_CLOSE)
    CloseMenu("Attack-BUFF", $CHECK_BUTTON_ATTACK_BUFF_CLOSE)
+   CloseMenu("Enemy-Attack", $CHECK_BUTTON_ENEMY_ATTACK_CLOSE)
+   CloseMenu("Special-Store", $CHECK_BUTTON_SPECIAL_STORE_CLOSE)
 EndFunc
 
 
@@ -203,7 +205,7 @@ Func AltarResourceInternal()
 
    ; Tab 1
    If _Sleep(800) Then Return False
-   ClickControlPos("19.56:30.95", 2)
+   ClickControlPos("19.56:30.95", 3)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
    If _SleepAbs($AlterDelay) Then Return False
@@ -211,7 +213,7 @@ Func AltarResourceInternal()
 
     ; Tab 2
    If _Sleep(800) Then Return False
-   ClickControlPos("19.56:46.95", 2)
+   ClickControlPos("19.56:46.95", 3)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
    If _SleepAbs($AlterDelay) Then Return False
@@ -219,7 +221,7 @@ Func AltarResourceInternal()
 
     ; Tab 3
    If _Sleep(800) Then Return False
-   ClickControlPos("19.56:60.95", 2)
+   ClickControlPos("19.56:60.95", 3)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
    If _SleepAbs($AlterDelay) Then Return False
@@ -227,7 +229,7 @@ Func AltarResourceInternal()
 
     ; Tab 4
    If _Sleep(800) Then Return False
-   ClickControlPos("19.56:74.95", 2)
+   ClickControlPos("19.56:74.95", 3)
    If _Sleep(500) Then Return False
    ClickControlPos($startButton, 2)
    If _SleepAbs($AlterDelay) Then Return False
@@ -777,6 +779,10 @@ Func DoKillFieldMonsterCommon($troopNumber)
 	  Return False
    EndIf
    SetLog("Go Attack!", $COLOR_PINK)
+
+   $Stats_AttackFieldMonster += 1
+   updateStats()
+
    Return True
 EndFunc
 
@@ -853,6 +859,9 @@ Func DoResourceGathering($troopNumber)
 	  Return False
    EndIf
    SetLog("Go Gathering!", $COLOR_PINK)
+
+   $Stats_ResourceCollect += 1
+   updateStats()
    Return True
 EndFunc
 
@@ -1124,7 +1133,7 @@ Func CheckClanMissionMenu($closeMenu = True)
 
    If _SleepAbs(800) Then Return False
 
-   ClickControlPos("42.89:13.11")
+   ClickControlPos($POS_BUTTON_FIELD_FIRST_MENU)
 
    If _SleepAbs(800) Then Return False
 
@@ -1250,6 +1259,71 @@ Func DoClanMissionJob($troopNumber)
    Return False
 EndFunc
 
+Func CheckEnemyAttack()
+
+   ClickControlPos($POS_BUTTON_FIELD_FIRST_MENU)
+
+   If _SleepAbs(800) Then Return False
+
+   If Not CheckForPixelList($CHECK_BUTTON_ENEMY_ATTACK_CLOSE) Then
+	  CloseAllMenu()
+	  Return False
+   EndIf
+
+   $foundReturnButton = False
+   $tryCount = 0
+   While $RunState And $tryCount < $MaxTryCount
+	  ClickControlPos("50.61:24.17", 2)
+
+	  If Not CheckForPixelList($CHECK_BUTTON_ENEMY_ATTACK_CLOSE) Then
+		 CloseAllMenu()
+		 ExitLoop
+	  EndIf
+
+	  $tryCount = $tryCount + 1
+   WEnd
+   If $tryCount == $MaxTryCount Then
+	  CloseAllMenu()
+	  Return False
+   EndIf
+
+   While $RunState And $tryCount < $MaxTryCount
+	  If CheckForPixelList($CHECK_BUTTON_FIELD_ACTION) Then
+		 ClickControlPos($POS_BUTTON_FIELD_ACTION, 1)
+		 $foundReturnButton = True
+	  EndIf
+
+	  If _Sleep(800) Then Return False
+
+	  If CheckForPixelList($CHECK_BUTTON_SELECT_TROOPS_CLOSE) Then
+		 ; OK
+		 ExitLoop
+	  EndIf
+
+	  If $foundReturnButton == False Then
+		 ClickControlPos("50:50", 1)
+	  EndIf
+
+	  $tryCount = $tryCount + 1
+	  If _Sleep(600) Then Return False
+   WEnd
+   If $tryCount == $MaxTryCount Then
+	  SetLog("Error in EnemyAttack..", $COLOR_RED)
+	  Return False
+   EndIf
+
+   ClickControlPos("76.9:85.6", 2)
+
+   If _SleepAbs(600) Then Return False
+
+   If CheckForPixelList($CHECK_BUTTON_ALERT_YES_NO_CLOSE) Then
+	  ClickControlPos($POS_BUTTON_ALERT_YES, 2)
+   EndIf
+
+   $Stats_EnemyAttackRecall += 1
+   updateStats()
+   Return True
+EndFunc
 
 Func MainAutoFieldAction()
    SetLog("Auto Field Action Start", $COLOR_GREEN)
@@ -1353,6 +1427,8 @@ Func MainAutoFieldAction()
 	  ; Idle 5 sec..
 	  SetLog("Idle " & $FieldActionIdleMSec & " Msec", $COLOR_BLACK)
 	  If _SleepAbs($FieldActionIdleMSec) Then Return False
+
+	  CheckEnemyAttack()
 
 	  reloadConfig()
 

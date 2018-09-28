@@ -210,6 +210,37 @@ $btnTestColor = GUICtrlCreateButton("Test", $x, $y, 40, 20)
 $x += 50
 $inputTestColor = GUICtrlCreateInput("", $x, $y, 60, 20)
 
+
+;-----------------------------------------------------------
+; Tab : Stats
+;-----------------------------------------------------------
+
+GUICtrlCreateTabItem("Stats")
+
+; Battle Buff Items
+$x = $contentPaneX
+$y = $contentPaneY + 20
+Local $statLabelW = 120
+Local $statLabelGap = 20
+
+GUICtrlCreateLabel("Enemy Attact Recall", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_EnemyAttackRecall = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+GUICtrlSetColor($labelStats_EnemyAttackRecall, $COLOR_RED)
+
+$y += 30
+$x = $contentPaneX
+GUICtrlCreateLabel("Resource Collect", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_ResourceCollect = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+
+$y += 30
+$x = $contentPaneX
+GUICtrlCreateLabel("Attack Field Monster", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_AttackFieldMonster = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+
+
 ;==================================
 ; Control Initial setting
 ;==================================
@@ -325,6 +356,8 @@ EndFunc
 
 Func btnStart()
    _log("START BUTTON CLICKED" )
+
+   clearStats()
 
    _GUICtrlEdit_SetText($txtLog, "")
    _WinAPI_EmptyWorkingSet(WinGetProcess($HWnD)) ; Reduce Nox Memory Usage
@@ -460,4 +493,22 @@ Func changeGameSpeed($newSpeed)
 	  SetLog("Game speed : " & $setting_game_speed_rate & " => " & $newSpeed, $COLOR_BLUE)
 	  $setting_game_speed_rate = $newSpeed
    EndIf
+EndFunc
+
+
+Func clearStats()
+
+   $Stats_EnemyAttackRecall = 0
+   $Stats_ResourceCollect = 0
+   $Stats_AttackFieldMonster = 0
+
+   updateStats()
+EndFunc
+
+Func updateStats()
+
+   GUICtrlSetData($labelStats_EnemyAttackRecall, $Stats_EnemyAttackRecall)
+   GUICtrlSetData($labelStats_ResourceCollect, $Stats_ResourceCollect)
+   GUICtrlSetData($labelStats_AttackFieldMonster, $Stats_AttackFieldMonster)
+
 EndFunc
