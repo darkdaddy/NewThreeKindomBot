@@ -740,6 +740,9 @@ Func DoKillFieldMonsterCommon($troopNumber)
 			ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
 			If _Sleep(1200) Then Return False
 			$tryCount = 0
+
+			$Stats_UseMarchOrderCount += 1
+			updateStats()
 		 Else
 			CloseMenu("Use-MarchOrder", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 			If _Sleep(300) Then Return False
@@ -822,6 +825,9 @@ Func DoResourceGathering($troopNumber)
 			ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
 			If _Sleep(1200) Then Return False
 			$tryCount = 0
+
+			$Stats_UseMarchOrderCount += 1
+			updateStats()
 		 Else
 			CloseMenu("Use-MarchOrder", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 			If _Sleep(300) Then Return False
@@ -860,7 +866,7 @@ Func DoResourceGathering($troopNumber)
    EndIf
    SetLog("Go Gathering!", $COLOR_PINK)
 
-   $Stats_ResourceCollect += 1
+   $Stats_ResourceGathering += 1
    updateStats()
    Return True
 EndFunc
@@ -919,12 +925,14 @@ Func DoExploreCastle($troopNumber)
 	  EndIf
 
 	  If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then
-		 SetLog("Open Select Troop Menuss OKOKOKOK", $COLOR_PINK)
 		 If $setting_checked_use_march_order Then
 			SetLog("Use March Order", $COLOR_RED)
 			ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
 			If _Sleep(1200) Then Return False
 			$tryCount = 0
+
+			$Stats_UseMarchOrderCount += 1
+			updateStats()
 		 Else
 			CloseMenu("Use-MarchOrder", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 			If _Sleep(300) Then Return False
@@ -1045,6 +1053,9 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 				  ContinueLoop
 			   Else
 				  SetLog("Use Cach!", $COLOR_BLUE)
+
+				  $Stats_UseCashCount += 1
+				  updateStats()
 			   EndIf
 
 			   OpenMenu("Troop-Select", ScreenToPosInfo($CHECK_BUTTON_DUNGEON_ATTACK_SWEEP[0]), $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
@@ -1100,6 +1111,9 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 			;If _Sleep(800) Then Return False
 			SetLog("Use Bread!", $COLOR_BLUE)
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
+
+			$Stats_UseBreadCount += 1
+			updateStats()
 		 Else
 			SetLog("Need Bread (Option Off)", $COLOR_RED)
 			CloseMenu("Use-Bread", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
@@ -1166,44 +1180,23 @@ Func DoClanMissionJob($troopNumber)
 	  Return False
    EndIf
 
-   Local const $DoneButtonInfo1[2] = ["69.94:31.56 | 0x4E743C", "75.31:31.15 | 0x50773D"]
-   Local const $DoneButtonInfo2[2] = ["69.94:53.56 | 0x4E743C", "75.31:53.15 | 0x50773D"]
-   Local const $DoneButtonInfo3[2] = ["69.94:75.56 | 0x4E743C", "75.31:75.15 | 0x50773D"]
    Local const $Mission1[2] = ["23.45:29.44 | 0xD8D8C8", "26.52:29.44 | 0xD8D8C8"]
    Local const $Mission2[2] = ["23.45:52.05 | 0xD8D8C8", "26.52:52.05 | 0xD8D8C8"]
    Local const $Mission3[2] = ["23.45:74.80 | 0xD8D8C8", "26.52:74.80 | 0xD8D8C8"]
    Local const $GoButtonPosArray[3] = ["70:35", "70:57", "70:79"]
 
    Local $MissionArray[3]
-   Local $DoneButtonInfoArray[3]
    $MissionArray[0] = $Mission1
    $MissionArray[1] = $Mission2
    $MissionArray[2] = $Mission3
-   $DoneButtonInfoArray[0] = $DoneButtonInfo1
-   $DoneButtonInfoArray[1] = $DoneButtonInfo2
-   $DoneButtonInfoArray[2] = $DoneButtonInfo3
-
-   ; Complete mission!
-   $i = 2
-   While $i >= 0
-	  If CheckForPixelList($DoneButtonInfoArray[$i]) Then
-		 SetLog("Mission Completed : " & ($i + 1), $COLOR_GREEN)
-
-		 $doneInfo = $DoneButtonInfoArray[$i]
-		 ClickControlScreen($doneInfo[0])
-
-		 If _SleepAbs(1500) Then Return False
-	  EndIf
-	  $i = $i - 1
-   WEnd
 
    If _SleepAbs(800) Then Return False
 
    Local $detectedMission[3] = [False, False, False]
    $i = 0
    While $i < 3
-	  _log("Mission Loop " & ($i + 1))
 	  $detectedMission[$i] = CheckForPixelList($MissionArray[$i])
+	  _log("Mission Loop " & ($i + 1) & "=>" & $detectedMission[$i])
 	  $i = $i + 1
    WEnd
 
@@ -1261,12 +1254,7 @@ EndFunc
 
 Func CheckEnemyAttack()
 
-   ClickControlPos($POS_BUTTON_FIELD_FIRST_MENU)
-
-   If _SleepAbs(800) Then Return False
-
    If Not CheckForPixelList($CHECK_BUTTON_ENEMY_ATTACK_CLOSE) Then
-	  CloseAllMenu()
 	  Return False
    EndIf
 
@@ -1325,6 +1313,54 @@ Func CheckEnemyAttack()
    Return True
 EndFunc
 
+Func CheckUseBuffOfBlockAttack()
+
+   If CheckForPixelList("26.68:32.55 | 0xD0D0C0 | 16 | 4") Then
+	  ; Active buff
+	  ;SetLog("Buff active", $COLOR_RED)
+	  Return True
+   EndIf
+
+   ClickControlPos("44.05:39.67", 2)
+
+   If _SleepAbs(600) Then Return False
+
+   If CheckForPixelList($CHECK_BUTTON_ALERT_YES_NO_CLOSE) Then
+	  ClickControlPos($POS_BUTTON_ALERT_YES, 2)
+	  SetLog("Buff activated!", $COLOR_RED)
+
+	  $Stats_UseBuffCount += 1
+	  updateStats()
+   EndIf
+
+   Return True
+EndFunc
+
+Func CheckClickAllDoneButtons()
+   Local const $DoneButtonInfo1[2] = ["69.94:31.56 | 0x4E743C", "75.31:31.15 | 0x50773D"]
+   Local const $DoneButtonInfo2[2] = ["69.94:53.56 | 0x4E743C", "75.31:53.15 | 0x50773D"]
+   Local const $DoneButtonInfo3[2] = ["69.94:75.56 | 0x4E743C", "75.31:75.15 | 0x50773D"]
+   Local $DoneButtonInfoArray[3]
+   $DoneButtonInfoArray[0] = $DoneButtonInfo1
+   $DoneButtonInfoArray[1] = $DoneButtonInfo2
+   $DoneButtonInfoArray[2] = $DoneButtonInfo3
+
+   ; Complete mission!
+   $i = 2
+   While $i >= 0
+	  If CheckForPixelList($DoneButtonInfoArray[$i]) Then
+		 SetLog("Mission Completed : " & ($i + 1), $COLOR_GREEN)
+
+		 $doneInfo = $DoneButtonInfoArray[$i]
+		 ClickControlScreen($doneInfo[0])
+
+		 If _SleepAbs(1500) Then Return False
+	  EndIf
+	  $i = $i - 1
+   WEnd
+
+EndFunc
+
 Func MainAutoFieldAction()
    SetLog("Auto Field Action Start", $COLOR_GREEN)
    Local $attackCount = 0
@@ -1348,6 +1384,9 @@ Func MainAutoFieldAction()
 			If Not RebootNox() Then
 			   Return False
 			EndIf
+
+			$Stats_RebootCount += 1
+			updateStats()
 		 EndIf
 
 		 If Mod($loopCount, $LoopCount_CollectResource) == 0 Then
@@ -1428,7 +1467,18 @@ Func MainAutoFieldAction()
 	  SetLog("Idle " & $FieldActionIdleMSec & " Msec", $COLOR_BLACK)
 	  If _SleepAbs($FieldActionIdleMSec) Then Return False
 
-	  CheckEnemyAttack()
+	  ClickControlPos($POS_BUTTON_FIELD_FIRST_MENU)
+	  If _SleepAbs(600) Then Return False
+
+	  If CheckForPixelList($CHECK_BUTTON_ENEMY_ATTACK_CLOSE) Then
+		 CheckEnemyAttack()
+	  ElseIf CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
+		 CheckClickAllDoneButtons()
+	  ElseIf CheckForPixelList($CHECK_BUTTON_ATTACK_BUFF_CLOSE) Then
+		 CheckUseBuffOfBlockAttack()
+	  EndIf
+
+	  CloseAllMenu()
 
 	  reloadConfig()
 

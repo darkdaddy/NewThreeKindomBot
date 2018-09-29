@@ -81,9 +81,13 @@ Global Const $COLOR_DARKGREY = 0x555555
 
 ; ---------- STATS ---------------
 Global $Stats_EnemyAttackRecall = 0
-Global $Stats_ResourceCollect = 0
+Global $Stats_ResourceGathering = 0
 Global $Stats_AttackFieldMonster = 0
-
+Global $Stats_RebootCount = 0
+Global $Stats_UseBuffCount = 0
+Global $Stats_UseCashCount = 0
+Global $Stats_UseBreadCount = 0
+Global $Stats_UseMarchOrderCount = 0
 
 ; ---------- Positions ------------
 Global const $POS_BUTTON_NEARBY = "94.6:2.3"

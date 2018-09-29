@@ -18,10 +18,10 @@ Func AutoFlow()
    ;pullOutAllResourceTroops()
    ;DoExploreCastle(2)
    ;GetMySalaryInternal()
-   ;Return False
    ;CheckClanMissionMenu()
    ;DoClanMissionJob(2)
    ;CheckEnemyAttack()
+   ;CheckUseBuffOfBlockAttack()
    ;Return True
 
    If $setting_checked_dungeon_treasure Then

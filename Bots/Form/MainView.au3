@@ -145,7 +145,7 @@ $checkAutoExploreCastleTroop4 = GUICtrlCreateCheckbox("4", $x + 260, $y, 30, 25)
 $y += 32
 
 ; Use Cash
-$checkUseCashEnabled = GUICtrlCreateCheckbox("Enable Use Point", $x, $y, $w, 25)
+$checkUseCashEnabled = GUICtrlCreateCheckbox("Enable Use Cash", $x, $y, $w, 25)
 $y += 26
 
 ; Use MarchOrder
@@ -220,7 +220,7 @@ GUICtrlCreateTabItem("Stats")
 ; Battle Buff Items
 $x = $contentPaneX
 $y = $contentPaneY + 20
-Local $statLabelW = 120
+Local $statLabelW = 140
 Local $statLabelGap = 20
 
 GUICtrlCreateLabel("Enemy Attact Recall", $x, $y, $statLabelW, 20)
@@ -232,7 +232,7 @@ $y += 30
 $x = $contentPaneX
 GUICtrlCreateLabel("Resource Collect", $x, $y, $statLabelW, 20)
 $x += $statLabelW + $statLabelGap
-$labelStats_ResourceCollect = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+$labelStats_ResourceGathering = GUICtrlCreateLabel("0", $x, $y, 60, 20)
 
 $y += 30
 $x = $contentPaneX
@@ -240,6 +240,35 @@ GUICtrlCreateLabel("Attack Field Monster", $x, $y, $statLabelW, 20)
 $x += $statLabelW + $statLabelGap
 $labelStats_AttackFieldMonster = GUICtrlCreateLabel("0", $x, $y, 60, 20)
 
+$y += 30
+$x = $contentPaneX
+GUICtrlCreateLabel("Reboot Count", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_RebootCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+
+$y += 30
+$x = $contentPaneX
+GUICtrlCreateLabel("Use Buff Count", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_UseBuffCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+
+$y += 30
+$x = $contentPaneX
+GUICtrlCreateLabel("Use Cash Count", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_UseCashCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+
+$y += 30
+$x = $contentPaneX
+GUICtrlCreateLabel("Use MarchOrder Count", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_UseMarchOrderCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+
+$y += 30
+$x = $contentPaneX
+GUICtrlCreateLabel("Use Bread Count", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_UseBreadCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
 
 ;==================================
 ; Control Initial setting
@@ -499,16 +528,19 @@ EndFunc
 Func clearStats()
 
    $Stats_EnemyAttackRecall = 0
-   $Stats_ResourceCollect = 0
+   $Stats_ResourceGathering = 0
    $Stats_AttackFieldMonster = 0
 
    updateStats()
 EndFunc
 
 Func updateStats()
-
    GUICtrlSetData($labelStats_EnemyAttackRecall, $Stats_EnemyAttackRecall)
-   GUICtrlSetData($labelStats_ResourceCollect, $Stats_ResourceCollect)
+   GUICtrlSetData($labelStats_ResourceGathering, $Stats_ResourceGathering)
    GUICtrlSetData($labelStats_AttackFieldMonster, $Stats_AttackFieldMonster)
-
+   GUICtrlSetData($labelStats_RebootCount, $Stats_RebootCount)
+   GUICtrlSetData($labelStats_UseBuffCount, $Stats_UseBuffCount)
+   GUICtrlSetData($labelStats_UseCashCount, $Stats_UseCashCount)
+   GUICtrlSetData($labelStats_UseBreadCount, $Stats_UseBreadCount)
+   GUICtrlSetData($labelStats_UseMarchOrderCount, $Stats_UseMarchOrderCount)
 EndFunc
