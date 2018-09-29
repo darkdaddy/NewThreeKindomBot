@@ -848,6 +848,12 @@ Func DoResourceGathering($troopNumber)
 	  Return False
    EndIf
 
+   If CheckForPixelList($CHECK_BUTTON_SELECT_TROOPS_CLOSE) Then
+	  SetLog("Alert! already occupied...", $COLOR_RED)
+	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
+	  Return False
+   EndIf
+
    ; Select troop number
    SelectTroop($troopNumber)
    If _Sleep(400) Then Return False
