@@ -65,13 +65,14 @@ Global $BSpos[2] ; Inside BlueStacks positions relative to the screen
 Global Const $RetryWaitCount = 30
 Global Const $SleepWaitMSec = 1500
 Global Const $ViewChangeWaitMSec = 4000
-Global Const $FieldActionIdleMSec = 5000
+Global Const $FieldActionIdleMSec = 3000 ;(5000) need to include check enemy & buff time
 Global Const $DefaultTolerance = 21
 Global Const $MaxTryCount = 10
 Global Const $LoopCount_CollectResource = 360	; 30min
 Global Const $LoopCount_RecruitTroop = 60	; 5min
 Global Const $LoopCount_Reboot = 1500	; 2hour 5min
 Global Const $LoopCount_ForcePullOut = 2160	; 3hour
+
 
 ; ---------- COLORS ------------
 Global Const $COLOR_ORANGE = 0xFFA500
@@ -88,6 +89,7 @@ Global $Stats_UseBuffCount = 0
 Global $Stats_UseCashCount = 0
 Global $Stats_UseBreadCount = 0
 Global $Stats_UseMarchOrderCount = 0
+
 
 ; ---------- Positions ------------
 Global const $POS_BUTTON_NEARBY = "94.6:2.3"

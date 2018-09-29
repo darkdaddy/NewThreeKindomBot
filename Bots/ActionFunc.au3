@@ -1315,12 +1315,32 @@ EndFunc
 
 Func CheckUseBuffOfBlockAttack()
 
+   If _SleepAbs(500) Then Return False
+
    If CheckForPixelList("26.68:32.55 | 0xD0D0C0 | 16 | 4") Then
 	  ; Active buff
 	  ;SetLog("Buff active", $COLOR_RED)
 	  Return True
    EndIf
 
+   ; To more stable detection...
+   Local Const $MaxCheckCount = 5
+   Local $checkCount = 0
+   For $tryCount = 1 To $MaxCheckCount
+	  If Not CheckForPixelList("26.68:32.55 | 0xD0D0C0 | 16 | 4") Then
+		 $checkCount += 1
+		 Return True
+	  Else
+		 $checkCount = 0
+	  EndIf
+	  If _SleepAbs(200) Then Return False
+   Next
+   If $checkCount < 3 Then
+	  SetLog("wrong dectected buff...", $COLOR_RED)
+	  Return True
+   EndIf
+
+   ; Buy the buff!
    ClickControlPos("44.05:39.67", 2)
 
    If _SleepAbs(600) Then Return False
@@ -1368,6 +1388,8 @@ Func MainAutoFieldAction()
    Local $exploreCount = 0
    Local $missionAttackCount = 0
    Local $loopCount = 0
+
+   CloseAllMenu()
 
    GoToFieldNearByMyCastle()
 
