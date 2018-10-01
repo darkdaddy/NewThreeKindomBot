@@ -1264,9 +1264,9 @@ Func DoClanMissionJob($troopNumber)
 	  Return False
    EndIf
 
-   Local const $Mission1[2] = ["23.45:29.44 | 0xD8D8C8", "26.52:29.44 | 0xD8D8C8"]
-   Local const $Mission2[2] = ["23.45:52.05 | 0xD8D8C8", "26.52:52.05 | 0xD8D8C8"]
-   Local const $Mission3[2] = ["23.45:74.80 | 0xD8D8C8", "26.52:74.80 | 0xD8D8C8"]
+   Local const $Mission1[2] = ["23.45:29.44 | 0xD8D8C8", "26.82:29.44 | 0xD8D8C8"]
+   Local const $Mission2[2] = ["23.45:52.05 | 0xD8D8C8", "26.82:52.05 | 0xD8D8C8"]
+   Local const $Mission3[2] = ["23.45:74.80 | 0xD8D8C8", "26.82:74.80 | 0xD8D8C8"]
    Local const $GoButtonPosArray[3] = ["70:35", "70:57", "70:79"]
 
    Local $MissionArray[3]
@@ -1557,7 +1557,7 @@ Func MainAutoFieldAction()
 
 			   reloadConfig()
 
-			   If $ActivatedClanMissionMenu And $setting_checked_mission_attack And $setting_attack_troup_enabled[$troopIndex] Then
+			   If $ActivatedClanMissionMenu And $setting_checked_mission_attack And $setting_mission_attack_troup_enabled[$troopIndex] Then
 
 				  If DoClanMissionJob($troopIndex+1) Then
 					 $missionAttackCount = $missionAttackCount + 1
