@@ -1557,11 +1557,11 @@ Func MainDungeonSweep($tab)
 	  ClickControlPos($POS_BUTTON_DUNGEON_EXP_TAB, 2)
    ElseIf $tab == "hero" Then
 	  ClickControlPos($POS_BUTTON_DUNGEON_HERO_TAB, 2)
-	  $toStageNumber = 7
+	  $toStageNumber = 1
    EndIf
    If _Sleep(800) Then Return False
 
-   Local $dungeonButtonArray[9];
+   Local $dungeonButtonArray[15]
    $dungeonButtonArray[0] = $POS_BUTTON_DUNGEON_15
    $dungeonButtonArray[1] = $POS_BUTTON_DUNGEON_14
    $dungeonButtonArray[2] = $POS_BUTTON_DUNGEON_13
@@ -1571,6 +1571,12 @@ Func MainDungeonSweep($tab)
    $dungeonButtonArray[6] = $POS_BUTTON_DUNGEON_09
    $dungeonButtonArray[7] = $POS_BUTTON_DUNGEON_08
    $dungeonButtonArray[8] = $POS_BUTTON_DUNGEON_07
+   $dungeonButtonArray[9] = $POS_BUTTON_DUNGEON_06
+   $dungeonButtonArray[10] = $POS_BUTTON_DUNGEON_05
+   $dungeonButtonArray[11] = $POS_BUTTON_DUNGEON_04
+   $dungeonButtonArray[12] = $POS_BUTTON_DUNGEON_03
+   $dungeonButtonArray[13] = $POS_BUTTON_DUNGEON_02
+   $dungeonButtonArray[14] = $POS_BUTTON_DUNGEON_01
 
    For $index = 0 To UBound($dungeonButtonArray) - 1
 
