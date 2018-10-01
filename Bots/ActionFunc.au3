@@ -180,13 +180,13 @@ Func GetMySalaryInternal()
    ClickControlPos("85.88:26.98", 2)	; close
 
    ; Get guild salary
-   ClickControlPos($POS_BUTTON_GUILD, 1)
+   ClickControlPos($POS_BUTTON_CLAN, 1)
    If _Sleep(800) Then Return False
    ClickControlPos("79.15:40.89", 2)	; salary button
    If _Sleep(800) Then Return False
    ClickControlPos("49.52:81.2", 2)		; salary button
    If _Sleep(1000) Then Return False
-   CloseMenu("Guild-Salary", $CHECK_BUTTON_FIELD_MENU_CLOSE)
+   CloseMenu("Clan-Salary", $CHECK_BUTTON_FIELD_MENU_CLOSE)
    If _Sleep(300) Then Return False
    ClickControlPos("15.5:78.08", 2)		; donate button
    If _Sleep(800) Then Return False
@@ -240,6 +240,79 @@ Func AltarResourceInternal()
    CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE)
 EndFunc
 
+
+Func DoGetClanMission()
+
+   Local const $MaxItemIndexInScreen = 5
+
+   For $index = 0 To $MaxItemIndexInScreen - 1
+	  DoGetClanMissionInternal($index)
+   Next
+EndFunc
+
+Func DoGetClanMissionInternal($castleIndex)
+
+   SetLog("Catle item " & $castleIndex + 1, $COLOR_BLUE)
+   Local const $CastleFirstItemX = "59"
+   Local const $CastleFirstItemY = "28"
+   Local const $CastleStepYPos = 11
+   Local const $MissionGetButtonFirstItemX = "72"
+   Local const $MissionGetButtonFirstItemY = "59"
+   Local const $MissionGetButtonStepYPos = 17
+   Local const $Mission1[2] = ["23.45:58.74 | 0xD8D8C8 | 16 | 1", "26.82:58.74 | 0xD8D8C8 | 16 | 1"]
+   Local const $Mission2[2] = ["23.45:75.74 | 0xD8D8C8 | 16 | 1", "26.82:75.74 | 0xD8D8C8 | 16 | 1"]
+   Local const $Mission3[2] = ["23.45:92.74 | 0xD8D8C8 | 16 | 1", "26.82:92.74 | 0xD8D8C8 | 16 | 1"]
+    Local $MissionArray[3]
+   $MissionArray[0] = $Mission1
+   $MissionArray[1] = $Mission2
+   $MissionArray[2] = $Mission3
+
+   ; Unfold bottom menu
+   If CheckForPixelList($CHECK_BUTTON_BOTTOM_UNFOLD) Then
+	  ClickControlPos($CHECK_BUTTON_BOTTOM_UNFOLD[0], 2)
+	  If _SleepAbs(1000) Then Return False
+   EndIf
+
+   ClickControlPos($POS_BUTTON_CLAN, 2)
+   If _SleepAbs(1000) Then Return False
+
+   ; Main Castle Tab
+   ClickControlPos("93.97:43.81", 3)
+   If _Sleep(500) Then Return False
+
+   ; Our Clan Castle List
+   ClickControlPos("12.39:34.18", 3)
+   If _Sleep(500) Then Return False
+
+   $itemY = Number($CastleFirstItemY) + ($castleIndex * $CastleStepYPos)
+   $posInfo = $CastleFirstItemX & ":" & $itemY
+   ClickControlPos($posInfo, 2)
+   If _SleepAbs(1000) Then Return False
+
+   EnterCastleMainMenu()
+
+   ; Mission Button
+   ClickControlPos("63.6:72.69", 3)
+   If _SleepAbs(600) Then Return False
+
+   For $missionIndex = 0 To 2
+	  If CheckForPixelList($MissionArray[$missionIndex]) Then
+		 SetLog("Detected field monster mission " & $missionIndex + 1, $COLOR_BLUE)
+
+		 $itemY = Number($MissionGetButtonFirstItemY) + ($missionIndex * $MissionGetButtonStepYPos)
+		 $posInfo = $MissionGetButtonFirstItemX & ":" & $itemY
+
+		 ClickControlPos($posInfo, 2)
+		 If _SleepAbs(500) Then Return False
+	  EndIf
+   Next
+
+   CloseMenu("Clan-Mission", $CHECK_BUTTON_CLAN_MISSION_CLOSE)
+   If _SleepAbs(400) Then Return False
+
+   CloseMenu("Castle-Menu", $CHECK_BUTTON_CASTLE_MENU_CLOSE)
+   If _SleepAbs(400) Then Return False
+EndFunc
 
 Func ClickMoveButton($number)
    If $number == 1 Then
@@ -878,20 +951,8 @@ Func DoResourceGathering($troopNumber)
    Return True
 EndFunc
 
-
-Func DoExploreCastle($troopNumber)
-   SetLog("Go Explore Castle : Troop " & $troopNumber, $COLOR_OLIVE)
-   Local $tryCount = 1
-
-   GoToField()
-
-   If Not GoToExploreCastle() Then
-	  SetLog("Can not find any castles", $COLOR_RED)
-	  Return False
-   EndIf
-   If _Sleep(1100) Then Return False
-
-   ; Click Enter Button & Open Castle Menu
+Func EnterCastleMainMenu()
+    ; Click Enter Button & Open Castle Menu
    $tryCount = 1
    $foundEnterButton = False
    While $RunState And $tryCount < $MaxTryCount
@@ -918,6 +979,22 @@ Func DoExploreCastle($troopNumber)
 	  SetLog("Error..", $COLOR_RED)
 	  Return False
    EndIf
+EndFunc
+
+Func DoExploreCastle($troopNumber)
+   SetLog("Go Explore Castle : Troop " & $troopNumber, $COLOR_OLIVE)
+   Local $tryCount = 1
+
+   GoToField()
+
+   If Not GoToExploreCastle() Then
+	  SetLog("Can not find any castles", $COLOR_RED)
+	  Return False
+   EndIf
+   If _Sleep(1100) Then Return False
+
+   ; Click Enter Button & Open Castle Menu
+   EnterCastleMainMenu()
 
    ; wait for possible marchorder point error..
    If _Sleep(1500) Then Return False
@@ -1753,6 +1830,9 @@ Func MainTodayJob()
    AltarResourceInternal()
    If _Sleep(800) Then Return False
 
+   DoGetClanMission()
+
    SetLog("Auto Today Job End", $COLOR_GREEN)
 EndFunc
+
 

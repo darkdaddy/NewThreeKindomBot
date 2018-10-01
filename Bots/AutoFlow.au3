@@ -22,6 +22,8 @@ Func AutoFlow()
    ;CheckEnemyAttack()
    ;CloseAllMenu()
    ;Return True
+   ;DoGetClanMission()
+   ;Return True
 
    If $setting_checked_dungeon_treasure Then
 	  MainDungeonTreasure()
