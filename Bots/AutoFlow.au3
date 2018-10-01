@@ -4,10 +4,9 @@ Func AutoFlow()
    ;CollectResources()
    ;ClickMoveButton(4)
    ;DragControlPos("20:80", "80:10", 5);
-   ;CloseAllMenu()
    ;FindTreasureDungeonLevelNumber(3)
    ;DoResourceGathering(1)
-   ;If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then SetLog("OK", $COLOR_DARKGREY)
+   ;If CheckForPixelList($CHECK_BUTTON_ATTACK_BUFF_BLOCK_ATTACK) Then SetLog("OK", $COLOR_DARKGREY)
    ;DoDungeonSweep("hero", 13, $POS_BUTTON_DUNGEON_13)
    ;RebootNox()
    ;CloseMenu("Main", $CHECK_BUTTON_ALERT_YES_NO_CLOSE)
@@ -21,7 +20,7 @@ Func AutoFlow()
    ;CheckClanMissionMenu()
    ;DoClanMissionJob(2)
    ;CheckEnemyAttack()
-   ;CheckUseBuffOfBlockAttack()
+   ;CloseAllMenu()
    ;Return True
 
    If $setting_checked_dungeon_treasure Then

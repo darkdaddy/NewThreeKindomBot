@@ -21,6 +21,7 @@ Func CloseAllMenu()
    CloseMenu("Capital-Treasure", $CHECK_BUTTON_CAPITAL_TREASURE_CLOSE)
    CloseMenu("Center-Battle", $CHECK_BUTTON_CENTER_BATTLE_EVENT_CLOSE)
    CloseMenu("Clan-Mission", $CHECK_BUTTON_CLAN_MISSION_CLOSE)
+   CloseMenu("Clan-Support", $CHECK_BUTTON_CLAN_SUPPORT_CLOSE)
    CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
    CloseMenu("Field-Menu", $CHECK_BUTTON_FIELD_MENU_CLOSE)
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
@@ -848,7 +849,7 @@ Func DoResourceGathering($troopNumber)
 	  Return False
    EndIf
 
-   If CheckForPixelList($CHECK_BUTTON_SELECT_TROOPS_CLOSE) Then
+   If CheckForPixelList($CHECK_BUTTON_RECALL) Then
 	  SetLog("Alert! already occupied...", $COLOR_RED)
 	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 	  Return False
@@ -1323,8 +1324,10 @@ Func CheckUseBuffOfBlockAttack()
 
    If _SleepAbs(500) Then Return False
 
-   If CheckForPixelList("26.68:32.55 | 0xD0D0C0 | 16 | 4") Then
-	  ; Active buff
+   Local Const $BLOCK_ATTACK_ICON = "26.68:32.55 | 0xD0D0C0 | 16 | 4"
+
+   If CheckForPixelList($BLOCK_ATTACK_ICON) Then
+	  ; Already Active buff
 	  ;SetLog("Buff active", $COLOR_RED)
 	  Return True
    EndIf
@@ -1333,7 +1336,7 @@ Func CheckUseBuffOfBlockAttack()
    Local Const $MaxCheckCount = 5
    Local $checkCount = 0
    For $tryCount = 1 To $MaxCheckCount
-	  If Not CheckForPixelList("26.68:32.55 | 0xD0D0C0 | 16 | 4") Then
+	  If Not CheckForPixelList($BLOCK_ATTACK_ICON) And CheckForPixelList($CHECK_BUTTON_ATTACK_BUFF_BLOCK_ATTACK) Then
 		 $checkCount += 1
 		 Return True
 	  Else
@@ -1443,6 +1446,27 @@ Func MainAutoFieldAction()
 		 ClickControlScreen($CHECK_BUTTON_BARRACK_RED_MARK[0])
 		 If _Sleep(800) Then Return False
 		 DoRecruitBarrack()
+	  EndIf
+
+	  ; Checking Bottom menu Red Mark -> Clan support
+	  If CheckForPixelList($CHECK_BUTTON_BOTTOM_MENU_RED_MARK) Then
+		 _log("Bottom Menu Red Mark Detected...")
+		 ClickControlScreen($POS_BUTTON_BOTTOM_MENU_UNFOLD)
+		 If _SleepAbs(1000) Then Return False
+
+		 If CheckForPixelList($CHECK_BUTTON_CLAN_RED_MARK) Then
+			SetLog("Clan Red Mark Detected...", $COLOR_RED)
+			ClickControlScreen($CHECK_BUTTON_CLAN_RED_MARK[0], 2)
+			If _SleepAbs(800) Then Return False
+			ClickControlScreen("30.68:78.39", 2)
+			If _SleepAbs(600) Then Return False
+			ClickControlScreen("72.25:24.62", 2)
+			If _SleepAbs(600) Then Return False
+			CloseMenu("Clan-Support", $CHECK_BUTTON_CLAN_SUPPORT_CLOSE)
+			If _SleepAbs(600) Then Return False
+			CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
+			If _SleepAbs(600) Then Return False
+		 EndIf
 	  EndIf
 
 	  ; Checking available
