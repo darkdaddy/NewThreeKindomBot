@@ -135,8 +135,9 @@ Func HireFreeHeroInternal()
    $hireCount = 1
    SetLog("Hired here : " & $hireCount, $COLOR_PINK)
 
+   Local $tryCount = 0
    Local Const $MaxHireCount = 10
-   While $RunState
+   While $RunState And $tryCount < ($MaxHireCount * 3)
 	  ; Click Skip Button
 	  ClickControlPos("89.52:91.9", 3)
 
@@ -148,10 +149,12 @@ Func HireFreeHeroInternal()
 
 		 ClickControlScreen($CHECK_BUTTON_HIRE_FREE_HERO_ONE_MORE[0], 1)
 		 $hireCount += 1
-		 SetLog("Hired here : " & $hireCount, $COLOR_PINK)
+		 SetLog("Hired hero : " & $hireCount, $COLOR_PINK)
 	  EndIf
 	  If _Sleep(500) Then Return False
+	  $tryCount += 1
    WEnd
+
    If _Sleep(1200) Then Return False
    CloseMenu("Pub", $CHECK_BUTTON_TOP_CLOSE)
    Return True
@@ -236,8 +239,9 @@ Func AltarResourceInternal()
    If _SleepAbs($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
-   If _Sleep(1000) Then Return False
+   If _SleepAbs(1000) Then Return False
    CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE)
+   CloseAllMenu()
 EndFunc
 
 
@@ -259,9 +263,9 @@ Func DoGetClanMissionInternal($castleIndex)
    Local const $MissionGetButtonFirstItemX = "72"
    Local const $MissionGetButtonFirstItemY = "59"
    Local const $MissionGetButtonStepYPos = 17
-   Local const $Mission1[2] = ["23.45:58.74 | 0xD8D8C8 | 16 | 1", "26.82:58.74 | 0xD8D8C8 | 16 | 1"]
-   Local const $Mission2[2] = ["23.45:75.74 | 0xD8D8C8 | 16 | 1", "26.82:75.74 | 0xD8D8C8 | 16 | 1"]
-   Local const $Mission3[2] = ["23.45:92.74 | 0xD8D8C8 | 16 | 1", "26.82:92.74 | 0xD8D8C8 | 16 | 1"]
+   Local const $Mission1[2] = ["23.08:58.49 | 0xD8D8C8 | 16 | 2", "27.03:58.30 | 0xD8D8C8 | 16 | 2"]
+   Local const $Mission2[2] = ["23.08:75.49 | 0xD8D8C8 | 16 | 2", "27.03:75.30 | 0xD8D8C8 | 16 | 2"]
+   Local const $Mission3[2] = ["23.08:93.49 | 0xD8D8C8 | 16 | 2", "27.03:93.30 | 0xD8D8C8 | 16 | 2"]
     Local $MissionArray[3]
    $MissionArray[0] = $Mission1
    $MissionArray[1] = $Mission2
@@ -273,7 +277,7 @@ Func DoGetClanMissionInternal($castleIndex)
 	  If _SleepAbs(1000) Then Return False
    EndIf
 
-   ClickControlPos($POS_BUTTON_CLAN, 2)
+   ClickControlPos($POS_BUTTON_CLAN, 1)
    If _SleepAbs(1000) Then Return False
 
    ; Main Castle Tab
@@ -801,7 +805,7 @@ Func DoKillFieldMonsterCommon($troopNumber)
 		 $foundAttackButton = True
 	  EndIf
 
-	  If _Sleep(800) Then Return False
+	  If _SleepAbs(800) Then Return False
 
 	  If CheckForPixelList($CHECK_BUTTON_SELECT_TROOPS_CLOSE) Then
 		 SetLog("Open Select Troop Menu", $COLOR_DARKGREY)
@@ -973,7 +977,7 @@ Func EnterCastleMainMenu()
 	  EndIf
 
 	  $tryCount = $tryCount + 1
-	  If _Sleep(600) Then Return False
+	  If _SleepAbs(600) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
 	  SetLog("Error..", $COLOR_RED)
@@ -1456,6 +1460,9 @@ Func CheckClickAllDoneButtons()
    While $i >= 0
 	  If CheckForPixelList($DoneButtonInfoArray[$i]) Then
 		 SetLog("Mission Completed : " & ($i + 1), $COLOR_GREEN)
+
+		 $labelStats_ClanMissionComplete += 1
+		 updateStats()
 
 		 $doneInfo = $DoneButtonInfoArray[$i]
 		 ClickControlScreen($doneInfo[0])

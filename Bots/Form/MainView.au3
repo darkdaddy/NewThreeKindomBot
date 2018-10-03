@@ -9,7 +9,7 @@ Local $gap = 10
 Local $generalRightHeight = 0
 Local $generalBottomHeight = 70
 Local $logViewWidth = 350
-Local $logViewHeight = 500
+Local $logViewHeight = 530
 Local $frameWidth = $contentPaneX + $logViewWidth + $gap + $generalRightHeight + $tabX
 Local $frameHeight = $contentPaneY + $logViewHeight + $gap + $generalBottomHeight + $tabY
 
@@ -53,6 +53,7 @@ $btnTodayJob = GUICtrlCreateButton("Today Job", $x, $generalBottomY + 30, 100, 2
 
 $x += 100 + 10
 $btnPullout = GUICtrlCreateButton("Pullout", $x, $generalBottomY, 100, 25)
+$btnGetClanMission = GUICtrlCreateButton("Clan Mission", $x, $generalBottomY + 30, 100, 25)
 
 ;-----------------------------------------------------------
 ; Tab : Option
@@ -97,6 +98,10 @@ $y += 25
 ; Bot Capture Mode
 $x = $contentPaneX
 $checkBotCaptureModeEnabled = GUICtrlCreateCheckbox("Bot Capture Mode", $x, $y, 250, 25)
+$y += 26
+
+; Auto Today job
+$checkAutoTodayJobEnabled = GUICtrlCreateCheckbox("Auto Today Job", $x, $y, 250, 25)
 $y += 26
 
 ; Auto Dungeon Treasure
@@ -242,6 +247,12 @@ $labelStats_AttackFieldMonster = GUICtrlCreateLabel("0", $x, $y, 60, 20)
 
 $y += 30
 $x = $contentPaneX
+GUICtrlCreateLabel("Clan Mission Complete", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_ClanMissionComplete = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+
+$y += 30
+$x = $contentPaneX
 GUICtrlCreateLabel("Reboot Count", $x, $y, $statLabelW, 20)
 $x += $statLabelW + $statLabelGap
 $labelStats_RebootCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
@@ -281,6 +292,7 @@ GUICtrlSetOnEvent($idTab, "tabChanged")
 GUICtrlSetOnEvent($btnCalcPos, "btnCalcPos")
 GUICtrlSetOnEvent($btnReboot, "btnReboot")
 GUICtrlSetOnEvent($btnPullout, "btnPullout")
+GUICtrlSetOnEvent($btnGetClanMission, "btnGetClanMission")
 GUICtrlSetOnEvent($btnTodayJob, "btnTodayJob")
 GUICtrlSetOnEvent($btnTestColor, "btnTestColor")
 GUICtrlSetOnEvent($sliderGameSpeed, "sliderGameSpeedEvent")
@@ -340,6 +352,7 @@ Func InitBot()
    GUICtrlSetState($btnReboot, $GUI_DISABLE)
    GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
    GUICtrlSetState($btnPullout, $GUI_DISABLE)
+   GUICtrlSetState($btnGetClanMission, $GUI_DISABLE)
 
    Return True
 EndFunc
@@ -416,6 +429,7 @@ Func btnStop()
    GUICtrlSetState($btnReboot, $GUI_ENABLE)
    GUICtrlSetState($btnTodayJob, $GUI_ENABLE)
    GUICtrlSetState($btnPullout, $GUI_ENABLE)
+   GUICtrlSetState($btnGetClanMission, $GUI_ENABLE)
 
    SetLog("Bot has stopped", $COLOR_ORANGE)
 EndFunc
@@ -492,6 +506,16 @@ Func btnPullout()
    btnStop()
 EndFunc
 
+Func btnGetClanMission()
+   If InitBot() = False Then
+	  Return
+   EndIf
+
+   DoGetClanMission()
+
+   btnStop()
+EndFunc
+
 ; System callback
 Func mainViewClose()
 
@@ -543,4 +567,6 @@ Func updateStats()
    GUICtrlSetData($labelStats_UseCashCount, $Stats_UseCashCount)
    GUICtrlSetData($labelStats_UseBreadCount, $Stats_UseBreadCount)
    GUICtrlSetData($labelStats_UseMarchOrderCount, $Stats_UseMarchOrderCount)
+   GUICtrlSetData($labelStats_ClanMissionComplete, $Stats_ClanMissionComplete)
+
 EndFunc

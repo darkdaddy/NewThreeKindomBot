@@ -333,7 +333,7 @@ Func CheckForPixel($screenInfo, $PixelTolerance = 15)
 	  Next
 
 	  If $found = False Then
-		 ;_log("CheckForPixel : " & $pos[0] & "(" & $x & ")(" & $WinRect[0]+$x & ") x " & $pos[1] & "(" & $y & ")(" & $WinRect[1]+$y & ") => FAIL (" & $answerColor & ") : " & $screenInfo & " <" & $PixelTolerance & ">");
+		 _log("CheckForPixel : " & $pos[0] & "(" & $x & ")(" & $WinRect[0]+$x & ") x " & $pos[1] & "(" & $y & ")(" & $WinRect[1]+$y & ") => FAIL (" & $answerColor & ") : " & $screenInfo & " <" & $PixelTolerance & ">");
 		 ExitLoop
 	  EndIf
    Next

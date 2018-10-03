@@ -15,6 +15,7 @@ Global $setting_mission_attack_troup_enabled[4] = [False, False, False, False]
 
 Global $setting_game_speed_rate = 1.0
 Global $setting_capture_mode = False
+Global $setting_checked_today_job = False
 Global $setting_checked_dungeon_hero = False
 Global $setting_checked_dungeon_exp = False
 Global $setting_checked_dungeon_treasure = False
@@ -80,6 +81,7 @@ Func loadConfig()
    $setting_checked_use_cash = IniRead($config, $setting_common_group, "enabled_use_cash", "False") == "True" ? True : False
    $setting_checked_use_bread = IniRead($config, $setting_common_group, "enabled_use_bread", "False") == "True" ? True : False
    $setting_checked_use_march_order = IniRead($config, $setting_common_group, "enabled_use_march_order", "False") == "True" ? True : False
+   $setting_checked_today_job = IniRead($config, $setting_common_group, "enabled_today_job", "False") == "True" ? True : False
 EndFunc	;==>loadConfig
 
 Func applyConfig()
@@ -118,6 +120,7 @@ Func applyConfig()
    GUICtrlSetState($checkAutoMissionAttackTroop3, $setting_mission_attack_troup_enabled[2] ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoMissionAttackTroop4, $setting_mission_attack_troup_enabled[3] ? $GUI_CHECKED : $GUI_UNCHECKED)
 
+   GUICtrlSetState($checkAutoTodayJobEnabled, $setting_checked_today_job ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoDungeonHeroSweepEnabled, $setting_checked_dungeon_hero ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoDungeonExpSweepEnabled, $setting_checked_dungeon_exp ? $GUI_CHECKED : $GUI_UNCHECKED)
    GUICtrlSetState($checkAutoDungeonTreasureEnabled, $setting_checked_dungeon_treasure ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -164,6 +167,7 @@ Func saveConfig()
    IniWrite($config, $setting_common_group, "enabled_mission_attack_troup_3", _IsChecked($checkAutoMissionAttackTroop3))
    IniWrite($config, $setting_common_group, "enabled_mission_attack_troup_4", _IsChecked($checkAutoMissionAttackTroop4))
 
+   IniWrite($config, $setting_common_group, "enabled_today_job", _IsChecked($checkAutoTodayJobEnabled))
    IniWrite($config, $setting_common_group, "enabled_dungeon_hero", _IsChecked($checkAutoDungeonHeroSweepEnabled))
    IniWrite($config, $setting_common_group, "enabled_dungeon_exp", _IsChecked($checkAutoDungeonExpSweepEnabled))
    IniWrite($config, $setting_common_group, "enabled_dungeon_treasure", _IsChecked($checkAutoDungeonTreasureEnabled))

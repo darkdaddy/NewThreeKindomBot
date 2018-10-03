@@ -22,8 +22,13 @@ Func AutoFlow()
    ;CheckEnemyAttack()
    ;CloseAllMenu()
    ;Return True
-   ;DoGetClanMission()
+   ;DoGetClanMissionInternal(0)
    ;Return True
+
+   If $setting_checked_today_job Then
+	  RebootNox()
+	  MainTodayJob()
+   EndIf
 
    If $setting_checked_dungeon_treasure Then
 	  MainDungeonTreasure()
