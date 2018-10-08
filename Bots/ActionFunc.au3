@@ -9,6 +9,7 @@
 #ce ----------------------------------------------------------------------------
 
 Global $ActivatedClanMissionMenu = False
+Global $ClanMissionEnabledTemporarily = True
 
 Func CloseAllMenu()
    If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
@@ -135,6 +136,13 @@ Func HireFreeHeroInternal()
    $hireCount = 1
    SetLog("Hired here : " & $hireCount, $COLOR_PINK)
 
+   If _SleepAbs(1000) Then Return False
+   If CheckForPixelList($CHECK_BUTTON_HIRE_FREE_HERO[0]) Then
+	  SetLog("Already hired all", $COLOR_PINK)
+	  CloseMenu("Pub", $CHECK_BUTTON_TOP_CLOSE)
+	  Return False
+   EndIf
+
    Local $tryCount = 0
    Local Const $MaxHireCount = 10
    While $RunState And $tryCount < ($MaxHireCount * 3)
@@ -248,8 +256,15 @@ EndFunc
 Func DoGetClanMission()
 
    Local const $MaxItemIndexInScreen = 5
+   Local const $MaxItemIndexInScreenReverse = 3
 
    For $index = 0 To $MaxItemIndexInScreen - 1
+	  DoGetClanMissionInternal($index)
+   Next
+
+   SetLog("reverse castle order", $COLOR_DARKGREY)
+   For $index = $MaxItemIndexInScreen - 1 To $MaxItemIndexInScreen - $MaxItemIndexInScreenReverse Step -1
+	  DragControlPos("51:71", "51:43", 10);
 	  DoGetClanMissionInternal($index)
    Next
 EndFunc
@@ -1284,7 +1299,7 @@ Func DoClanMissionJob($troopNumber)
    $i = 0
    While $i < 3
 	  $detectedMission[$i] = CheckForPixelList($MissionArray[$i])
-	  _log("Mission Loop " & ($i + 1) & "=>" & $detectedMission[$i])
+	  _console("Mission Loop " & ($i + 1) & "=>" & $detectedMission[$i])
 	  $i = $i + 1
    WEnd
 
@@ -1299,40 +1314,54 @@ Func DoClanMissionJob($troopNumber)
 
 	  $troopIndex = Mod($troopNumber-1, 3)
 
-	  $troopMatched = False
-	  $firstMissionIndex = -1
-	  $missionIndex = 0
-	  For $i = 0 To 2
-		 If $detectedMission[$i] Then
-			If $firstMissionIndex < 0 Then
-			   $firstMissionIndex = $i
-			EndIf
+	  While $RunState
+		 $troopMatched = False
+		 $firstMissionIndex = -1
+		 $missionIndex = -1
+		 For $i = 0 To 2
+			;SetLog("Mission " & ($i + 1) & " = " & $detectedMission, $COLOR_DARKGREY)
+			_console("Mission Loop Internal " & ($i + 1) & "=>" & $detectedMission[$i])
+			If $detectedMission[$i] Then
+			   If $firstMissionIndex < 0 Then
+				  $firstMissionIndex = $i
+			   EndIf
 
-			If $missionIndex = $troopIndex Then
-			   $troopMatched = True
-			   ExitLoop
-			EndIf
+			   If $missionIndex = $troopIndex Then
+				  $troopMatched = True
+				  ExitLoop
+			   EndIf
 
-			$missionIndex = $missionIndex + 1
+			   $missionIndex = $missionIndex + 1
+			EndIf
+		 Next
+
+		 If Not $troopMatched Then
+			$missionIndex = $firstMissionIndex
 		 EndIf
-	  Next
 
-	  If Not $troopMatched Then
-		 $missionIndex = $firstMissionIndex
-	  EndIf
+		 If $missionIndex < 0 Then
+			SetLog("Mission Not Found (Unexpected..)", $COLOR_RED)
+			$ClanMissionEnabledTemporarily = False
+			Return False
+		 EndIf
 
-	  If $missionIndex < 0 Then
-		 SetLog("Mission Not Found (Unexpected..)", $COLOR_RED)
-		 Return False
-	  EndIf
+		 _console("Mission Loop Result " & $missionIndex & ", " & $firstMissionIndex)
 
-	  SetLog("Go Mission " & ($missionIndex+1), $COLOR_PINK)
+		 SetLog("Go Mission " & ($missionIndex+1), $COLOR_PINK)
+		 ClickControlPos($GoButtonPosArray[$missionIndex], 2)
 
-	  ClickControlPos($GoButtonPosArray[$missionIndex], 2)
+		 If _SleepAbs(1200) Then Return False
 
-	  If _Sleep(800) Then Return False
+		 If CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
+			SetLog("Could not go for the mission", $COLOR_RED)
 
-	  Return DoKillFieldMonsterCommon($troopNumber)
+			; Mark as false for this mission!
+			$detectedMission[$missionIndex] = False
+			ContinueLoop
+		 EndIf
+
+		 Return DoKillFieldMonsterCommon($troopNumber)
+	  WEnd
    Else
 	  SetLog("Mission Not Found", $COLOR_RED)
    EndIf
@@ -1499,7 +1528,7 @@ Func MainAutoFieldAction()
 			If Not RebootNox() Then
 			   Return False
 			EndIf
-
+			$ClanMissionEnabledTemporarily = True
 			$Stats_RebootCount += 1
 			updateStats()
 		 EndIf
@@ -1563,7 +1592,7 @@ Func MainAutoFieldAction()
 
 			   reloadConfig()
 
-			   If $ActivatedClanMissionMenu And $setting_checked_mission_attack And $setting_mission_attack_troup_enabled[$troopIndex] Then
+			   If $ClanMissionEnabledTemporarily And $ActivatedClanMissionMenu And $setting_checked_mission_attack And $setting_mission_attack_troup_enabled[$troopIndex] Then
 
 				  If DoClanMissionJob($troopIndex+1) Then
 					 $missionAttackCount = $missionAttackCount + 1
@@ -1605,13 +1634,15 @@ Func MainAutoFieldAction()
 	  ClickControlPos($POS_BUTTON_FIELD_FIRST_MENU)
 	  If _SleepAbs(600) Then Return False
 
-	  If CheckForPixelList($CHECK_BUTTON_ENEMY_ATTACK_CLOSE) Then
-		 CheckEnemyAttack()
-	  ElseIf CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
-		 CheckClickAllDoneButtons()
-	  ElseIf CheckForPixelList($CHECK_BUTTON_ATTACK_BUFF_CLOSE) Then
-		 CheckUseBuffOfBlockAttack()
+	  If $ClanMissionEnabledTemporarily = False And CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
+		 CloseAllMenu()
+		 If _SleepAbs(600) Then Return False
+		 SetLog("Clan Mission disabled temporarily", $COLOR_DARKGREY)
+		 ClickControlPos($POS_BUTTON_FIELD_SECOND_MENU)
+		 If _SleepAbs(600) Then Return False
 	  EndIf
+
+	  CheckCurrentMenuAfterIdleTimeInternal()
 
 	  CloseAllMenu()
 
@@ -1626,6 +1657,15 @@ Func MainAutoFieldAction()
 
 EndFunc
 
+Func CheckCurrentMenuAfterIdleTimeInternal()
+   If CheckForPixelList($CHECK_BUTTON_ENEMY_ATTACK_CLOSE) Then
+	  CheckEnemyAttack()
+   ElseIf CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
+	  CheckClickAllDoneButtons()
+   ElseIf CheckForPixelList($CHECK_BUTTON_ATTACK_BUFF_CLOSE) Then
+	  CheckUseBuffOfBlockAttack()
+   EndIf
+EndFunc
 
 Func MainDungeonSweep($tab)
    SetLog("Auto Dungeon Sweep Start : " & $tab, $COLOR_GREEN)
