@@ -239,7 +239,7 @@ Func AltarResourceInternal()
    If _SleepAbs($AlterDelay) Then Return False
    CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 
-   If _SleepAbs(1000) Then Return False
+   If _SleepAbs(2000) Then Return False
    CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE)
    CloseAllMenu()
 EndFunc
@@ -1537,20 +1537,19 @@ Func MainAutoFieldAction()
 		 _log("Bottom Menu Red Mark Detected...")
 		 ClickControlScreen($POS_BUTTON_BOTTOM_MENU_UNFOLD)
 		 If _SleepAbs(1000) Then Return False
-
-		 If CheckForPixelList($CHECK_BUTTON_CLAN_RED_MARK) Then
-			SetLog("Clan Red Mark Detected...", $COLOR_RED)
-			ClickControlScreen($CHECK_BUTTON_CLAN_RED_MARK[0], 2)
-			If _SleepAbs(800) Then Return False
-			ClickControlScreen("30.68:78.39", 2)
-			If _SleepAbs(600) Then Return False
-			ClickControlScreen("72.25:24.62", 2)
-			If _SleepAbs(600) Then Return False
-			CloseMenu("Clan-Support", $CHECK_BUTTON_CLAN_SUPPORT_CLOSE)
-			If _SleepAbs(600) Then Return False
-			CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
-			If _SleepAbs(600) Then Return False
-		 EndIf
+	  EndIf
+	  If CheckForPixelList($CHECK_BUTTON_CLAN_RED_MARK) Then
+		 SetLog("Clan Red Mark Detected...", $COLOR_RED)
+		 ClickControlScreen($CHECK_BUTTON_CLAN_RED_MARK[0], 2)
+		 If _SleepAbs(800) Then Return False
+		 ClickControlScreen("30.68:78.39", 2)
+		 If _SleepAbs(600) Then Return False
+		 ClickControlScreen("72.25:24.62", 2)
+		 If _SleepAbs(600) Then Return False
+		 CloseMenu("Clan-Support", $CHECK_BUTTON_CLAN_SUPPORT_CLOSE)
+		 If _SleepAbs(600) Then Return False
+		 CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
+		 If _SleepAbs(600) Then Return False
 	  EndIf
 
 	  ; Checking available
