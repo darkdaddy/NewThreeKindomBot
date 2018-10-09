@@ -1788,7 +1788,7 @@ Func MainDungeonTreasure()
 
 		 If $attackClickCount >= $MaxAttackClickTryCount Then
 			SetLog($ERROR, "Can not try treasure attack...", $COLOR_RED)
-			CloseMenu($INFO, "Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+			CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 			If _Sleep(800) Then Return False
 			ExitLoop
 		 EndIf
