@@ -48,7 +48,7 @@ Func RebootNox()
 	  Return True
    EndIf
 
-   SetLog($INFO, "Reboot Starting...", $COLOR_GREEN)
+   SetLog($INFO, "Reboot Starting...", $COLOR_BLACK)
 
    ; Kill Current Game
    ClickHandle($HWnDTool, $WinRectTool[2]/2, $WinRectTool[3] - 35 )
@@ -65,7 +65,7 @@ Func RebootNox()
    Local $tryCount = 1
    While $RunState And $tryCount < 60
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
-		 SetLog($INFO, "Reboot OK", $COLOR_RED)
+		 SetLog($INFO, "Reboot OK", $COLOR_BLUE)
 		 Return True
 	  EndIf
   	  ClickControlPos($POS_BUTTON_NOTICE_CLOSE, 1)
@@ -428,7 +428,7 @@ EndFunc
 
 Func CollectResources()
 
-   SetLog($DEBUG, "Collect all resources start", $COLOR_GREEN)
+   SetLog($DEBUG, "Collect all resources start", $COLOR_BLACK)
 
    ; Go to castle view
    Local $tryCount = 1
@@ -474,7 +474,7 @@ Func CollectResources()
    ; go out
    ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
    If _Sleep($ViewChangeWaitMSec) Then Return False
-   SetLog($INFO, "Collect all resources end", $COLOR_GREEN)
+   SetLog($INFO, "Collect all resources end", $COLOR_BLACK)
    Return True
 EndFunc
 
@@ -573,7 +573,7 @@ Func CheckTroopAvailableList()
 	  $PrevTroopAvailableStr = $troopStr
 
 	  If StringLen($troopStr) > 0 Then
-		 SetLog($INFO, "Troop Available : " & $troopStr, $COLOR_MEDBLUE)
+		 SetLog($INFO, "Troop Available : " & $troopStr, $COLOR_GREEN)
 	  Else
 		 SetLog($INFO, "All Troops Busy", $COLOR_PINK)
 	  EndIf
@@ -881,7 +881,7 @@ Func DoKillFieldMonsterCommon($troopNumber)
 	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 	  Return False
    EndIf
-   SetLog($INFO, "Go Attack : troup " & $troopNumber, $COLOR_RED)
+   SetLog($INFO, "Go Attack : troup " & $troopNumber, $COLOR_BLUE)
 
    $Stats_AttackFieldMonster += 1
    updateStats()
@@ -1463,7 +1463,7 @@ Func CheckUseBuffOfBlockAttack()
 	  If _SleepAbs(200) Then Return False
    Next
    If $checkCount < 3 Then
-	  SetLog($ERROR, "wrong dectected buff...", $COLOR_RED)
+	  SetLog($ERROR, "Dectected wrong buff...", $COLOR_RED)
 	  Return True
    EndIf
 
@@ -1512,7 +1512,7 @@ Func CheckClickAllDoneButtons()
 EndFunc
 
 Func MainAutoFieldAction()
-   SetLog($INFO, "Auto Field Action Start", $COLOR_GREEN)
+   SetLog($INFO, "Auto Field Action Start", $COLOR_BLACK)
    $Stats_LoopCount = 0
    $PrevTroopAvailableStr = "."
    $SameTroopAvailableStatus = False
@@ -1559,7 +1559,7 @@ Func MainAutoFieldAction()
 
 	  ; Checking Barrack's Red Mark -> We need to call DoRecruitBarrack()
 	  If CheckForPixelList($CHECK_BUTTON_BARRACK_RED_MARK) Then
-		 SetLog($INFO, "Barrack Red Mark Detected...", $COLOR_RED)
+		 SetLog($INFO, "Barrack Red Mark Detected...", $COLOR_PINK)
 		 ClickControlScreen($CHECK_BUTTON_BARRACK_RED_MARK[0])
 		 If _Sleep(800) Then Return False
 		 DoRecruitBarrack()
@@ -1572,7 +1572,7 @@ Func MainAutoFieldAction()
 		 If _SleepAbs(1000) Then Return False
 	  EndIf
 	  If CheckForPixelList($CHECK_BUTTON_CLAN_RED_MARK) Then
-		 SetLog($INFO, "Clan Red Mark Detected...", $COLOR_RED)
+		 SetLog($INFO, "Clan Red Mark Detected...", $COLOR_PINK)
 		 ClickControlScreen($CHECK_BUTTON_CLAN_RED_MARK[0], 2)
 		 If _SleepAbs(800) Then Return False
 		 ClickControlScreen("30.68:78.39", 2)
@@ -1653,7 +1653,7 @@ Func MainAutoFieldAction()
 	  If _Sleep(1000) Then Return False
    WEnd
 
-   SetLog($INFO, "Auto Field Action End", $COLOR_GREEN)
+   SetLog($INFO, "Auto Field Action End", $COLOR_BLACK)
    Return True
 
 EndFunc
@@ -1669,7 +1669,7 @@ Func CheckCurrentMenuAfterIdleTimeInternal()
 EndFunc
 
 Func MainDungeonSweep($tab)
-   SetLog($INFO, "Auto Dungeon Sweep Start : " & $tab, $COLOR_GREEN)
+   SetLog($INFO, "Auto Dungeon Sweep Start : " & $tab, $COLOR_BLACK)
 
    CloseAllMenu()
 
@@ -1720,12 +1720,12 @@ Func MainDungeonSweep($tab)
 
    CloseMenu("Dungeon-Menu", $CHECK_BUTTON_TOP_CLOSE)
 
-   SetLog($INFO, "Auto Dungeon Sweep End : " & $tab, $COLOR_GREEN)
+   SetLog($INFO, "Auto Dungeon Sweep End : " & $tab, $COLOR_BLACK)
 EndFunc
 
 
 Func MainDungeonTreasure()
-   SetLog($INFO, "Auto Dungeon Treasure Start", $COLOR_GREEN)
+   SetLog($INFO, "Auto Dungeon Treasure Start", $COLOR_BLACK)
 
    CloseAllMenu()
 
@@ -1841,12 +1841,12 @@ Func MainDungeonTreasure()
    WEnd
 
    CloseMenu("Dungeon-Menu", $CHECK_BUTTON_TOP_CLOSE)
-   SetLog($INFO, "Auto Dungeon Treasure End", $COLOR_GREEN)
+   SetLog($INFO, "Auto Dungeon Treasure End", $COLOR_BLACK)
 EndFunc
 
 
 Func MainTodayJob()
-   SetLog($INFO, "Auto Today Job Start", $COLOR_GREEN)
+   SetLog($INFO, "Auto Today Job Start", $COLOR_BLACK)
 
    ; Go to castle initial view
    ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
@@ -1879,7 +1879,7 @@ Func MainTodayJob()
 
    DoGetClanMission()
 
-   SetLog($INFO, "Auto Today Job End", $COLOR_GREEN)
+   SetLog($INFO, "Auto Today Job End", $COLOR_BLACK)
 EndFunc
 
 

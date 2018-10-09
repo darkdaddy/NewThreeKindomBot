@@ -438,7 +438,7 @@ Func btnStop()
    GUICtrlSetState($btnPullout, $GUI_ENABLE)
    GUICtrlSetState($btnGetClanMission, $GUI_ENABLE)
 
-   SetLog($INFO, "Bot has stopped", $COLOR_ORANGE)
+   SetLog($INFO, "Bot has stopped", $COLOR_RED)
 EndFunc
 
 Func btnCalcPos()
