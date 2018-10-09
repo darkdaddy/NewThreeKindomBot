@@ -317,7 +317,7 @@ Func DoGetClanMissionInternal($castleIndex)
 
    For $missionIndex = 0 To 2
 	  If CheckForPixelList($MissionArray[$missionIndex]) Then
-		 SetLog($INFO, "Detected field monster mission " & $missionIndex + 1, $COLOR_BLUE)
+		 SetLog($INFO, "field monster mission " & ($missionIndex + 1) & " detected...", $COLOR_PURPLE)
 
 		 $itemY = Number($MissionGetButtonFirstItemY) + ($missionIndex * $MissionGetButtonStepYPos)
 		 $posInfo = $MissionGetButtonFirstItemX & ":" & $itemY
@@ -502,7 +502,7 @@ Func GoToField($silent = False)
 
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
 		 If Not $silent Then
-			SetLog($DEBUG, "Castle view detected...", $COLOR_DARKGREY)
+			SetLog($DEBUG, "Castle view detected...", $COLOR_PURPLE)
 		 EndIf
 
 		 ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
@@ -511,7 +511,7 @@ Func GoToField($silent = False)
 
 	  If CheckForPixelList($CHECK_MAIN_FIELD_VIEW) Then
 		 If Not $silent Then
-			SetLog($DEBUG, "Field view detected...", $COLOR_DARKGREY)
+			SetLog($DEBUG, "Field view detected...", $COLOR_PURPLE)
 		 EndIf
 		 ExitLoop
 	  EndIf
@@ -528,7 +528,7 @@ Func GoToField($silent = False)
 EndFunc
 
 Func DoRecruitBarrack()
-   SetLog($INFO, "Recruit troop barrack...", $COLOR_PINK)
+   SetLog($INFO, "Recruit troop barrack...", $COLOR_BLACK)
    If Not OpenMenu("Barrack", $POS_BUTTON_BARRACK_MENU, $CHECK_BUTTON_FIELD_MENU_CLOSE) Then
 	  Return False
    EndIf
@@ -788,7 +788,7 @@ Func FindTreasureDungeonLevelNumber($number)
 			EndIf
 
 			If $currLevel >= 1 Then
-			   SetLog($DEBUG, "Level " & $currLevel & " detected...", $COLOR_PINK)
+			   SetLog($DEBUG, "Level " & $currLevel & " detected...", $COLOR_PURPLE)
 			Else
 			   SetLog($ERROR, "Level detect failed...", $COLOR_RED)
 			EndIf
@@ -1098,7 +1098,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 
 	  reloadConfig()
 
-	  SetLog($INFO, "Dungeon Attack Stage : " & $i + 1, $COLOR_ORANGE)
+	  SetLog($DEBUG, "Dungeon Attack Stage : " & $i + 1, $COLOR_ORANGE)
 	  $foundSweepButton = False
 	  $foundInitButton = False
 
@@ -1285,7 +1285,7 @@ Func CheckClanMissionMenu($closeMenu = True)
 	  CloseMenu("Clan-Mission", $CHECK_BUTTON_CLAN_MISSION_CLOSE, "", True)
    EndIf
 
-   SetLog($INFO, "Clan Mission Menu Detected", $COLOR_BLUE)
+   SetLog($DEBUG, "Clan Mission Menu Detected", $COLOR_PURPLE)
    Return True
 EndFunc
 
@@ -1325,7 +1325,7 @@ Func DoClanMissionJob($troopNumber)
 	  EndIf
    Next
    If StringLen($missionStr) > 0 Then
-	  SetLog($INFO, "Mission Detected : " & $missionStr, $COLOR_BLUE)
+	  SetLog($INFO, "Mission Detected : " & $missionStr, $COLOR_PURPLE)
 
 	  $troopIndex = Mod($troopNumber-1, 3)
 
@@ -1334,7 +1334,7 @@ Func DoClanMissionJob($troopNumber)
 		 $firstMissionIndex = -1
 		 $missionIndex = -1
 		 For $i = 0 To 2
-			SetLog($DEBUG, "Mission " & ($i + 1) & " = " & $detectedMission, $COLOR_DARKGREY)
+			SetLog($TRACE, "Mission " & ($i + 1) & " = " & $detectedMission, $COLOR_PURPLE)
 			If $detectedMission[$i] Then
 			   If $firstMissionIndex < 0 Then
 				  $firstMissionIndex = $i
@@ -1579,7 +1579,7 @@ Func MainAutoFieldAction()
 
 	  ; Checking Barrack's Red Mark -> We need to call DoRecruitBarrack()
 	  If CheckForPixelList($CHECK_BUTTON_BARRACK_RED_MARK) Then
-		 SetLog($INFO, "Barrack Red Mark Detected...", $COLOR_PINK)
+		 SetLog($INFO, "Barrack Red Mark Detected...", $COLOR_PURPLE)
 		 ClickControlScreen($CHECK_BUTTON_BARRACK_RED_MARK[0])
 		 If _Sleep(800) Then Return False
 		 DoRecruitBarrack()
@@ -1592,7 +1592,7 @@ Func MainAutoFieldAction()
 		 If _SleepAbs(1000) Then Return False
 	  EndIf
 	  If CheckForPixelList($CHECK_BUTTON_CLAN_RED_MARK) Then
-		 SetLog($INFO, "Clan Red Mark Detected...", $COLOR_PINK)
+		 SetLog($INFO, "Clan Red Mark Detected...", $COLOR_PURPLE)
 		 ClickControlScreen($CHECK_BUTTON_CLAN_RED_MARK[0], 2)
 		 If _SleepAbs(800) Then Return False
 		 ClickControlScreen("30.68:78.39", 2)
