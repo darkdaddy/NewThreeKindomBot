@@ -1,7 +1,18 @@
-Func SetLog($String, $Color = 0x000000) ;Sets the text for the log
-	_GUICtrlRichEdit_AppendTextColor($txtLog, Time(), 0x000000)
-	_GUICtrlRichEdit_AppendTextColor($txtLog, $String & @CRLF, _ColorConvert($Color))
-	_log($String)
+Global const $TRACE = 0
+Global const $DEBUG = 1
+Global const $INFO = 2
+Global const $ERROR = 3
+
+Global $CurrentLogLevel = 2
+
+Func SetLog($level, $String, $Color = 0x000000) ;Sets the text for the log
+   If $level < $CurrentLogLevel Then
+	  Return
+   EndIf
+
+   _GUICtrlRichEdit_AppendTextColor($txtLog, Time(), 0x000000)
+   _GUICtrlRichEdit_AppendTextColor($txtLog, $String & @CRLF, _ColorConvert($Color))
+   _log($level, $String)
 EndFunc   ;==>SetLog
 
 Func _GUICtrlRichEdit_AppendTextColor($hWnd, $sText, $iColor)
@@ -14,7 +25,10 @@ Func _GUICtrlRichEdit_AppendTextColor($hWnd, $sText, $iColor)
 EndFunc   ;==>_GUICtrlRichEdit_AppendTextColor
 
 
-Func _log($String)
+Func _log($level, $String)
+   If $level < $CurrentLogLevel Then
+	  Return
+   EndIf
    Local $t = Time() & " " & $String
    _FileWriteLog($hLogFileHandle, $t)
    ConsoleWrite($t & @CRLF)

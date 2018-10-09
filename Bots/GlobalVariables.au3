@@ -81,6 +81,7 @@ Global Const $COLOR_DARKGREY = 0x555555
 
 
 ; ---------- STATS ---------------
+Global $Stats_LoopCount = 0
 Global $Stats_EnemyAttackRecall = 0
 Global $Stats_ResourceGathering = 0
 Global $Stats_AttackFieldMonster = 0

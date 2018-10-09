@@ -9,7 +9,9 @@
 #ce ----------------------------------------------------------------------------
 
 Global $ActivatedClanMissionMenu = False
-Global $ClanMissionEnabledTemporarily = True
+Global $ClanMissionEnabledTemporarily[4] = [True, True, True, True]
+Global $PrevTroopAvailableStr = ""
+Global $SameTroopAvailableStatus = False
 
 Func CloseAllMenu()
    If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
@@ -46,7 +48,7 @@ Func RebootNox()
 	  Return True
    EndIf
 
-   SetLog("Reboot Starting...", $COLOR_GREEN)
+   SetLog($INFO, "Reboot Starting...", $COLOR_GREEN)
 
    ; Kill Current Game
    ClickHandle($HWnDTool, $WinRectTool[2]/2, $WinRectTool[3] - 35 )
@@ -63,7 +65,7 @@ Func RebootNox()
    Local $tryCount = 1
    While $RunState And $tryCount < 60
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
-		 SetLog("Reboot OK", $COLOR_RED)
+		 SetLog($INFO, "Reboot OK", $COLOR_RED)
 		 Return True
 	  EndIf
   	  ClickControlPos($POS_BUTTON_NOTICE_CLOSE, 1)
@@ -75,7 +77,7 @@ Func RebootNox()
 	  $tryCount += 1
    WEnd
 
-   SetLog("Reboot Failure", $COLOR_RED)
+   SetLog($ERROR, "Reboot Failure", $COLOR_RED)
    Return False
 EndFunc
 
@@ -101,7 +103,7 @@ Func PullOutAllResourceTroops()
    For $i = 0 To 3
 	  If $setting_gather_troup_enabled[$i] Then
 		 If CheckForPixelList($checkInfoList[$i], $DefaultTolerance, True) Then
-			SetLog("Pull Out Troop : " & ($i+1), $COLOR_BLUE)
+			SetLog($INFO, "Pull Out Troop : " & ($i+1), $COLOR_BLUE)
 
 			SelectTroopInStatusMenu($i+1)
 			If _Sleep(300) Then Return False
@@ -122,7 +124,7 @@ EndFunc
 
 
 Func HireFreeHeroInternal()
-   SetLog("Hire Free Hero", $COLOR_BLUE)
+   SetLog($INFO, "Hire Free Hero", $COLOR_BLUE)
    ClickControlPos("74.48:48.54", 1)
    If _Sleep(1000) Then Return False
 
@@ -134,11 +136,11 @@ Func HireFreeHeroInternal()
    ; First hire!
    ClickControlScreen($CHECK_BUTTON_HIRE_FREE_HERO[0], 1)
    $hireCount = 1
-   SetLog("Hired here : " & $hireCount, $COLOR_PINK)
+   SetLog($INFO, "Hired here : " & $hireCount, $COLOR_PINK)
 
    If _SleepAbs(1000) Then Return False
    If CheckForPixelList($CHECK_BUTTON_HIRE_FREE_HERO[0]) Then
-	  SetLog("Already hired all", $COLOR_PINK)
+	  SetLog($ERROR, "Already hired all", $COLOR_PINK)
 	  CloseMenu("Pub", $CHECK_BUTTON_TOP_CLOSE)
 	  Return False
    EndIf
@@ -157,7 +159,7 @@ Func HireFreeHeroInternal()
 
 		 ClickControlScreen($CHECK_BUTTON_HIRE_FREE_HERO_ONE_MORE[0], 1)
 		 $hireCount += 1
-		 SetLog("Hired hero : " & $hireCount, $COLOR_PINK)
+		 SetLog($INFO, "Hired hero : " & $hireCount, $COLOR_PINK)
 	  EndIf
 	  If _Sleep(500) Then Return False
 	  $tryCount += 1
@@ -169,7 +171,7 @@ Func HireFreeHeroInternal()
 EndFunc
 
 Func GetMySalaryInternal()
-   SetLog("Get My Salary", $COLOR_BLUE)
+   SetLog($INFO, "Get My Salary", $COLOR_BLUE)
 
    ; Get my salary
    ClickControlPos($POS_BUTTON_MY_PROFILE_ICON, 2)
@@ -210,7 +212,7 @@ EndFunc
 
 
 Func AltarResourceInternal()
-   SetLog("Altar All Resources", $COLOR_BLUE)
+   SetLog($INFO, "Altar All Resources", $COLOR_BLUE)
 
    Local Const $AlterDelay = 1600
    Local Const $startButton = "49.85:83.86"
@@ -256,14 +258,13 @@ EndFunc
 Func DoGetClanMission()
 
    Local const $MaxItemIndexInScreen = 5
-   Local const $MaxItemIndexInScreenReverse = 3
 
    For $index = 0 To $MaxItemIndexInScreen - 1
 	  DoGetClanMissionInternal($index)
    Next
 
-   SetLog("reverse castle order", $COLOR_DARKGREY)
-   For $index = $MaxItemIndexInScreen - 1 To $MaxItemIndexInScreen - $MaxItemIndexInScreenReverse Step -1
+   SetLog($INFO, "reverse castle order", $COLOR_DARKGREY)
+   For $index = $MaxItemIndexInScreen - 1 To $MaxItemIndexInScreen - $setting_clan_castle_reverse_count Step -1
 	  DragControlPos("51:71", "51:43", 10);
 	  DoGetClanMissionInternal($index)
    Next
@@ -271,7 +272,7 @@ EndFunc
 
 Func DoGetClanMissionInternal($castleIndex)
 
-   SetLog("Catle item " & $castleIndex + 1, $COLOR_BLUE)
+   SetLog($INFO, "Catle item " & $castleIndex + 1, $COLOR_BLUE)
    Local const $CastleFirstItemX = "59"
    Local const $CastleFirstItemY = "28"
    Local const $CastleStepYPos = 11
@@ -316,7 +317,7 @@ Func DoGetClanMissionInternal($castleIndex)
 
    For $missionIndex = 0 To 2
 	  If CheckForPixelList($MissionArray[$missionIndex]) Then
-		 SetLog("Detected field monster mission " & $missionIndex + 1, $COLOR_BLUE)
+		 SetLog($INFO, "Detected field monster mission " & $missionIndex + 1, $COLOR_BLUE)
 
 		 $itemY = Number($MissionGetButtonFirstItemY) + ($missionIndex * $MissionGetButtonStepYPos)
 		 $posInfo = $MissionGetButtonFirstItemX & ":" & $itemY
@@ -336,25 +337,25 @@ EndFunc
 Func ClickMoveButton($number)
    If $number == 1 Then
 	  If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE1) Then
-		 SetLog("Move Button 1 Found", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Move Button 1 Found", $COLOR_DARKGREY)
 		 ClickControlPos($POS_BUTTON_GREEN_MOVE1, 1)
 		 Return True
 	  EndIf
    ElseIf $number == 2 Then
 	  If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE2) Then
-		 SetLog("Move Button 2 Found", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Move Button 2 Found", $COLOR_DARKGREY)
 		 ClickControlPos($POS_BUTTON_GREEN_MOVE2, 1)
 		 Return True
 	  EndIf
    ElseIf $number == 3 Then
 	  If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE3) Then
-		 SetLog("Move Button 3 Found", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Move Button 3 Found", $COLOR_DARKGREY)
 		 ClickControlPos($POS_BUTTON_GREEN_MOVE3, 1)
 		 Return True
 	  EndIf
    ElseIf $number == 4 Then
 	  If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE4) Then
-		 SetLog("Move Button 4 Found", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Move Button 4 Found", $COLOR_DARKGREY)
 		 ClickControlPos($POS_BUTTON_GREEN_MOVE4, 1)
 		 Return True
 	  EndIf
@@ -366,19 +367,19 @@ EndFunc
 Func ClickFavoriteResourceMoveButton($number)
    If $number == 1 Then
 	  If CheckForPixelList($CHECK_STATUS_FAVORITE_ERASE_BUTTON1) Then
-		 SetLog("Move Button 1 Found", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Move Button 1 Found", $COLOR_DARKGREY)
 		 ClickControlPos($POS_BUTTON_FAVORITE_MOVE1, 1)
 		 Return True
 	  EndIf
    ElseIf $number == 2 Then
 	  If CheckForPixelList($CHECK_STATUS_FAVORITE_ERASE_BUTTON2) Then
-		 SetLog("Move Button 2 Found", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Move Button 2 Found", $COLOR_DARKGREY)
 		 ClickControlPos($POS_BUTTON_FAVORITE_MOVE2, 1)
 		 Return True
 	  EndIf
    ElseIf $number == 3 Then
 	  If CheckForPixelList($CHECK_STATUS_FAVORITE_ERASE_BUTTON3) Then
-		 SetLog("Move Button 3 Found", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Move Button 3 Found", $COLOR_DARKGREY)
 		 ClickControlPos($POS_BUTTON_FAVORITE_MOVE3, 1)
 		 Return True
 	  EndIf
@@ -386,7 +387,7 @@ Func ClickFavoriteResourceMoveButton($number)
 	  DragControlPos("70:80", "70:20", 10);
 	  If _Sleep(1000) Then Return False
 	  If CheckForPixelList($CHECK_STATUS_FAVORITE_ERASE_BUTTON4) And Not CheckForPixelList($CHECK_STATUS_FAVORITE_ERASE_BUTTON3) Then
-		 SetLog("Move Button 4 Found", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Move Button 4 Found", $COLOR_DARKGREY)
 		 ClickControlPos($POS_BUTTON_FAVORITE_MOVE4, 1)
 		 Return True
 	  EndIf
@@ -396,7 +397,7 @@ EndFunc
 
 
 Func SelectTroop($number)
-   SetLog("Troop " & $number & " Selected", $COLOR_PINK)
+   SetLog($DEBUG, "Troop " & $number & " Selected", $COLOR_PINK)
 
    If $number == 1 Then
 	  ClickControlPos($POS_BUTTON_TROUP1, 2)
@@ -411,7 +412,7 @@ EndFunc
 
 
 Func SelectTroopInStatusMenu($number)
-   SetLog("Troop " & $number & " Selected", $COLOR_PINK)
+   SetLog($DEBUG, "Troop " & $number & " Selected", $COLOR_PINK)
 
    If $number == 1 Then
 	  ClickControlPos($POS_BUTTON_STATUS_TROUP1, 2)
@@ -427,7 +428,7 @@ EndFunc
 
 Func CollectResources()
 
-   SetLog("Collect all resources start", $COLOR_GREEN)
+   SetLog($DEBUG, "Collect all resources start", $COLOR_GREEN)
 
    ; Go to castle view
    Local $tryCount = 1
@@ -473,12 +474,12 @@ Func CollectResources()
    ; go out
    ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
    If _Sleep($ViewChangeWaitMSec) Then Return False
-   SetLog("Collect all resources end", $COLOR_GREEN)
+   SetLog($INFO, "Collect all resources end", $COLOR_GREEN)
    Return True
 EndFunc
 
 Func GoToFieldNearByMyCastle()
-   SetLog("Checking center field view...", $COLOR_PINK)
+   SetLog($DEBUG, "Checking center field view...", $COLOR_DARKGREY)
    ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
    If _Sleep($ViewChangeWaitMSec) Then Return False
 
@@ -487,7 +488,7 @@ EndFunc
 
 Func GoToField($silent = False)
    If Not $silent Then
-	  SetLog("Go to field view..", $COLOR_DARKGREY)
+	  SetLog($DEBUG, "Go to field view..", $COLOR_DARKGREY)
    EndIf
    Local $tryCount = 1
    While $RunState And $tryCount < $MaxTryCount
@@ -495,7 +496,7 @@ Func GoToField($silent = False)
 
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
 		 If Not $silent Then
-			SetLog("Castle view detected...", $COLOR_BLUE)
+			SetLog($DEBUG, "Castle view detected...", $COLOR_DARKGREY)
 		 EndIf
 
 		 ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
@@ -504,7 +505,7 @@ Func GoToField($silent = False)
 
 	  If CheckForPixelList($CHECK_MAIN_FIELD_VIEW) Then
 		 If Not $silent Then
-			SetLog("Field view detected...", $COLOR_BLUE)
+			SetLog($DEBUG, "Field view detected...", $COLOR_DARKGREY)
 		 EndIf
 		 ExitLoop
 	  EndIf
@@ -521,7 +522,7 @@ Func GoToField($silent = False)
 EndFunc
 
 Func DoRecruitBarrack()
-   SetLog("Recruit troop barrack...", $COLOR_PINK)
+   SetLog($INFO, "Recruit troop barrack...", $COLOR_PINK)
    If Not OpenMenu("Barrack", $POS_BUTTON_BARRACK_MENU, $CHECK_BUTTON_FIELD_MENU_CLOSE) Then
 	  Return False
    EndIf
@@ -565,12 +566,18 @@ Func CheckTroopAvailableList()
 		 $troopStr = $troopStr & ($i + 1) & " "
 	  EndIf
    Next
-   If StringLen($troopStr) > 0 Then
-	  SetLog("Troop Available : " & $troopStr, $COLOR_PINK)
-   Else
-	  SetLog("All Troops Busy", $COLOR_PINK)
-   EndIf
 
+   $SameTroopAvailableStatus = True
+   If $PrevTroopAvailableStr <> $troopStr Then
+	  $SameTroopAvailableStatus = False
+	  $PrevTroopAvailableStr = $troopStr
+
+	  If StringLen($troopStr) > 0 Then
+		 SetLog($INFO, "Troop Available : " & $troopStr, $COLOR_MEDBLUE)
+	  Else
+		 SetLog($INFO, "All Troops Busy", $COLOR_PINK)
+	  EndIf
+   EndIf
    CloseMenu("Status-Troops", $CHECK_BUTTON_FIELD_MENU_CLOSE)
    Return $result
 EndFunc
@@ -593,7 +600,7 @@ Func GoToNearByEmemy($troopNumber)
 	  EndIf
    Next
 
-   SetLog("Finding Move Button " & $actualTroopMoveNumber & " for Troop " & $troopNumber, $COLOR_PINK)
+   SetLog($DEBUG, "Finding Move Button " & $actualTroopMoveNumber & " for Troop " & $troopNumber, $COLOR_PINK)
 
    ; $direction = 1 : Up
    ; $direction = 2 : Down
@@ -619,7 +626,7 @@ Func GoToNearByEmemy($troopNumber)
 			$tryCount = $tryCount + 1
 
 			; Not found "move" button
-			SetLog("Move button " & $actualTroopMoveNumber & " not found", $COLOR_RED)
+			SetLog($ERROR, "Move button " & $actualTroopMoveNumber & " not found", $COLOR_RED)
 
 			; this means that there is no more enemy in this near field.
 			; go to anywhere to dragging
@@ -630,7 +637,7 @@ Func GoToNearByEmemy($troopNumber)
 			   ExitLoop
 			EndIf
 
-			SetLog("Go some near place...", $COLOR_PINK)
+			SetLog($DEBUG, "Go some near place...", $COLOR_PINK)
 
 			If $direction == 1 Then	; Up
 			   If Mod($tryCount, 2) == 0 Then
@@ -662,7 +669,7 @@ Func GoToNearByEmemy($troopNumber)
 		 If _Sleep(400) Then Return False
 	  WEnd
 
-	  SetLog("Enemy not found : direction = " & $direction, $COLOR_RED)
+	  SetLog($ERROR, "Enemy not found : direction = " & $direction, $COLOR_RED)
 
 	  ; Go to origin position again..
 	  ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
@@ -757,7 +764,7 @@ Func FindTreasureDungeonLevelNumber($number)
 
 		 If _Sleep($Delay) Then Return False
 		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_TREASURE_START) Then
-			_log("FindTreasureDungeonLevelNumber found : " & $centerPos[0] & "x" & $centerPos[1])
+			_log($DEBUG, "FindTreasureDungeonLevelNumber found : " & $centerPos[0] & "x" & $centerPos[1])
 
 			$currLevel = 0
 			If CheckForPixelList($firstItemGreen) And Not CheckForPixelList($fifthItem) Then
@@ -773,9 +780,9 @@ Func FindTreasureDungeonLevelNumber($number)
 			EndIf
 
 			If $currLevel >= 1 Then
-			   SetLog("Level " & $currLevel & " detected...", $COLOR_PINK)
+			   SetLog($DEBUG, "Level " & $currLevel & " detected...", $COLOR_PINK)
 			Else
-			   SetLog("Level detect failed...", $COLOR_RED)
+			   SetLog($ERROR, "Level detect failed...", $COLOR_RED)
 			EndIf
 
 			If $number == $currLevel Then
@@ -789,18 +796,18 @@ Func FindTreasureDungeonLevelNumber($number)
 	  Next
    Next
 
-   _log("FindTreasureDungeonLevelNumber total click count : " & $clickCount)
+   _log($DEBUG, "FindTreasureDungeonLevelNumber total click count : " & $clickCount)
    Return False
 EndFunc
 
 Func DoKillFieldMonster($troopNumber)
-   SetLog("Go Field Monster Attack : Troop " & $troopNumber, $COLOR_PURPLE)
+   SetLog($INFO, "Go Field Monster Attack : Troop " & $troopNumber, $COLOR_DARKGREY)
    Local $tryCount = 1
 
    GoToFieldNearByMyCastle()
 
    If Not GoToNearByEmemy($troopNumber) Then
-	  SetLog("Can not find any enemies...", $COLOR_RED)
+	  SetLog($ERROR, "Can not find any enemies...", $COLOR_RED)
 	  Return False
    EndIf
 
@@ -823,13 +830,13 @@ Func DoKillFieldMonsterCommon($troopNumber)
 	  If _SleepAbs(800) Then Return False
 
 	  If CheckForPixelList($CHECK_BUTTON_SELECT_TROOPS_CLOSE) Then
-		 SetLog("Open Select Troop Menu", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Open Select Troop Menu", $COLOR_DARKGREY)
 		 ExitLoop
 	  EndIf
 
 	  If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then
 		 If $setting_checked_use_march_order Then
-			SetLog("Use March Order", $COLOR_RED)
+			SetLog($INFO, "Use March Order", $COLOR_RED)
 			ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
 			If _Sleep(1200) Then Return False
 			$tryCount = 0
@@ -839,7 +846,7 @@ Func DoKillFieldMonsterCommon($troopNumber)
 		 Else
 			CloseMenu("Use-MarchOrder", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 			If _Sleep(300) Then Return False
-			SetLog("Need March Order (Option Off)", $COLOR_RED)
+			SetLog($INFO, "Need March Order (Option Off)", $COLOR_RED)
 			Return False
 		 EndIf
 	  EndIf
@@ -852,7 +859,7 @@ Func DoKillFieldMonsterCommon($troopNumber)
 	  If _Sleep(600) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
-	  SetLog("Error..", $COLOR_RED)
+	  SetLog($ERROR, "Error (DoKillFieldMonsterCommon)", $COLOR_RED)
 	  Return False
    EndIf
 
@@ -867,14 +874,14 @@ Func DoKillFieldMonsterCommon($troopNumber)
    If CheckForPixelList($CHECK_BUTTON_ALERT_YES_NO_CLOSE) Then
 	  ClickControlPos($POS_BUTTON_ALERT_YES, 2)
    ElseIf CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
-	  SetLog("Alert! Can not attack...", $COLOR_RED)
+	  SetLog($ERROR, "Alert! Can not attack...", $COLOR_RED)
 
 	  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 	  If _Sleep(400) Then Return False
 	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 	  Return False
    EndIf
-   SetLog("Go Attack!", $COLOR_PINK)
+   SetLog($INFO, "Go Attack : troup " & $troopNumber, $COLOR_RED)
 
    $Stats_AttackFieldMonster += 1
    updateStats()
@@ -884,13 +891,13 @@ EndFunc
 
 
 Func DoResourceGathering($troopNumber)
-   SetLog("Go Resource Gathering : Troop " & $troopNumber, $COLOR_OLIVE)
+   SetLog($INFO, "Go Resource Gathering : Troop " & $troopNumber, $COLOR_OLIVE)
    Local $tryCount = 1
 
    GoToField()
 
    If Not GoToResource($troopNumber) Then
-	  SetLog("Can not find any favorites...", $COLOR_RED)
+	  SetLog($ERROR, "Can not find any favorites...", $COLOR_RED)
 	  Return False
    EndIf
 
@@ -908,13 +915,13 @@ Func DoResourceGathering($troopNumber)
 	  If _Sleep(800) Then Return False
 
 	  If CheckForPixelList($CHECK_BUTTON_SELECT_TROOPS_CLOSE) Then
-		 SetLog("Open Select Troop Menu", $COLOR_PINK)
+		 SetLog($DEBUG, "Open Select Troop Menu", $COLOR_PINK)
 		 ExitLoop
 	  EndIf
 
 	  If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then
 		 If $setting_checked_use_march_order Then
-			SetLog("Use March Order", $COLOR_RED)
+			SetLog($INFO, "Use March Order", $COLOR_RED)
 			ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
 			If _Sleep(1200) Then Return False
 			$tryCount = 0
@@ -924,7 +931,7 @@ Func DoResourceGathering($troopNumber)
 		 Else
 			CloseMenu("Use-MarchOrder", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 			If _Sleep(300) Then Return False
-			SetLog("Need March Order (Option Off)", $COLOR_RED)
+			SetLog($ERROR, "Need March Order (Option Off)", $COLOR_RED)
 			Return False
 		 EndIf
 	  EndIf
@@ -937,12 +944,12 @@ Func DoResourceGathering($troopNumber)
   	  If _Sleep(600) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
-	  SetLog("Error..", $COLOR_RED)
+	  SetLog($ERROR, "Error (DoResourceGathering)", $COLOR_RED)
 	  Return False
    EndIf
 
    If CheckForPixelList($CHECK_BUTTON_RECALL) Then
-	  SetLog("Alert! already occupied...", $COLOR_RED)
+	  SetLog($ERROR, "Alert! already occupied...", $COLOR_RED)
 	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 	  Return False
    EndIf
@@ -956,14 +963,14 @@ Func DoResourceGathering($troopNumber)
    If _Sleep(1000) Then Return False
 
    If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
-	  SetLog("Alert! Can not gather...", $COLOR_RED)
+	  SetLog($ERROR, "Alert! Can not gather...", $COLOR_RED)
 
 	  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 	  If _Sleep(400) Then Return False
 	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 	  Return False
    EndIf
-   SetLog("Go Gathering!", $COLOR_PINK)
+   SetLog($INFO, "Go Gathering!", $COLOR_PINK)
 
    $Stats_ResourceGathering += 1
    updateStats()
@@ -983,7 +990,7 @@ Func EnterCastleMainMenu()
 	  If _Sleep(800) Then Return False
 
 	  If CheckForPixelList($CHECK_BUTTON_CASTLE_MENU_CLOSE) Then
-		 SetLog("Open Castle Menu", $COLOR_PINK)
+		 SetLog($INFO, "Open Castle Menu", $COLOR_PINK)
 		 ExitLoop
 	  EndIf
 
@@ -995,19 +1002,19 @@ Func EnterCastleMainMenu()
 	  If _SleepAbs(600) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
-	  SetLog("Error..", $COLOR_RED)
+	  SetLog($ERROR, "Error (EnterCastleMainMenu)", $COLOR_RED)
 	  Return False
    EndIf
 EndFunc
 
 Func DoExploreCastle($troopNumber)
-   SetLog("Go Explore Castle : Troop " & $troopNumber, $COLOR_OLIVE)
+   SetLog($INFO, "Go Explore Castle : Troop " & $troopNumber, $COLOR_OLIVE)
    Local $tryCount = 1
 
    GoToField()
 
    If Not GoToExploreCastle() Then
-	  SetLog("Can not find any castles", $COLOR_RED)
+	  SetLog($ERROR, "Can not find any castles", $COLOR_RED)
 	  Return False
    EndIf
    If _Sleep(1100) Then Return False
@@ -1023,13 +1030,13 @@ Func DoExploreCastle($troopNumber)
    $tryCount = 0
    While $RunState And $tryCount < $TryMaxCheckCount
 	  If CheckForPixelList($CHECK_BUTTON_SELECT_TROOPS_CLOSE) Then
-		 SetLog("Open Select Troop Menu", $COLOR_PINK)
+		 SetLog($DEBUG, "Open Select Troop Menu", $COLOR_PINK)
 		 ExitLoop
 	  EndIf
 
 	  If CheckForPixelList($CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then
 		 If $setting_checked_use_march_order Then
-			SetLog("Use March Order", $COLOR_RED)
+			SetLog($INFO, "Use March Order", $COLOR_RED)
 			ClickControlPos($POS_BUTTON_USE_ACTION_POINT, 1)
 			If _Sleep(1200) Then Return False
 			$tryCount = 0
@@ -1039,7 +1046,7 @@ Func DoExploreCastle($troopNumber)
 		 Else
 			CloseMenu("Use-MarchOrder", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 			If _Sleep(300) Then Return False
-			SetLog("Need March Order (Option Off)", $COLOR_RED)
+			SetLog($ERROR, "Need March Order (Option Off)", $COLOR_RED)
 			Return False
 		 EndIf
 	  EndIf
@@ -1049,7 +1056,7 @@ Func DoExploreCastle($troopNumber)
 	  If _Sleep(1000) Then Return False
    WEnd
    If $tryCount == $TryMaxCheckCount Then
-	  SetLog("Can not explore castle no more...", $COLOR_RED)
+	  SetLog($ERROR, "Can not explore castle no more...", $COLOR_RED)
 	  Return False
    EndIf
 
@@ -1062,14 +1069,14 @@ Func DoExploreCastle($troopNumber)
    If _Sleep(1000) Then Return False
 
    If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
-	  SetLog("Alert! Can not explore...", $COLOR_RED)
+	  SetLog($ERROR, "Alert! Can not explore...", $COLOR_RED)
 
 	  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 	  If _Sleep(400) Then Return False
 	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 	  Return False
    EndIf
-   SetLog("Go Explore!", $COLOR_PINK)
+   SetLog($INFO, "Go Explore!", $COLOR_PINK)
    Return True
 EndFunc
 
@@ -1077,13 +1084,13 @@ EndFunc
 Func DoDungeonSweep($tab, $level, $buttonPosList)
    $result = True
    $tryCount = 1
-   SetLog("Dungeon Attack Begin : " & $level, $COLOR_DARKGREY)
+   SetLog($INFO, "Dungeon Attack Begin : " & $level, $COLOR_DARKGREY)
 
    For $i = 0 To 4
 
 	  reloadConfig()
 
-	  SetLog("Dungeon Attack Stage : " & $i + 1, $COLOR_ORANGE)
+	  SetLog($INFO, "Dungeon Attack Stage : " & $i + 1, $COLOR_ORANGE)
 	  $foundSweepButton = False
 	  $foundInitButton = False
 
@@ -1101,7 +1108,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  EndIf
 
 	  If $enable == False Then
-		 SetLog("Dungeon Attack Skipped : " & $i + 1, $COLOR_PINK)
+		 SetLog($DEBUG, "Dungeon Attack Skipped : " & $i + 1, $COLOR_PINK)
 		 ContinueLoop
 	  EndIf
 
@@ -1113,11 +1120,11 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 
 		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_ATTACK_SWEEP) Then
 			$foundSweepButton = True
-			SetLog("Sweep Button Found", $COLOR_DARKGREY)
+			SetLog($DEBUG, "Sweep Button Found", $COLOR_DARKGREY)
 			ExitLoop
 		 ElseIf CheckForPixelList($CHECK_BUTTON_DUNGEON_ATTACK_INIT) Then
 			$foundInitButton = True
-			SetLog("Init Button Found", $COLOR_DARKGREY)
+			SetLog($DEBUG, "Init Button Found", $COLOR_DARKGREY)
 			ExitLoop
 		 Else
 			ClickControlPos($posInfo, 1)
@@ -1126,7 +1133,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 		 $tryCount = $tryCount + 1
 	  WEnd
 	  If $tryCount == $MaxTryCount Then
-		 SetLog("Can not find sweep button...", $COLOR_RED)
+		 SetLog($ERROR, "Can not find sweep button...", $COLOR_RED)
 		 Return False
 	  EndIf
 
@@ -1137,7 +1144,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 		 If $setting_checked_use_cash Then
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_INIT[0], 2)
 			If CheckForPixelList($CHECK_BUTTON_DUNGEON_USE_CASH_DENY) Then
-			   SetLog("Can not use cash no more", $COLOR_RED)
+			   SetLog($ERROR, "Can not use cash no more", $COLOR_RED)
 			   ClickControlScreen($CHECK_BUTTON_DUNGEON_USE_CASH_DENY[0])
 
 			   If _Sleep(800) Then Return False
@@ -1150,12 +1157,12 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 			   If _Sleep(1200) Then Return False
 
 			   If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
-				  SetLog("Out of Cash!", $COLOR_RED)
+				  SetLog($ERROR, "Out of Cash!", $COLOR_RED)
 				  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 				  If _Sleep(500) Then Return False
 				  ContinueLoop
 			   Else
-				  SetLog("Use Cach!", $COLOR_BLUE)
+				  SetLog($INFO, "Use Cach!", $COLOR_BLUE)
 
 				  $Stats_UseCashCount += 1
 				  updateStats()
@@ -1165,7 +1172,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 			EndIf
 		 Else
 			; Close Attack Menu
-			SetLog("Need Cash (Option Off)", $COLOR_RED)
+			SetLog($ERROR, "Need Cash (Option Off)", $COLOR_RED)
 			CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 			If _Sleep(800) Then Return False
 			ContinueLoop
@@ -1187,13 +1194,13 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 	  ClickControlPos($POS_BUTTON_DUNGEON_SWEEP_PLUS, 3, 100)	; and click more to fill fully
 	  If _Sleep(200) Then Return False
 
-	  SetLog("Dungeon Sweep Attack!", $COLOR_PINK)
+	  SetLog($INFO, "Dungeon Sweep Attack : Stage " & $level & "-" & ($i + 1), $COLOR_PINK)
 	  ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
 	  If _Sleep(1500) Then Return False
 
 	  ; alert OR still sweep start window with full slider state..
 	  If CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) OR CheckForPixelList("48.73:58.17 | 0x359EBA") Then
-		 SetLog("No Bread!", $COLOR_RED)
+		 SetLog($ERROR, "No Bread!", $COLOR_RED)
 
 		 CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 		 If _Sleep(500) Then Return False
@@ -1212,13 +1219,13 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
 
 			;ClickControlPos($POS_BUTTON_DUNGEON_SWEEP_PLUS, 13, 100)	; 10 clicked
 			;If _Sleep(800) Then Return False
-			SetLog("Use Bread!", $COLOR_BLUE)
+			SetLog($INFO, "Use Bread!", $COLOR_BLUE)
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_ATTACK_START[0], 2)
 
 			$Stats_UseBreadCount += 1
 			updateStats()
 		 Else
-			SetLog("Need Bread (Option Off)", $COLOR_RED)
+			SetLog($ERROR, "Need Bread (Option Off)", $COLOR_RED)
 			CloseMenu("Use-Bread", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
 			$result = False
 		 EndIf
@@ -1235,7 +1242,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
    ; Close Attack Menu one more
    CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 
-   SetLog("Dungeon Attack End : " & $level, $COLOR_PINK)
+   SetLog($INFO, "Dungeon Attack End : " & $level, $COLOR_PINK)
    Return $result
 EndFunc
 
@@ -1255,13 +1262,13 @@ Func CheckClanMissionMenu($closeMenu = True)
    If _SleepAbs(800) Then Return False
 
    If Not CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
-	  SetLog("Clan Mission Not found", $COLOR_PINK)
+	  SetLog($ERROR, "Clan Mission Not found", $COLOR_PINK)
 	  CloseAllMenu()
 	  Return False
    EndIf
 
    If Not CheckForPixel("59.02:21.54 | 0x2E576D") Then
-	  SetLog("Clan Mission Not found(2)", $COLOR_PINK)
+	  SetLog($ERROR, "Clan Mission Not found(2)", $COLOR_PINK)
 	  CloseAllMenu()
 	  Return False
    EndIf
@@ -1270,7 +1277,7 @@ Func CheckClanMissionMenu($closeMenu = True)
 	  CloseMenu("Clan-Mission", $CHECK_BUTTON_CLAN_MISSION_CLOSE, "", True)
    EndIf
 
-   SetLog("Clan Mission Menu Found", $COLOR_BLUE)
+   SetLog($INFO, "Clan Mission Menu Detected", $COLOR_BLUE)
    Return True
 EndFunc
 
@@ -1310,7 +1317,7 @@ Func DoClanMissionJob($troopNumber)
 	  EndIf
    Next
    If StringLen($missionStr) > 0 Then
-	  SetLog("Mission Detected : " & $missionStr, $COLOR_BLUE)
+	  SetLog($INFO, "Mission Detected : " & $missionStr, $COLOR_BLUE)
 
 	  $troopIndex = Mod($troopNumber-1, 3)
 
@@ -1319,8 +1326,7 @@ Func DoClanMissionJob($troopNumber)
 		 $firstMissionIndex = -1
 		 $missionIndex = -1
 		 For $i = 0 To 2
-			;SetLog("Mission " & ($i + 1) & " = " & $detectedMission, $COLOR_DARKGREY)
-			_console("Mission Loop Internal " & ($i + 1) & "=>" & $detectedMission[$i])
+			SetLog($DEBUG, "Mission " & ($i + 1) & " = " & $detectedMission, $COLOR_DARKGREY)
 			If $detectedMission[$i] Then
 			   If $firstMissionIndex < 0 Then
 				  $firstMissionIndex = $i
@@ -1340,30 +1346,32 @@ Func DoClanMissionJob($troopNumber)
 		 EndIf
 
 		 If $missionIndex < 0 Then
-			SetLog("Mission Not Found (Unexpected..)", $COLOR_RED)
-			$ClanMissionEnabledTemporarily = False
+			SetLog($ERROR, "Mission Not Found (Unexpected..)", $COLOR_RED)
+			$ClanMissionEnabledTemporarily[$troopNumber-1] = False
 			Return False
 		 EndIf
 
 		 _console("Mission Loop Result " & $missionIndex & ", " & $firstMissionIndex)
 
-		 SetLog("Go Mission " & ($missionIndex+1), $COLOR_PINK)
+		 SetLog($INFO, "Go Mission " & ($missionIndex+1), $COLOR_PINK)
 		 ClickControlPos($GoButtonPosArray[$missionIndex], 2)
 
 		 If _SleepAbs(1200) Then Return False
 
 		 If CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
-			SetLog("Could not go for the mission", $COLOR_RED)
+			SetLog($ERROR, "Could not go for the mission", $COLOR_RED)
 
 			; Mark as false for this mission!
 			$detectedMission[$missionIndex] = False
 			ContinueLoop
 		 EndIf
 
-		 Return DoKillFieldMonsterCommon($troopNumber)
+		 $res = DoKillFieldMonsterCommon($troopNumber)
+		 $ClanMissionEnabledTemporarily[$troopNumber-1] = $res
+		 Return $res
 	  WEnd
    Else
-	  SetLog("Mission Not Found", $COLOR_RED)
+	  SetLog($ERROR, "Mission Not Found", $COLOR_RED)
    EndIf
 
    Return False
@@ -1413,7 +1421,7 @@ Func CheckEnemyAttack()
 	  If _Sleep(600) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
-	  SetLog("Error in EnemyAttack..", $COLOR_RED)
+	  SetLog($ERROR, "Error in EnemyAttack..", $COLOR_RED)
 	  Return False
    EndIf
 
@@ -1438,7 +1446,7 @@ Func CheckUseBuffOfBlockAttack()
 
    If CheckForPixelList($BLOCK_ATTACK_ICON) Then
 	  ; Already Active buff
-	  ;SetLog("Buff active", $COLOR_RED)
+	  SetLog($TRACE, "Buff active", $COLOR_RED)
 	  Return True
    EndIf
 
@@ -1455,7 +1463,7 @@ Func CheckUseBuffOfBlockAttack()
 	  If _SleepAbs(200) Then Return False
    Next
    If $checkCount < 3 Then
-	  SetLog("wrong dectected buff...", $COLOR_RED)
+	  SetLog($ERROR, "wrong dectected buff...", $COLOR_RED)
 	  Return True
    EndIf
 
@@ -1466,7 +1474,7 @@ Func CheckUseBuffOfBlockAttack()
 
    If CheckForPixelList($CHECK_BUTTON_ALERT_YES_NO_CLOSE) Then
 	  ClickControlPos($POS_BUTTON_ALERT_YES, 2)
-	  SetLog("Buff activated!", $COLOR_RED)
+	  SetLog($INFO, "Buff activated!", $COLOR_RED)
 
 	  $Stats_UseBuffCount += 1
 	  updateStats()
@@ -1488,7 +1496,7 @@ Func CheckClickAllDoneButtons()
    $i = 2
    While $i >= 0
 	  If CheckForPixelList($DoneButtonInfoArray[$i]) Then
-		 SetLog("Mission Completed : " & ($i + 1), $COLOR_GREEN)
+		 SetLog($INFO, "Mission Completed : " & ($i + 1), $COLOR_GREEN)
 
 		 $labelStats_ClanMissionComplete += 1
 		 updateStats()
@@ -1504,13 +1512,10 @@ Func CheckClickAllDoneButtons()
 EndFunc
 
 Func MainAutoFieldAction()
-   SetLog("Auto Field Action Start", $COLOR_GREEN)
-   Local $attackCount = 0
-   Local $gatheringCount = 0
-   Local $exploreCount = 0
-   Local $missionAttackCount = 0
-   Local $loopCount = 0
-
+   SetLog($INFO, "Auto Field Action Start", $COLOR_GREEN)
+   $Stats_LoopCount = 0
+   $PrevTroopAvailableStr = "."
+   $SameTroopAvailableStatus = False
    CloseAllMenu()
 
    GoToFieldNearByMyCastle()
@@ -1520,28 +1525,27 @@ Func MainAutoFieldAction()
    EndIf
 
    While $RunState
-	  SetLog("Loop Count : " & $loopCount + 1, $COLOR_ORANGE)
+	  SetLog($DEBUG, "Loop Count : " & $Stats_LoopCount + 1, $COLOR_ORANGE)
 
-	  If $loopCount > 0 Then
-		 If Mod($loopCount, $LoopCount_Reboot) == 0 Then
+	  If $Stats_LoopCount > 0 Then
+		 If Mod($Stats_LoopCount, $LoopCount_Reboot) == 0 Then
 
 			If Not RebootNox() Then
 			   Return False
 			EndIf
-			$ClanMissionEnabledTemporarily = True
 			$Stats_RebootCount += 1
 			updateStats()
 		 EndIf
 
-		 If Mod($loopCount, $LoopCount_CollectResource) == 0 Then
+		 If Mod($Stats_LoopCount, $LoopCount_CollectResource) == 0 Then
 			CollectResources()
 		 EndIf
 
-		 If Mod($loopCount, $LoopCount_RecruitTroop) == 0 Then
+		 If Mod($Stats_LoopCount, $LoopCount_RecruitTroop) == 0 Then
 			DoRecruitBarrack()
 		 EndIf
 
-		 If Mod($loopCount, $LoopCount_ForcePullOut) == 0 Then
+		 If Mod($Stats_LoopCount, $LoopCount_ForcePullOut) == 0 Then
 			PullOutAllResourceTroops()
 		 EndIf
 	  EndIf
@@ -1549,13 +1553,13 @@ Func MainAutoFieldAction()
 	  CloseAllMenu()
 
 	  ; do jobs only one first time
-	  If $loopCount == 0 Then
+	  If $Stats_LoopCount == 0 Then
 		 DoRecruitBarrack()
 	  EndIf
 
 	  ; Checking Barrack's Red Mark -> We need to call DoRecruitBarrack()
 	  If CheckForPixelList($CHECK_BUTTON_BARRACK_RED_MARK) Then
-		 SetLog("Barrack Red Mark Detected...", $COLOR_RED)
+		 SetLog($INFO, "Barrack Red Mark Detected...", $COLOR_RED)
 		 ClickControlScreen($CHECK_BUTTON_BARRACK_RED_MARK[0])
 		 If _Sleep(800) Then Return False
 		 DoRecruitBarrack()
@@ -1563,12 +1567,12 @@ Func MainAutoFieldAction()
 
 	  ; Checking Bottom menu Red Mark -> Clan support
 	  If CheckForPixelList($CHECK_BUTTON_BOTTOM_MENU_RED_MARK) Then
-		 _log("Bottom Menu Red Mark Detected...")
+		 _log($DEBUG, "Bottom Menu Red Mark Detected...")
 		 ClickControlScreen($POS_BUTTON_BOTTOM_MENU_UNFOLD)
 		 If _SleepAbs(1000) Then Return False
 	  EndIf
 	  If CheckForPixelList($CHECK_BUTTON_CLAN_RED_MARK) Then
-		 SetLog("Clan Red Mark Detected...", $COLOR_RED)
+		 SetLog($INFO, "Clan Red Mark Detected...", $COLOR_RED)
 		 ClickControlScreen($CHECK_BUTTON_CLAN_RED_MARK[0], 2)
 		 If _SleepAbs(800) Then Return False
 		 ClickControlScreen("30.68:78.39", 2)
@@ -1592,67 +1596,64 @@ Func MainAutoFieldAction()
 
 			   reloadConfig()
 
-			   If $ClanMissionEnabledTemporarily And $ActivatedClanMissionMenu And $setting_checked_mission_attack And $setting_mission_attack_troup_enabled[$troopIndex] Then
+			   If $ClanMissionEnabledTemporarily[$troopIndex] And $ActivatedClanMissionMenu And $setting_checked_mission_attack And $setting_mission_attack_troup_enabled[$troopIndex] Then
 
 				  If DoClanMissionJob($troopIndex+1) Then
-					 $missionAttackCount = $missionAttackCount + 1
-					 SetLog("Mission Attack Count : " & $missionAttackCount, $COLOR_BLUE)
 				  EndIf
 
 			   ElseIf $setting_checked_field_attack And $setting_attack_troup_enabled[$troopIndex] Then
 
 				  If DoKillFieldMonster($troopIndex+1) Then
-					 $attackCount = $attackCount + 1
-					 SetLog("Attack Count : " & $attackCount, $COLOR_BLUE)
+					 $ClanMissionEnabledTemporarily[$troopIndex] = True
 				  EndIf
 
 			   ElseIf $setting_checked_resource_gathering And $setting_gather_troup_enabled[$troopIndex] Then
 
 				  If DoResourceGathering($troopIndex+1) Then
-					 $gatheringCount = $gatheringCount + 1
-					 SetLog("Gathering Count : " & $gatheringCount, $COLOR_BLUE)
+					 $ClanMissionEnabledTemporarily[$troopIndex] = True
 				  EndIf
 
 			   ElseIf $setting_checked_explore_castle And $setting_explore_troup_enabled[$troopIndex] Then
 
 				  If DoExploreCastle($troopIndex+1) Then
-					 $exploreCount = $exploreCount + 1
-					 SetLog("Explore Count : " & $exploreCount, $COLOR_BLUE)
+					 $ClanMissionEnabledTemporarily[$troopIndex] = True
 				  EndIf
 
 			   Else
-				  ;SetLog("Nothing to do. check your setting", $COLOR_RED)
+				  ; Nothing to do
 			   EndIf
 			EndIf
 		 Next
 	  EndIf
 
 	  ; Idle 5 sec..
-	  SetLog("Idle " & $FieldActionIdleMSec & " Msec", $COLOR_BLACK)
+	  SetLog($DEBUG, "Idle " & $FieldActionIdleMSec & " Msec", $COLOR_BLACK)
 	  If _SleepAbs($FieldActionIdleMSec) Then Return False
 
 	  ClickControlPos($POS_BUTTON_FIELD_FIRST_MENU)
 	  If _SleepAbs(600) Then Return False
+	  If CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
+		 CheckCurrentMenuAfterIdleTimeInternal()
 
-	  If $ClanMissionEnabledTemporarily = False And CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
 		 CloseAllMenu()
 		 If _SleepAbs(600) Then Return False
-		 SetLog("Clan Mission disabled temporarily", $COLOR_DARKGREY)
 		 ClickControlPos($POS_BUTTON_FIELD_SECOND_MENU)
 		 If _SleepAbs(600) Then Return False
+		 CheckCurrentMenuAfterIdleTimeInternal()
+	  Else
+		 CheckCurrentMenuAfterIdleTimeInternal()
 	  EndIf
-
-	  CheckCurrentMenuAfterIdleTimeInternal()
 
 	  CloseAllMenu()
 
 	  reloadConfig()
 
-	  $loopCount = $loopCount + 1
+	  $Stats_LoopCount = $Stats_LoopCount + 1
+	  updateStats()
 	  If _Sleep(1000) Then Return False
    WEnd
 
-   SetLog("Auto Field Action End", $COLOR_GREEN)
+   SetLog($INFO, "Auto Field Action End", $COLOR_GREEN)
    Return True
 
 EndFunc
@@ -1668,7 +1669,7 @@ Func CheckCurrentMenuAfterIdleTimeInternal()
 EndFunc
 
 Func MainDungeonSweep($tab)
-   SetLog("Auto Dungeon Sweep Start : " & $tab, $COLOR_GREEN)
+   SetLog($INFO, "Auto Dungeon Sweep Start : " & $tab, $COLOR_GREEN)
 
    CloseAllMenu()
 
@@ -1719,12 +1720,12 @@ Func MainDungeonSweep($tab)
 
    CloseMenu("Dungeon-Menu", $CHECK_BUTTON_TOP_CLOSE)
 
-   SetLog("Auto Dungeon Sweep End : " & $tab, $COLOR_GREEN)
+   SetLog($INFO, "Auto Dungeon Sweep End : " & $tab, $COLOR_GREEN)
 EndFunc
 
 
 Func MainDungeonTreasure()
-   SetLog("Auto Dungeon Treasure Start", $COLOR_GREEN)
+   SetLog($INFO, "Auto Dungeon Treasure Start", $COLOR_GREEN)
 
    CloseAllMenu()
 
@@ -1764,13 +1765,13 @@ Func MainDungeonTreasure()
 
 		 If $attackClickCount >= $MaxAttackClickTryCount Then
 			SetLog("Can not try treasure attack...", $COLOR_RED)
-			CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
+			CloseMenu($INFO, "Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 			If _Sleep(800) Then Return False
 			ExitLoop
 		 EndIf
 	  Else
 		 $tryCount += 1
-		 SetLog("Click Treasure Level Button : " & $setting_dungeon_treasure_level_number, $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Click Treasure Level Button : " & $setting_dungeon_treasure_level_number, $COLOR_DARKGREY)
 		 Click($levelButtonPos[0], $levelButtonPos[1], 1)
 		 Click($levelButtonPos[0] - 10, $levelButtonPos[1], 1)
 		 Click($levelButtonPos[0] + 10, $levelButtonPos[1], 1)
@@ -1782,7 +1783,7 @@ Func MainDungeonTreasure()
 	  SelectTroop(1)
 	  If _Sleep(400) Then Return False
 
-	  SetLog("Treasure Attack!", $COLOR_PINK)
+	  SetLog($INFO, "Treasure Attack!", $COLOR_PINK)
 	  ClickControlPos($POS_BUTTON_START_ACTION, 2)
 	  If _SleepAbs(1000) Then Return False
 	  ClickControlPos($POS_BUTTON_START_ACTION, 2)
@@ -1794,7 +1795,7 @@ Func MainDungeonTreasure()
 		 reloadConfig()
 
 		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_WIN_LEAVE) Then
-			SetLog("Treasure Attack Win!", $COLOR_BLUE)
+			SetLog($INFO, "Treasure Attack Win!", $COLOR_BLUE)
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_WIN_LEAVE[0], 2)
 			If _Sleep(3000) Then Return False
 			$loseCount = 0
@@ -1803,7 +1804,7 @@ Func MainDungeonTreasure()
 
 		 If CheckForPixelList($CHECK_BUTTON_DUNGEON_LOSE_LEAVE) Then
 			$win = False
-			SetLog("Treasure Attack Lose!", $COLOR_RED)
+			SetLog($INFO, "Treasure Attack Lose!", $COLOR_RED)
 			ClickControlScreen($CHECK_BUTTON_DUNGEON_LOSE_LEAVE[0], 2)
 			If _Sleep(3000) Then Return False
 			$loseCount += 1
@@ -1831,7 +1832,7 @@ Func MainDungeonTreasure()
 		 ClickControlPos("89.52:91.9", 1, 0, 100)
 
 		 $tickCount += 1
-		 SetLog("Attack Tick Count : " & $tickCount & "(" & $setting_dungeon_treasure_main_skill_tick_count & ")", $COLOR_DARKGREY)
+		 SetLog($INFO, "Attack Tick Count : " & $tickCount & "(" & $setting_dungeon_treasure_main_skill_tick_count & ")", $COLOR_DARKGREY)
 	  WEnd
 
 	  If Not $win And $loseCount >= 3 Then
@@ -1840,12 +1841,12 @@ Func MainDungeonTreasure()
    WEnd
 
    CloseMenu("Dungeon-Menu", $CHECK_BUTTON_TOP_CLOSE)
-   SetLog("Auto Dungeon Treasure End", $COLOR_GREEN)
+   SetLog($INFO, "Auto Dungeon Treasure End", $COLOR_GREEN)
 EndFunc
 
 
 Func MainTodayJob()
-   SetLog("Auto Today Job Start", $COLOR_GREEN)
+   SetLog($INFO, "Auto Today Job Start", $COLOR_GREEN)
 
    ; Go to castle initial view
    ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
@@ -1878,7 +1879,7 @@ Func MainTodayJob()
 
    DoGetClanMission()
 
-   SetLog("Auto Today Job End", $COLOR_GREEN)
+   SetLog($INFO, "Auto Today Job End", $COLOR_GREEN)
 EndFunc
 
 

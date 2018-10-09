@@ -30,6 +30,7 @@ Global $setting_checked_use_march_order = False
 Global $setting_dungeon_treasure_level_number = 3
 Global $setting_dungeon_treasure_main_skill_tick_count = 13
 Global $setting_dungeon_sweep_troop = 2
+Global $setting_clan_castle_reverse_count = 1
 
 Func reloadConfig()
    saveConfig()

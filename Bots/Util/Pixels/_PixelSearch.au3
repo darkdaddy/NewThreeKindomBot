@@ -4,7 +4,7 @@ Func _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)
 	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
 	For $x = $iRight - $iLeft To 0 Step -1
 		For $y = 0 To $iBottom - $iTop
-			;_log($x & "x" & $y & ":" & _GetPixelColor($x, $y) & " <> " & $iColor )
+			_log($TRACE, $x & "x" & $y & ":" & _GetPixelColor($x, $y) & " <> " & $iColor )
 			If _ColorCheck(_GetPixelColor($x, $y), $iColor, $iColorVariation) Then
 				Local $Pos[2] = [$iLeft + $x, $iTop + $y]
 				Return $Pos

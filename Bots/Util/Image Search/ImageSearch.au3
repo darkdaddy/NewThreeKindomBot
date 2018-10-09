@@ -23,7 +23,7 @@ Func _ImageSearchArea($findImageOrg, $resultPosition, $x1, $y1, $right, $bottom,
 		 Return 0
 	   EndIf
 
-	   ;_log("ImageSearchArea Checking : " & $findImage )
+	   _log($TRACE, "ImageSearchArea Checking : " & $findImage )
 
 	   Global $HBMP = $hHBitmap
 	   ;MsgBox(0,"asd","" & $x1 & " " & $y1 & " " & $right & " " & $bottom)
@@ -60,7 +60,7 @@ Func _ImageSearchArea($findImageOrg, $resultPosition, $x1, $y1, $right, $bottom,
 			   $x = $x + Int(Number($array[4]) / 2)
 			   $y = $y + Int(Number($array[5]) / 2)
 			EndIf
-		   _log("ImageSearchArea OK : " & $findImage & " => pos : " & $x & "x" & $y )
+		   _log($TRACE, "ImageSearchArea OK : " & $findImage & " => pos : " & $x & "x" & $y )
 		   Return 1
 		EndIf
     Next

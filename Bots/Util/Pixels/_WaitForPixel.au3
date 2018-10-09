@@ -12,7 +12,7 @@ Func _WaitForPixelCapture($iLeft, $iTop, $iRight, $iBottom, $iX, $iY, $nColor, $
 	Do
 		If _Sleep($iDelay) Then ExitLoop
 		_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
-		_log("_WaitForPixelCapture : " & $iX & " " & $iY & " " & $iRight & " " &  $iBottom & _GetPixelColor($iX, $iY))
+		_log($TRACE, "_WaitForPixelCapture : " & $iX & " " & $iY & " " & $iRight & " " &  $iBottom & _GetPixelColor($iX, $iY))
 		If _ColorCheck(_GetPixelColor($iX, $iY), $nColor, $tolerance) Then Return True
 	Until TimerDiff($timer) > $iTimeout
 	Return False

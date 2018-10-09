@@ -121,7 +121,7 @@ While 1
 WEnd
 
 Func runBot()
-   _log("START" )
+   _log($INFO, "START")
    Local $iSec, $iMin, $iHour
 
    Local $errorCount = 0
@@ -141,7 +141,7 @@ Func runBot()
 
    $lastElapsed = StringFormat("%02i:%02i:%02i", $iHour, $iMin, $iSec)
 
-   _log("Bye" )
+   _log($INFO, "Bye" )
    btnStop()
 EndFunc
 
@@ -180,14 +180,14 @@ Func UpdateWindowRect()
    If Not @error Then
 	  If $r[2] > $NoxMinWinSize AND $r[3] > $NoxMinWinSize Then
 		 $WinRect = $r
-		 ;_log("Nox Rect : " & $WinRect[0] & "," & $WinRect[1] & " " & $WinRect[2] & "x" & $WinRect[3])
+		 _log($TRACE, "Nox Rect : " & $WinRect[0] & "," & $WinRect[1] & " " & $WinRect[2] & "x" & $WinRect[3])
 	  EndIf
    EndIf
 
    $r = WinGetPos($HWnDTool)
    If Not @error Then
 	  $WinRectTool = $r
-	  ;_log("Nox Tool Rect : " & $WinRectTool[0] & "," & $WinRectTool[1] & " " & $WinRectTool[2] & "x" & $WinRectTool[3])
+	  _log($TRACE, "Nox Tool Rect : " & $WinRectTool[0] & "," & $WinRectTool[1] & " " & $WinRectTool[2] & "x" & $WinRectTool[3])
    EndIf
 EndFunc
 
@@ -247,10 +247,10 @@ Func IsNoxActivated()
 
    Local $iState = WinGetState($HWnD)
    If BitAND($iState, 8) Then
-	  _log("Nox activated")
+	  _log($DEBUG, "Nox activated")
 	  Return True
    EndIf
-   _log("Nox Inactivated")
+   _log($DEBUG, "Nox Inactivated")
    Return False
 EndFunc
 
@@ -264,7 +264,7 @@ Func GetPixelColor($x, $y)
 	  $x = $WinRect[0] + $x
 	  $y = $WinRect[1] + $y
 	  Local $c = PixelGetColor($x, $y)
-	  ;_log("GetPixelColor : " & $x & "x" & $y & " => " & Hex($c));
+	  _log($DEBUG, "GetPixelColor : " & $x & "x" & $y & " => " & Hex($c));
 	  Return StringMid(Hex($c), 3)
    EndIf
 EndFunc
@@ -295,7 +295,7 @@ Func MyPixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)
 EndFunc
 
 Func CheckForPixel($screenInfo, $PixelTolerance = 15)
-   ;_log("CheckForPixel start :" & $screenInfo);
+   _log($TRACE, "CheckForPixel start :" & $screenInfo);
    UpdateWindowRect()
 
    Local $infoArr = StringSplit($screenInfo, "|")
@@ -325,7 +325,7 @@ Func CheckForPixel($screenInfo, $PixelTolerance = 15)
 		 Local $color = StringStripWS($colorArr[$c], $STR_STRIPLEADING + $STR_STRIPTRAILING)
 		 Local $aCoord = MyPixelSearch($x-$RegionSize, $y-$RegionSize, $x+$RegionSize, $y+$RegionSize+$RegionSize, $color, $PixelTolerance)
 		 If IsArray($aCoord) = True Then
-			;_log("CheckForPixel : [" & $p & "] " & $pos[0] & " x " & $pos[1] & " => OK " & ($aCoord[0]) & " x " & ($aCoord[1]) & ", " & $color & " (" & $answerColor & ") <" & $PixelTolerance & ">");
+			_log($DEBUG, "CheckForPixel : [" & $p & "] " & $pos[0] & " x " & $pos[1] & " => OK " & ($aCoord[0]) & " x " & ($aCoord[1]) & ", " & $color & " (" & $answerColor & ") <" & $PixelTolerance & ">");
 			$okCount = $okCount + 1
 			$found = True
 			ExitLoop
@@ -333,7 +333,7 @@ Func CheckForPixel($screenInfo, $PixelTolerance = 15)
 	  Next
 
 	  If $found = False Then
-		 _log("CheckForPixel : " & $pos[0] & "(" & $x & ")(" & $WinRect[0]+$x & ") x " & $pos[1] & "(" & $y & ")(" & $WinRect[1]+$y & ") => FAIL (" & $answerColor & ") : " & $screenInfo & " <" & $PixelTolerance & ">");
+		 _log($DEBUG, "CheckForPixel : " & $pos[0] & "(" & $x & ")(" & $WinRect[0]+$x & ") x " & $pos[1] & "(" & $y & ")(" & $WinRect[1]+$y & ") => FAIL (" & $answerColor & ") : " & $screenInfo & " <" & $PixelTolerance & ">");
 		 ExitLoop
 	  EndIf
    Next
@@ -394,7 +394,7 @@ Func CloseMenu($name, $checkScreenInfos, $checkExtraScreenInfos = "", $silent = 
 			ClickControlPos($infoArr[1], 1, 800)
 			If _Sleep(800) Then Return
 			If Not $silent Then
-			   SetLog("Close " & $name & " Menu", $COLOR_DARKGREY)
+			   SetLog($DEBUG, "Close " & $name & " Menu", $COLOR_DARKGREY)
 			EndIf
 		 Else
 			Return
@@ -409,12 +409,12 @@ Func OpenMenu($name, $buttonPos, $checkScreenInfos)
    $tryCount = 0
    While $RunState
 	  If CheckForPixelList($checkScreenInfos) Then
-		 SetLog("Open " & $name & " Menu", $COLOR_DARKGREY)
+		 SetLog($DEBUG, "Open " & $name & " Menu", $COLOR_DARKGREY)
 		 Return True
 	  EndIf
 
 	  If $tryCount > 0 Then
-		 SetLog("Waiting " & $name & " Menu", $COLOR_DARKGREY)
+		 SetLog($INFO, "Waiting " & $name & " Menu", $COLOR_DARKGREY)
 	  EndIf
 	  ClickControlPos($buttonPos, 1)
 	  If _Sleep(800) Then Return
@@ -423,7 +423,7 @@ Func OpenMenu($name, $buttonPos, $checkScreenInfos)
 		 ExitLoop
 	  EndIf
    WEnd
-   SetLog("Failed to open " & $name, $COLOR_RED)
+   SetLog($ERROR, "Failed to open " & $name, $COLOR_RED)
    Return False
 EndFunc
 

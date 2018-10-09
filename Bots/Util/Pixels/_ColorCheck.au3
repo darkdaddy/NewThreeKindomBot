@@ -19,7 +19,7 @@ Func _ColorCheck($nColor1, $nColor2, $sVari = 5)
 	$Blue2 = Dec(StringMid(String($nColor2), 3, 2))
 	$Green2 = Dec(StringMid(String($nColor2), 5, 2))
 
-	;_log("ColorCheck :" & $nColor1 & " <> " & $nColor2 & " " & $sVari )
+	_log($TRACE, "ColorCheck :" & $nColor1 & " <> " & $nColor2 & " " & $sVari )
 
 	If Abs($Blue1 - $Blue2) > $sVari Then Return False
 	If Abs($Green1 - $Green2) > $sVari Then Return False

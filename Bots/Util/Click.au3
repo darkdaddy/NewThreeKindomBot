@@ -11,7 +11,7 @@ Func Click($x, $y, $times = 1, $speed = 0)
  EndFunc   ;==>Click
 
  Func ClickHandle($handle, $x, $y, $times = 1, $speed = 0)
-   ;_log($x & "x" & $y & " clicked" )
+   ;_log($DEBUG, $x & "x" & $y & " clicked" )
    If $times <> 1 Then
 		For $i = 0 To ($times - 1)
 			ControlClick($handle, "", "", "left", "1", $x, $y)
@@ -41,7 +41,7 @@ Func ClickButtonImageArea($btnPath, $bound, $check = True)
 	  If ImageSearchArea($btnPath, 0, $bound, $x, $y, 80) Then
 		 ; Click This Button
 		 Click($x, $y);
-		 _log("Button Clicked Area : " & $btnPath & " - " & $x & " x " & $y )
+		 _log($TRACE, "Button Clicked Area : " & $btnPath & " - " & $x & " x " & $y )
 
 		 If $check = False Then Return True
 

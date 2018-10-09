@@ -25,7 +25,7 @@ Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = $WinRect[2], $iBottom = $Wi
 	  _WinAPI_SelectObject($hMemDC, $hObjectOld)
 	  _WinAPI_ReleaseDC($HWnD, $hDC_Capture)
 
-	  ;_log("_CaptureRegion : " & $iLeft & "," & $iTop & " " & $iRight & "x" & $iBottom )
+	  _log($TRACE, "_CaptureRegion : " & $iLeft & "," & $iTop & " " & $iRight & "x" & $iBottom )
 
 ;	getBSPos()
 ;	$hHBitmap = _ScreenCapture_Capture("C:\\a.jpg", $iLeft + $BSpos[0], $iTop + $BSpos[1], $iRight + $BSpos[0], $iBottom + $BSpos[1])

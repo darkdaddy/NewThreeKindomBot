@@ -228,6 +228,13 @@ $y = $contentPaneY + 20
 Local $statLabelW = 140
 Local $statLabelGap = 20
 
+GUICtrlCreateLabel("Loop Count", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_LoopCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+GUICtrlSetColor($labelStats_LoopCount, $COLOR_BLUE)
+
+$y += 30
+$x = $contentPaneX
 GUICtrlCreateLabel("Enemy Attact Recall", $x, $y, $statLabelW, 20)
 $x += $statLabelW + $statLabelGap
 $labelStats_EnemyAttackRecall = GUICtrlCreateLabel("0", $x, $y, 60, 20)
@@ -332,19 +339,19 @@ Func InitBot()
 	  WinActivate($HWnD)
 	  IsNoxActivated()
 
-	   _log("NoxTitleBarHeight : " & $NoxTitleBarHeight )
-	   _log("ThickFrameSize : " & $ThickFrameSize )
-	  SetLog("Nox : " & $WinRect[0] & "," & $WinRect[1] & " " & $WinRect[2] & "x" & $WinRect[3] & "(" & $setting_thick_frame_size & ")", $COLOR_ORANGE)
+	   _log($INFO, "NoxTitleBarHeight : " & $NoxTitleBarHeight )
+	   _log($INFO, "ThickFrameSize : " & $ThickFrameSize )
+	  SetLog($INFO, "Nox : " & $WinRect[0] & "," & $WinRect[1] & " " & $WinRect[2] & "x" & $WinRect[3] & "(" & $setting_thick_frame_size & ")", $COLOR_ORANGE)
 	  If $HWndTool Then
-		 SetLog("NoxTool : " & $WinRectTool[0] & "," & $WinRectTool[1] & " " & $WinRectTool[2] & "x" & $WinRectTool[3], $COLOR_ORANGE)
+		 SetLog($INFO, "NoxTool : " & $WinRectTool[0] & "," & $WinRectTool[1] & " " & $WinRectTool[2] & "x" & $WinRectTool[3], $COLOR_ORANGE)
 	  EndIf
 
 	  If $WinRect[2] < $AppMinWinWidth Then
-		  SetLog("Nox Minimum Width = " & $AppMinWinWidth, $COLOR_RED)
+		  SetLog($ERROR, "Nox Minimum Width = " & $AppMinWinWidth, $COLOR_RED)
 		  Return False
 	  EndIf
    Else
-	  SetLog("Nox Not Found", $COLOR_RED)
+	  SetLog($ERROR, "Nox Not Found", $COLOR_RED)
 	  btnStop()
    EndIf
 
@@ -397,7 +404,7 @@ EndFunc
 
 
 Func btnStart()
-   _log("START BUTTON CLICKED" )
+   _log($DEBUG, "START BUTTON CLICKED" )
 
    clearStats()
 
@@ -417,7 +424,7 @@ Func btnStop()
 	  Return
    EndIf
 
-   _log("STOP BUTTON CLICKED" )
+   _log($DEBUG, "STOP BUTTON CLICKED" )
 
    GUICtrlSetState($btnStart, $GUI_SHOW)
    GUICtrlSetState($btnStop, $GUI_HIDE)
@@ -431,7 +438,7 @@ Func btnStop()
    GUICtrlSetState($btnPullout, $GUI_ENABLE)
    GUICtrlSetState($btnGetClanMission, $GUI_ENABLE)
 
-   SetLog("Bot has stopped", $COLOR_ORANGE)
+   SetLog($INFO, "Bot has stopped", $COLOR_ORANGE)
 EndFunc
 
 Func btnCalcPos()
@@ -470,7 +477,7 @@ Func btnTestColor()
    $y = $pos[1]
    Local $answerColor = GetPixelColor($x, $y)
 
-   _log( $pos[0] & "(" & $x & ")" & "x" & $pos[1] & "(" & $y & ")" & " => " & $answerColor)
+   _log($DEBUG, $pos[0] & "(" & $x & ")" & "x" & $pos[1] & "(" & $y & ")" & " => " & $answerColor)
 
    GUICtrlSetData($inputTestColor, "0x" & $answerColor)
    GUICtrlSetBkColor($btnTestColor, Number("0x" & $answerColor))
@@ -543,7 +550,7 @@ EndFunc
 
 Func changeGameSpeed($newSpeed)
    If $newSpeed <> $setting_game_speed_rate Then
-	  SetLog("Game speed : " & $setting_game_speed_rate & " => " & $newSpeed, $COLOR_BLUE)
+	  SetLog($INFO, "Game speed : " & $setting_game_speed_rate & " => " & $newSpeed, $COLOR_BLUE)
 	  $setting_game_speed_rate = $newSpeed
    EndIf
 EndFunc
@@ -559,6 +566,7 @@ Func clearStats()
 EndFunc
 
 Func updateStats()
+   GUICtrlSetData($labelStats_LoopCount, $Stats_LoopCount)
    GUICtrlSetData($labelStats_EnemyAttackRecall, $Stats_EnemyAttackRecall)
    GUICtrlSetData($labelStats_ResourceGathering, $Stats_ResourceGathering)
    GUICtrlSetData($labelStats_AttackFieldMonster, $Stats_AttackFieldMonster)
