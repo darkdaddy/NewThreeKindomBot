@@ -335,31 +335,37 @@ Func DoGetClanMissionInternal($castleIndex)
 EndFunc
 
 Func ClickMoveButton($number)
-   If $number == 1 Then
-	  If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE1) Then
-		 SetLog($DEBUG, "Move Button 1 Found", $COLOR_DARKGREY)
-		 ClickControlPos($POS_BUTTON_GREEN_MOVE1, 1)
+   Local const $logLevel = $DEBUG
+   Local $tryCount = 0
+   While $RunState And $tryCount < $MaxTryCount
+	  If $number == 1 Then
+		 If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE1) Then
+			SetLog($logLevel, "Move Button 1 Found", $COLOR_DARKGREY)
+			ClickControlPos($POS_BUTTON_GREEN_MOVE1, 1)
+		 EndIf
+	  ElseIf $number == 2 Then
+		 If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE2) Then
+			SetLog($logLevel, "Move Button 2 Found", $COLOR_DARKGREY)
+			ClickControlPos($POS_BUTTON_GREEN_MOVE2, 1)
+		 EndIf
+	  ElseIf $number == 3 Then
+		 If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE3) Then
+			SetLog($logLevel, "Move Button 3 Found", $COLOR_DARKGREY)
+			ClickControlPos($POS_BUTTON_GREEN_MOVE3, 1)
+		 EndIf
+	  ElseIf $number == 4 Then
+		 If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE4) Then
+			SetLog($logLevel, "Move Button 4 Found", $COLOR_DARKGREY)
+			ClickControlPos($POS_BUTTON_GREEN_MOVE4, 1)
+		 EndIf
+	  EndIf
+
+	  If Not CheckForPixelList($CHECK_BUTTON_NEARBY_CLOSE) Then
 		 Return True
 	  EndIf
-   ElseIf $number == 2 Then
-	  If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE2) Then
-		 SetLog($DEBUG, "Move Button 2 Found", $COLOR_DARKGREY)
-		 ClickControlPos($POS_BUTTON_GREEN_MOVE2, 1)
-		 Return True
-	  EndIf
-   ElseIf $number == 3 Then
-	  If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE3) Then
-		 SetLog($DEBUG, "Move Button 3 Found", $COLOR_DARKGREY)
-		 ClickControlPos($POS_BUTTON_GREEN_MOVE3, 1)
-		 Return True
-	  EndIf
-   ElseIf $number == 4 Then
-	  If CheckForPixelList($CHECK_BUTTON_GREEN_MOVE4) Then
-		 SetLog($DEBUG, "Move Button 4 Found", $COLOR_DARKGREY)
-		 ClickControlPos($POS_BUTTON_GREEN_MOVE4, 1)
-		 Return True
-	  EndIf
-   EndIf
+	  $tryCount += 1
+   WEnd
+   SetLog($ERROR, "Error (ClickMoveButton)", $COLOR_RED)
    Return False
 EndFunc
 
@@ -547,16 +553,16 @@ Func CheckTroopAvailableList()
    EndIf
    If _Sleep(800) Then Return 0
 
-   If Not CheckForPixelList($CHECK_STATUS_ATTACK_TROOP1, $DefaultTolerance, True) Then
+   If CheckForPixelList($CHECK_STATUS_ATTACK_TROOP1, $DefaultTolerance) Then
 	  $result[0] = True
    EndIf
-   If Not CheckForPixelList($CHECK_STATUS_ATTACK_TROOP2, $DefaultTolerance, True) Then
+   If CheckForPixelList($CHECK_STATUS_ATTACK_TROOP2, $DefaultTolerance) Then
 	  $result[1] = True
    EndIf
-   If NOT CheckForPixelList($CHECK_STATUS_ATTACK_TROOP3, $DefaultTolerance, True) Then
+   If CheckForPixelList($CHECK_STATUS_ATTACK_TROOP3, $DefaultTolerance) Then
 	  $result[2] = True
    EndIf
-   If NOT CheckForPixelList($CHECK_STATUS_ATTACK_TROOP4, $DefaultTolerance, True) Then
+   If CheckForPixelList($CHECK_STATUS_ATTACK_TROOP4, $DefaultTolerance) Then
 	  $result[3] = True
    EndIf
 
@@ -801,7 +807,7 @@ Func FindTreasureDungeonLevelNumber($number)
 EndFunc
 
 Func DoKillFieldMonster($troopNumber)
-   SetLog($INFO, "Go Field Monster Attack : Troop " & $troopNumber, $COLOR_DARKGREY)
+   SetLog($DEBUG, "Go Field Monster Attack : Troop " & $troopNumber, $COLOR_DARKGREY)
    Local $tryCount = 1
 
    GoToFieldNearByMyCastle()
@@ -1513,9 +1519,12 @@ EndFunc
 
 Func MainAutoFieldAction()
    SetLog($INFO, "Auto Field Action Start", $COLOR_BLACK)
+
+   ; clear global variables
    $Stats_LoopCount = 0
    $PrevTroopAvailableStr = "."
    $SameTroopAvailableStatus = False
+
    CloseAllMenu()
 
    GoToFieldNearByMyCastle()
@@ -1525,6 +1534,8 @@ Func MainAutoFieldAction()
    EndIf
 
    While $RunState
+	  Local $loopJobPerformed = False
+
 	  SetLog($DEBUG, "Loop Count : " & $Stats_LoopCount + 1, $COLOR_ORANGE)
 
 	  If $Stats_LoopCount > 0 Then
@@ -1539,15 +1550,22 @@ Func MainAutoFieldAction()
 
 		 If Mod($Stats_LoopCount, $LoopCount_CollectResource) == 0 Then
 			CollectResources()
+			$loopJobPerformed = True
 		 EndIf
 
 		 If Mod($Stats_LoopCount, $LoopCount_RecruitTroop) == 0 Then
 			DoRecruitBarrack()
+			$loopJobPerformed = True
 		 EndIf
 
 		 If Mod($Stats_LoopCount, $LoopCount_ForcePullOut) == 0 Then
 			PullOutAllResourceTroops()
+			$loopJobPerformed = True
 		 EndIf
+	  EndIf
+
+	  If $loopJobPerformed Then
+		 $PrevTroopAvailableStr = "."
 	  EndIf
 
 	  CloseAllMenu()

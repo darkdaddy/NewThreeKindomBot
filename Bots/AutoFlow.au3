@@ -23,6 +23,7 @@ Func AutoFlow()
    ;CloseAllMenu()
    ;Return True
    ;DoGetClanMissionInternal(0)
+   ;CheckTroopAvailableList()
    ;Return True
 
    If $setting_checked_today_job Then
