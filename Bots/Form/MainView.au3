@@ -242,7 +242,7 @@ GUICtrlSetColor($labelStats_EnemyAttackRecall, $COLOR_RED)
 
 $y += 30
 $x = $contentPaneX
-GUICtrlCreateLabel("Resource Collect", $x, $y, $statLabelW, 20)
+GUICtrlCreateLabel("Field Resource Collect", $x, $y, $statLabelW, 20)
 $x += $statLabelW + $statLabelGap
 $labelStats_ResourceGathering = GUICtrlCreateLabel("0", $x, $y, 60, 20)
 

@@ -874,7 +874,7 @@ Func DoKillFieldMonsterCommon($troopNumber)
    If CheckForPixelList($CHECK_BUTTON_ALERT_YES_NO_CLOSE) Then
 	  ClickControlPos($POS_BUTTON_ALERT_YES, 2)
    ElseIf CheckForPixelList($CHECK_BUTTON_ALERT_CLOSE) Then
-	  SetLog($ERROR, "Alert! Can not attack...", $COLOR_RED)
+	  SetLog($ERROR, "Alert! Can not attack : troop " & $troopNumber, $COLOR_RED)
 
 	  CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
 	  If _Sleep(400) Then Return False
