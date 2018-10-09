@@ -91,6 +91,7 @@ Global $Stats_UseBuffCount = 0
 Global $Stats_UseCashCount = 0
 Global $Stats_UseBreadCount = 0
 Global $Stats_UseMarchOrderCount = 0
+Global $Stats_ClanSupport = 0
 
 
 ; ---------- Positions ------------

@@ -260,6 +260,12 @@ $labelStats_ClanMissionComplete = GUICtrlCreateLabel("0", $x, $y, 60, 20)
 
 $y += 30
 $x = $contentPaneX
+GUICtrlCreateLabel("Clan Support", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_ClanSupport = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+
+$y += 30
+$x = $contentPaneX
 GUICtrlCreateLabel("Reboot Count", $x, $y, $statLabelW, 20)
 $x += $statLabelW + $statLabelGap
 $labelStats_RebootCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
@@ -287,6 +293,7 @@ $x = $contentPaneX
 GUICtrlCreateLabel("Use Bread Count", $x, $y, $statLabelW, 20)
 $x += $statLabelW + $statLabelGap
 $labelStats_UseBreadCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+
 
 ;==================================
 ; Control Initial setting
@@ -561,6 +568,14 @@ Func clearStats()
    $Stats_EnemyAttackRecall = 0
    $Stats_ResourceGathering = 0
    $Stats_AttackFieldMonster = 0
+   $Stats_LoopCount = 0
+   $Stats_RebootCount = 0
+   $Stats_UseBuffCount = 0
+   $Stats_UseCashCount = 0
+   $Stats_UseBreadCount = 0
+   $Stats_UseMarchOrderCount = 0
+   $Stats_ClanMissionComplete = 0
+   $Stats_ClanSupport = 0
 
    updateStats()
 EndFunc
@@ -576,5 +591,6 @@ Func updateStats()
    GUICtrlSetData($labelStats_UseBreadCount, $Stats_UseBreadCount)
    GUICtrlSetData($labelStats_UseMarchOrderCount, $Stats_UseMarchOrderCount)
    GUICtrlSetData($labelStats_ClanMissionComplete, $Stats_ClanMissionComplete)
+   GUICtrlSetData($labelStats_ClanSupport, $Stats_ClanSupport)
 
 EndFunc

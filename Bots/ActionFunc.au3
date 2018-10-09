@@ -1583,6 +1583,9 @@ Func MainAutoFieldAction()
 		 If _SleepAbs(600) Then Return False
 		 CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
 		 If _SleepAbs(600) Then Return False
+
+		 $Stats_ClanSupport += 1
+		 updateStats()
 	  EndIf
 
 	  ; Checking available
