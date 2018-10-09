@@ -1,11 +1,16 @@
 
+Global $PrevLogText = ""
+
 Func SetLog($level, $String, $Color = 0x000000) ;Sets the text for the log
    If $level < $CurrentLogLevel Then
 	  Return
    EndIf
 
-   _GUICtrlRichEdit_AppendTextColor($txtLog, Time(), 0x000000)
-   _GUICtrlRichEdit_AppendTextColor($txtLog, $String & @CRLF, _ColorConvert($Color))
+   If $PrevLogText <> $String Then
+	  _GUICtrlRichEdit_AppendTextColor($txtLog, Time(), 0x000000)
+	  _GUICtrlRichEdit_AppendTextColor($txtLog, $String & @CRLF, _ColorConvert($Color))
+   EndIf
+   $PrevLogText = $String
    _log($level, $String)
 EndFunc   ;==>SetLog
 
