@@ -970,7 +970,7 @@ Func DoResourceGathering($troopNumber)
 	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 	  Return False
    EndIf
-   SetLog($INFO, "Go Gathering!", $COLOR_PINK)
+   SetLog($INFO, "Go Gathering : troup " & $troopNumber, $COLOR_BLUE)
 
    $Stats_ResourceGathering += 1
    updateStats()
@@ -1076,7 +1076,7 @@ Func DoExploreCastle($troopNumber)
 	  CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
 	  Return False
    EndIf
-   SetLog($INFO, "Go Explore!", $COLOR_PINK)
+   SetLog($INFO, "Go Explore : troup " & $troopNumber, $COLOR_BLUE)
    Return True
 EndFunc
 

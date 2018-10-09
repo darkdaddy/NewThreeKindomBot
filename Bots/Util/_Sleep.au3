@@ -4,7 +4,7 @@ Func _Sleep($iDelay, $bAllowPause = True, $bApplySpeedRate = True)
    If $bApplySpeedRate Then
 	  $iActualDelay = $iDelay - ($iDelay * ($setting_game_speed_rate - 1.0))
    EndIf
-   _console("Sleep : " & $iDelay & "(" & $iActualDelay & ")")
+   ;_console("Sleep : " & $iDelay & "(" & $iActualDelay & ")")
    While TimerDiff($iBegin) < $iActualDelay
 	  If $RunState = False Then Return True
 	  While ($PauseBot And $bAllowPause)
