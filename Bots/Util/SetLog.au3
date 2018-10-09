@@ -1,9 +1,3 @@
-Global const $TRACE = 0
-Global const $DEBUG = 1
-Global const $INFO = 2
-Global const $ERROR = 3
-
-Global $CurrentLogLevel = 2
 
 Func SetLog($level, $String, $Color = 0x000000) ;Sets the text for the log
    If $level < $CurrentLogLevel Then

@@ -547,11 +547,13 @@ Func CheckTroopAvailableList()
 
    Local $result = [False, False, False, False]
 
+   CloseAllMenu()
+
    If Not OpenMenu("Status-Troops", $POS_BUTTON_STATUS_TROOPS, $CHECK_BUTTON_FIELD_MENU_CLOSE) Then
 	  CloseAllMenu()
 	  Return 0
    EndIf
-   If _Sleep(800) Then Return 0
+   If _SleepAbs(1000) Then Return 0
 
    If CheckForPixelList($CHECK_STATUS_ATTACK_TROOP1, $DefaultTolerance) Then
 	  $result[0] = True

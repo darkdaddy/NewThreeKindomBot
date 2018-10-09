@@ -61,6 +61,14 @@ Global $config = @ScriptDir & "\config.ini"
 
 Global $BSpos[2] ; Inside BlueStacks positions relative to the screen
 
+; ---------- Log -----------
+Global const $TRACE = 0
+Global const $DEBUG = 1
+Global const $INFO = 2
+Global const $ERROR = 3
+
+Global $CurrentLogLevel = 2
+
 ; ---------- Settings -----------
 Global Const $RetryWaitCount = 30
 Global Const $SleepWaitMSec = 1500
