@@ -1634,7 +1634,8 @@ Func MainAutoFieldAction()
 			   ElseIf $setting_checked_field_attack And $setting_attack_troup_enabled[$troopIndex] Then
 
 				  If DoKillFieldMonster($troopIndex+1) Then
-					 $ClanMissionEnabledTemporarily[$troopIndex] = True
+					 ; ignore this. killing monster is so frequently job
+					 ;$ClanMissionEnabledTemporarily[$troopIndex] = True
 				  EndIf
 
 			   ElseIf $setting_checked_resource_gathering And $setting_gather_troup_enabled[$troopIndex] Then
