@@ -1386,6 +1386,7 @@ Func DoClanMissionJob($troopNumber)
 	  WEnd
    Else
 	  SetLog($ERROR, "Mission Not Found", $COLOR_RED)
+	  $ClanMissionEnabledTemporarily[$troopNumber-1] = False
    EndIf
 
    Return False
