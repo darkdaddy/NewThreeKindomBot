@@ -260,17 +260,18 @@ Func DoGetClanMission()
    Local const $MaxItemIndexInScreen = 5
 
    For $index = 0 To $MaxItemIndexInScreen - 1
-	  DoGetClanMissionInternal($index)
+	  DoGetClanMissionInternal($index, False)
    Next
 
-   SetLog($INFO, "reverse castle order", $COLOR_DARKGREY)
-   For $index = $MaxItemIndexInScreen - 1 To $MaxItemIndexInScreen - $setting_clan_castle_reverse_count Step -1
-	  DragControlPos("51:71", "51:43", 10);
-	  DoGetClanMissionInternal($index)
-   Next
+   If $setting_clan_castle_reverse_count > 0 Then
+	  SetLog($INFO, "reverse castle order : count = " & $setting_clan_castle_reverse_count, $COLOR_DARKGREY)
+	  For $index = $MaxItemIndexInScreen - 1 To $MaxItemIndexInScreen - $setting_clan_castle_reverse_count Step -1
+		 DoGetClanMissionInternal($index, True)
+	  Next
+   EndIf
 EndFunc
 
-Func DoGetClanMissionInternal($castleIndex)
+Func DoGetClanMissionInternal($castleIndex, $reverseMode)
 
    SetLog($INFO, "Catle item " & $castleIndex + 1, $COLOR_BLUE)
    Local const $CastleFirstItemX = "59"
@@ -298,11 +299,16 @@ Func DoGetClanMissionInternal($castleIndex)
 
    ; Main Castle Tab
    ClickControlPos("93.97:43.81", 3)
-   If _Sleep(500) Then Return False
+   If _SleepAbs(500) Then Return False
 
    ; Our Clan Castle List
    ClickControlPos("12.39:34.18", 3)
-   If _Sleep(500) Then Return False
+   If _SleepAbs(500) Then Return False
+
+   If $reverseMode Then
+	  DragControlPos("51:71", "51:43", 10);
+	  If _SleepAbs(500) Then Return False
+   EndIf
 
    $itemY = Number($CastleFirstItemY) + ($castleIndex * $CastleStepYPos)
    $posInfo = $CastleFirstItemX & ":" & $itemY
@@ -899,7 +905,7 @@ EndFunc
 
 
 Func DoResourceGathering($troopNumber)
-   SetLog($INFO, "Go Resource Gathering : Troop " & $troopNumber, $COLOR_OLIVE)
+   SetLog($DEBUG, "Go Resource Gathering : Troop " & $troopNumber, $COLOR_OLIVE)
    Local $tryCount = 1
 
    GoToField()
@@ -1092,7 +1098,7 @@ EndFunc
 Func DoDungeonSweep($tab, $level, $buttonPosList)
    $result = True
    $tryCount = 1
-   SetLog($INFO, "Dungeon Attack Begin : " & $level, $COLOR_DARKGREY)
+   SetLog($DEBUG, "Dungeon Attack Begin : " & $level, $COLOR_DARKGREY)
 
    For $i = 0 To 4
 
@@ -1250,7 +1256,7 @@ Func DoDungeonSweep($tab, $level, $buttonPosList)
    ; Close Attack Menu one more
    CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
 
-   SetLog($INFO, "Dungeon Attack End : " & $level, $COLOR_PINK)
+   SetLog($DEBUG, "Dungeon Attack End : " & $level, $COLOR_DARKGREY)
    Return $result
 EndFunc
 
@@ -1834,28 +1840,35 @@ Func MainDungeonTreasure()
 			ExitLoop
 		 EndIf
 
-		 ; Cast Hero's Skills Forward
-		 For $i = 0 To 5
-			ClickControlPos($HeroButtonPosList[$i], 3, 0, 50)
-		 Next
-
-		 ; Cast My Two Skills
-		 If $tickCount >= $setting_dungeon_treasure_main_skill_tick_count Then
-			For $i = 0 To 1
-			   ClickControlPos($SkillButtonPosList[$i], 2, 0, 100)
+		 If $setting_dungeon_treasure_main_skill_tick_count > 0 Then
+			; Cast Hero's Skills Forward
+			For $i = 0 To 5
+			   ClickControlPos($HeroButtonPosList[$i], 3, 0, 50)
 			Next
+
+			; Cast My Two Skills
+			If $tickCount >= $setting_dungeon_treasure_main_skill_tick_count Then
+			   For $i = 0 To 1
+				  ClickControlPos($SkillButtonPosList[$i], 2, 0, 100)
+			   Next
+			EndIf
+
+			 ; Cast Hero's Skills Backward
+			For $i = 5 To 0 Step -1
+			   ClickControlPos($HeroButtonPosList[$i], 3, 0, 50)
+			Next
+
+			; Click Skip Button
+			ClickControlPos("89.52:91.9", 1, 0, 100)
+
+			$tickCount += 1
+			SetLog($INFO, "Attack Tick Count : " & $tickCount & "(" & $setting_dungeon_treasure_main_skill_tick_count & ")", $COLOR_DARKGREY)
+		 Else
+			; Click Skip Button
+			ClickControlPos("89.52:91.9", 1, 0, 100)
+
+			If _Sleep(1000) Then Return False
 		 EndIf
-
-		  ; Cast Hero's Skills Backward
-		 For $i = 5 To 0 Step -1
-			ClickControlPos($HeroButtonPosList[$i], 3, 0, 50)
-		 Next
-
-		 ; Click Skip Button
-		 ClickControlPos("89.52:91.9", 1, 0, 100)
-
-		 $tickCount += 1
-		 SetLog($INFO, "Attack Tick Count : " & $tickCount & "(" & $setting_dungeon_treasure_main_skill_tick_count & ")", $COLOR_DARKGREY)
 	  WEnd
 
 	  If Not $win And $loseCount >= 3 Then
