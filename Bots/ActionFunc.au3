@@ -1510,7 +1510,7 @@ Func CheckClickAllDoneButtons()
    $i = 2
    While $i >= 0
 	  If CheckForPixelList($DoneButtonInfoArray[$i]) Then
-		 SetLog($INFO, "Mission Completed : " & ($i + 1), $COLOR_GREEN)
+		 SetLog($INFO, "Mission Completed : " & ($i + 1), $COLOR_BLUE)
 
 		 $labelStats_ClanMissionComplete += 1
 		 updateStats()
