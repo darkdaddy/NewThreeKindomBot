@@ -371,7 +371,7 @@ Func ClickMoveButton($number)
 	  EndIf
 	  $tryCount += 1
    WEnd
-   SetLog($ERROR, "Error (ClickMoveButton)", $COLOR_RED)
+   ;SetLog($ERROR, "Error (ClickMoveButton)", $COLOR_RED)
    Return False
 EndFunc
 
@@ -1513,7 +1513,7 @@ Func CheckClickAllDoneButtons()
 	  If CheckForPixelList($DoneButtonInfoArray[$i]) Then
 		 SetLog($INFO, "Mission Completed : " & ($i + 1), $COLOR_BLUE)
 
-		 $labelStats_ClanMissionComplete += 1
+		 $Stats_ClanMissionComplete += 1
 		 updateStats()
 
 		 $doneInfo = $DoneButtonInfoArray[$i]
@@ -1600,7 +1600,7 @@ Func MainAutoFieldAction()
 	  EndIf
 	  If CheckForPixelList($CHECK_BUTTON_CLAN_RED_MARK) Then
 		 SetLog($INFO, "Clan Red Mark Detected...", $COLOR_PURPLE)
-		 ClickControlScreen($CHECK_BUTTON_CLAN_RED_MARK[0], 2)
+		 ClickControlScreen($CHECK_BUTTON_CLAN_RED_MARK[0], 1)
 		 If _SleepAbs(800) Then Return False
 		 ClickControlScreen("30.68:78.39", 2)
 		 If _SleepAbs(600) Then Return False
