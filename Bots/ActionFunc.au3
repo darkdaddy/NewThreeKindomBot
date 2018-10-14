@@ -873,7 +873,7 @@ Func DoKillFieldMonsterCommon($troopNumber)
 	  If _Sleep(600) Then Return False
    WEnd
    If $tryCount == $MaxTryCount Then
-	  SetLog($ERROR, "Error (DoKillFieldMonsterCommon)", $COLOR_RED)
+	  SetLog($ERROR, "Can not attack for no march order", $COLOR_RED)
 	  Return False
    EndIf
 
