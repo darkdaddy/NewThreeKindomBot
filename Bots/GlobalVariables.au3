@@ -66,8 +66,18 @@ Global const $TRACE = 0
 Global const $DEBUG = 1
 Global const $INFO = 2
 Global const $ERROR = 3
-
 Global $CurrentLogLevel = 2
+
+
+; ---------- COLORS ------------
+Global Const $COLOR_ORANGE = 0xFFA500
+Global Const $COLOR_PINK = 0xf1735f
+Global Const $COLOR_DARKGREY = 0x555555
+
+
+; ---------- Logic -----------
+Global $DetectedReconnectButtonBeganTick = False
+
 
 ; ---------- Settings -----------
 Global Const $RetryWaitCount = 30
@@ -80,12 +90,6 @@ Global Const $LoopCount_CollectResource = 360	; 30min
 Global Const $LoopCount_RecruitTroop = 12	; 1min
 Global Const $LoopCount_Reboot = 1500	; 2hour 5min
 Global Const $LoopCount_ForcePullOut = 2160	; 3hour
-
-
-; ---------- COLORS ------------
-Global Const $COLOR_ORANGE = 0xFFA500
-Global Const $COLOR_PINK = 0xf1735f
-Global Const $COLOR_DARKGREY = 0x555555
 
 
 ; ---------- STATS ---------------
@@ -174,6 +178,7 @@ Global const $POS_BUTTON_BOTTOM_MENU_UNFOLD = "85.08:93.22"
 
 
 ; ---------- Screen Check ------------
+Global const $CHECK_BUTTON_RECONNECT[2] = ["44.14:65.29 | 0x4C723B", "54.05:63.77 | 0x527A3E"]
 Global const $CHECK_BUTTON_NEARBY[1] = ["94.6:2.3 | 0x172128"]
 Global const $CHECK_BUTTON_TOP_CLOSE[2] = ["96.15:5.26 | 0x965B39", "93.84:5.26 | 0x965B3A"]
 Global const $CHECK_BUTTON_EVENT_CLOSE[2] = ["94:12 | 0x9D5B3A", "91.4:12.4 | 0x925837"]

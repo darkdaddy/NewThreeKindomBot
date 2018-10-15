@@ -12,6 +12,7 @@ Global $ActivatedClanMissionMenu = False
 Global $ClanMissionEnabledTemporarily[4] = [True, True, True, True]
 Global $PrevTroopAvailableStr = ""
 Global $SameTroopAvailableStatus = False
+Global $DetectedReconnectButtonBeganTick = 0
 
 Func CloseAllMenu()
    If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
@@ -52,11 +53,11 @@ Func RebootNox()
 
    ; Kill Current Game
    ClickHandle($HWnDTool, $WinRectTool[2]/2, $WinRectTool[3] - 35 )
-   If _Sleep(1000) Then Return False
+   If _SleepAbs(1000) Then Return False
    DragControlPos("90:50", "90:10", 5);
-   If _Sleep(300) Then Return False
+   If _SleepAbs(300) Then Return False
    DragControlPos("90:50", "90:10", 5);
-   If _Sleep(1000) Then Return False
+   If _SleepAbs(1000) Then Return False
 
    ; Restart
    ClickControlPos($setting_game_icon_pos, 3)
@@ -73,7 +74,7 @@ Func RebootNox()
 
 	  CloseMenu("Help", $CHECK_BUTTON_HELP_CLOSE)
 
-	  If _Sleep(1500) Then Return False
+	  If _SleepAbs(1500) Then Return False
 	  $tryCount += 1
    WEnd
 
@@ -1547,6 +1548,11 @@ Func MainAutoFieldAction()
 
 	  SetLog($DEBUG, "Loop Count : " & $Stats_LoopCount + 1, $COLOR_ORANGE)
 
+	  If CheckReconnectButtonStatus() Then
+		 If _Sleep($FieldActionIdleMSec) Then Return False
+		 ContinueLoop
+	  EndIf
+
 	  If $Stats_LoopCount > 0 Then
 		 If Mod($Stats_LoopCount, $LoopCount_Reboot) == 0 Then
 
@@ -1687,6 +1693,35 @@ Func MainAutoFieldAction()
    SetLog($INFO, "Auto Field Action End", $COLOR_BLACK)
    Return True
 
+EndFunc
+
+Func CheckReconnectButtonStatus()
+   Local $detected = False
+   If $setting_auto_reconnect_after > 0 Then
+	  reloadConfig()
+	  If CheckForPixelList($CHECK_BUTTON_RECONNECT) Then
+		 If $DetectedReconnectButtonBeganTick <= 0 Then
+			SetLog($INFO, "Detected Reconnect Button After " & $setting_auto_reconnect_after & "Min", $COLOR_RED)
+			$DetectedReconnectButtonBeganTick = _Date_Time_GetTickCount()
+		 EndIf
+		 $detected = True
+	  Else
+		 $DetectedReconnectButtonBeganTick = 0
+		 $detected = False
+	  EndIf
+
+	  If $DetectedReconnectButtonBeganTick > 0 Then
+		 Local $elapsed = _Date_Time_GetTickCount() - $DetectedReconnectButtonBeganTick
+		 Local $afterMsec = $setting_auto_reconnect_after * 60000
+		 _console("auto_reconnect_after : " & $elapsed & " elapsed, after = " & $afterMsec)
+		 If $elapsed >= $afterMsec Then
+			RebootNox()
+			$Stats_RebootCount += 1
+			updateStats()
+		 EndIf
+	  EndIf
+   EndIf
+   Return $detected
 EndFunc
 
 Func CheckCurrentMenuAfterIdleTimeInternal()

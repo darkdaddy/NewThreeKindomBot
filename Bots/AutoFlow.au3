@@ -6,7 +6,7 @@ Func AutoFlow()
    ;DragControlPos("20:80", "80:10", 5);
    ;FindTreasureDungeonLevelNumber(3)
    ;DoResourceGathering(1)
-   ;If CheckForPixelList($CHECK_BUTTON_ATTACK_BUFF_BLOCK_ATTACK) Then SetLog("OK", $COLOR_DARKGREY)
+   ;If CheckForPixelList($CHECK_BUTTON_ATTACK_BUFF_BLOCK_ATTACK) Then SetLog($INFO, "OK", $COLOR_DARKGREY)
    ;DoDungeonSweep("hero", 13, $POS_BUTTON_DUNGEON_13)
    ;RebootNox()
    ;CloseMenu("Main", $CHECK_BUTTON_ALERT_YES_NO_CLOSE)
@@ -25,6 +25,13 @@ Func AutoFlow()
    ;DoGetClanMissionInternal(0)
    ;CheckTroopAvailableList()
    ;Return True
+
+   While $RunState
+	  If Not CheckReconnectButtonStatus() Then
+		 ExitLoop
+	  EndIf
+	  If _Sleep(1000) Then Return False
+   WEnd
 
    If $setting_checked_today_job Then
 	  RebootNox()

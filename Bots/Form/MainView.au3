@@ -9,7 +9,7 @@ Local $gap = 10
 Local $generalRightHeight = 0
 Local $generalBottomHeight = 70
 Local $logViewWidth = 350
-Local $logViewHeight = 530
+Local $logViewHeight = 560
 Local $frameWidth = $contentPaneX + $logViewWidth + $gap + $generalRightHeight + $tabX
 Local $frameHeight = $contentPaneY + $logViewHeight + $gap + $generalBottomHeight + $tabY
 
@@ -94,6 +94,14 @@ GUICtrlSetData($sliderGameSpeed, 50)
 $x += 120
 $inputGameSpeed = GUICtrlCreateInput("", $x, $y, 30, 20)
 $y += 25
+
+; Dungeon Treasure Level
+$x = $contentPaneX
+$y += 10
+GUICtrlCreateLabel("Auto Reconnect After", $x, $y)
+$inputAutoReconnectAfter = GUICtrlCreateInput("0", $x + 130, $y - 5, 30, $h)
+GUICtrlCreateLabel("Min", $x + 165, $y)
+$y += $h
 
 ; Bot Capture Mode
 $x = $contentPaneX

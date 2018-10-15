@@ -2,12 +2,12 @@
 
 #pragma compile(FileDescription, New ThreeKingdom Bot)
 #pragma compile(ProductName, New ThreeKingdom Bot)
-#pragma compile(ProductVersion, 0.12)
-#pragma compile(FileVersion, 0.12)
+#pragma compile(ProductVersion, 0.13)
+#pragma compile(FileVersion, 0.13)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.12"
+$sBotVersion = "0.13"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>
@@ -29,6 +29,7 @@ $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 #include <Bots/ActionFunc.au3>
 #include <Bots/Form/MainView.au3>
 #include <String.au3>
+#include <Date.au3>
 #include-once
 
 Opt("MouseCoordMode", 2)
@@ -416,6 +417,11 @@ Func OpenMenu($name, $buttonPos, $checkScreenInfos)
 	  If $tryCount > 0 Then
 		 SetLog($INFO, "Waiting " & $name & " Menu", $COLOR_DARKGREY)
 	  EndIf
+
+	  If CheckReconnectButtonStatus() Then
+		 return False
+	  EndIf
+
 	  ClickControlPos($buttonPos, 1)
 	  If _Sleep(800) Then Return
 	  $tryCount = $tryCount + 1

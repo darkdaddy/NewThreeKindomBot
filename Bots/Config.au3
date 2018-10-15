@@ -31,6 +31,7 @@ Global $setting_dungeon_treasure_level_number = 3
 Global $setting_dungeon_treasure_main_skill_tick_count = 13
 Global $setting_dungeon_sweep_troop = 2
 Global $setting_clan_castle_reverse_count = 1
+Global $setting_auto_reconnect_after = 30
 
 Func reloadConfig()
    saveConfig()
@@ -70,6 +71,7 @@ Func loadConfig()
    $setting_mission_attack_troup_enabled[2] = IniRead($config, $setting_common_group, "enabled_mission_attack_troup_3", "False") == "True" ? True : False
    $setting_mission_attack_troup_enabled[3] = IniRead($config, $setting_common_group, "enabled_mission_attack_troup_4", "False") == "True" ? True : False
 
+   $setting_auto_reconnect_after = Int(IniRead($config, $setting_common_group, "auto_reconnect_after", "0"))
    $setting_dungeon_sweep_troop = Int(IniRead($config, $setting_common_group, "dungeon_sweep_troop", "3"))
    $setting_dungeon_treasure_level_number = Int(IniRead($config, $setting_common_group, "dungeon_treasure_level", "3"))
    $setting_checked_dungeon_hero = IniRead($config, $setting_common_group, "enabled_dungeon_hero", "False") == "True" ? True : False
@@ -96,6 +98,7 @@ Func applyConfig()
    $v = ($rate - 1.0) * 50 + 50
    GUICtrlSetData($sliderGameSpeed, $v)
 
+   GUICtrlSetData($inputAutoReconnectAfter, $setting_auto_reconnect_after)
    _GUICtrlComboBox_SetCurSel($comboDungeonTreasureLevel, Int($setting_dungeon_treasure_level_number) - 1)
    _GUICtrlComboBox_SetCurSel($comboDungeonSweepTroop, Int($setting_dungeon_sweep_troop) - 1)
 
@@ -142,6 +145,8 @@ Func saveConfig()
    IniWrite($config, $setting_common_group, "game_icon_pos", GUICtrlRead($inputGameIconPos))
    IniWrite($config, $setting_common_group, "game_speed_rate", GUICtrlRead($inputGameSpeed))
    IniWrite($config, $setting_common_group, "treasure_main_skill_tickcount", GUICtrlRead($inputTreasureDungeonMainSkillTickCount))
+
+   IniWrite($config, $setting_common_group, "auto_reconnect_after", GUICtrlRead($inputAutoReconnectAfter))
 
    IniWrite($config, $setting_common_group, "dungeon_treasure_level", _GUICtrlComboBox_GetCurSel($comboDungeonTreasureLevel) + 1)
    IniWrite($config, $setting_common_group, "dungeon_sweep_troop", _GUICtrlComboBox_GetCurSel($comboDungeonSweepTroop) + 1)
