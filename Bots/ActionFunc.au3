@@ -560,7 +560,7 @@ Func CheckTroopAvailableList()
 	  CloseAllMenu()
 	  Return 0
    EndIf
-   If _SleepAbs(1000) Then Return 0
+   If _SleepAbs(2000) Then Return 0
 
    If CheckForPixelList($CHECK_STATUS_ATTACK_TROOP1, $DefaultTolerance) Then
 	  $result[0] = True
@@ -1717,6 +1717,7 @@ Func CheckReconnectButtonStatus()
 		 If $elapsed >= $afterMsec Then
 			RebootNox()
 			$Stats_RebootCount += 1
+			$Stats_AutoReconnect += 1
 			updateStats()
 		 EndIf
 	  EndIf

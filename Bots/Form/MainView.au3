@@ -250,6 +250,13 @@ GUICtrlSetColor($labelStats_EnemyAttackRecall, $COLOR_RED)
 
 $y += 30
 $x = $contentPaneX
+GUICtrlCreateLabel("Auto Reconnect", $x, $y, $statLabelW, 20)
+$x += $statLabelW + $statLabelGap
+$labelStats_AutoReconnect = GUICtrlCreateLabel("0", $x, $y, 60, 20)
+GUICtrlSetColor($labelStats_AutoReconnect, $COLOR_GREEN)
+
+$y += 30
+$x = $contentPaneX
 GUICtrlCreateLabel("Field Resource Collect", $x, $y, $statLabelW, 20)
 $x += $statLabelW + $statLabelGap
 $labelStats_ResourceGathering = GUICtrlCreateLabel("0", $x, $y, 60, 20)
@@ -342,6 +349,7 @@ EndFunc
 Func InitBot()
    $RunState = True
    $PauseBot = False
+   $DetectedReconnectButtonBeganTick = 0
 
    GUICtrlSetState($btnStart, $GUI_HIDE)
    GUICtrlSetState($btnStop, $GUI_SHOW)
@@ -584,6 +592,7 @@ Func clearStats()
    $Stats_UseMarchOrderCount = 0
    $Stats_ClanMissionComplete = 0
    $Stats_ClanSupport = 0
+   $Stats_AutoReconnect = 0
 
    updateStats()
 EndFunc
@@ -600,5 +609,5 @@ Func updateStats()
    GUICtrlSetData($labelStats_UseMarchOrderCount, $Stats_UseMarchOrderCount)
    GUICtrlSetData($labelStats_ClanMissionComplete, $Stats_ClanMissionComplete)
    GUICtrlSetData($labelStats_ClanSupport, $Stats_ClanSupport)
-
+   GUICtrlSetData($labelStats_AutoReconnect, $Stats_AutoReconnect)
 EndFunc

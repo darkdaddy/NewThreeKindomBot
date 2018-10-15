@@ -34,6 +34,7 @@ Func AutoFlow()
    WEnd
 
    If $setting_checked_today_job Then
+	  SetLog($INFO, "Reboot before today job...", $COLOR_DARKGREY)
 	  RebootNox()
 	  MainTodayJob()
    EndIf

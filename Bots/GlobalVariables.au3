@@ -76,7 +76,7 @@ Global Const $COLOR_DARKGREY = 0x555555
 
 
 ; ---------- Logic -----------
-Global $DetectedReconnectButtonBeganTick = False
+Global $DetectedReconnectButtonBeganTick = 0
 
 
 ; ---------- Settings -----------
@@ -104,6 +104,7 @@ Global $Stats_UseCashCount = 0
 Global $Stats_UseBreadCount = 0
 Global $Stats_UseMarchOrderCount = 0
 Global $Stats_ClanSupport = 0
+Global $Stats_AutoReconnect = 0
 
 
 ; ---------- Positions ------------
