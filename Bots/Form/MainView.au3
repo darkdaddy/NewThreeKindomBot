@@ -541,6 +541,8 @@ Func btnGetClanMission()
 	  Return
    EndIf
 
+   CloseAllMenu()
+
    DoGetClanMission()
 
    btnStop()

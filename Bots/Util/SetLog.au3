@@ -2,6 +2,7 @@
 Global $PrevLogText = ""
 
 Func SetLog($level, $String, $Color = 0x000000) ;Sets the text for the log
+   _console($String)
    If $level < $CurrentLogLevel Then
 	  Return
    EndIf
