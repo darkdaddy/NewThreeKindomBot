@@ -14,34 +14,47 @@ Global $PrevTroopAvailableStr = ""
 Global $SameTroopAvailableStatus = False
 Global $DetectedReconnectButtonBeganTick = 0
 
-Func CloseAllMenu()
+Func CloseCurrentMenu()
+   Local $closeCount = 0
    If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
-	  Return
+	  Return False
    EndIf
-   CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE)
-   CloseMenu("Event", $CHECK_BUTTON_EVENT_CLOSE)
-   CloseMenu("NearBy", $CHECK_BUTTON_NEARBY_CLOSE)
-   CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE)
-   CloseMenu("Capital-Treasure", $CHECK_BUTTON_CAPITAL_TREASURE_CLOSE)
-   CloseMenu("Center-Battle", $CHECK_BUTTON_CENTER_BATTLE_EVENT_CLOSE)
-   CloseMenu("Clan-Mission", $CHECK_BUTTON_CLAN_MISSION_CLOSE)
-   CloseMenu("Clan-Support", $CHECK_BUTTON_CLAN_SUPPORT_CLOSE)
-   CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE)
-   CloseMenu("Field-Menu", $CHECK_BUTTON_FIELD_MENU_CLOSE)
-   CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE)
-   CloseMenu("Use-Point", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE)
-   CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE)
-   CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE)
-   CloseMenu("Favorite", $CHECK_BUTTON_FAVORITE_CLOSE)
-   CloseMenu("Help", $CHECK_BUTTON_HELP_CLOSE)
-   CloseMenu("Castle-Menu", $CHECK_BUTTON_CASTLE_MENU_CLOSE)
-   CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE)
-   CloseMenu("History-Battle", $CHECK_BUTTON_HISTORY_BATTLE_CLOSE)
-   CloseMenu("Attack-BUFF", $CHECK_BUTTON_ATTACK_BUFF_CLOSE)
-   CloseMenu("Enemy-Attack", $CHECK_BUTTON_ENEMY_ATTACK_CLOSE)
-   CloseMenu("Special-Store", $CHECK_BUTTON_SPECIAL_STORE_CLOSE)
+   If CloseMenu("Main", $CHECK_BUTTON_TOP_CLOSE) Then $closeCount += 1
+   If CloseMenu("Event", $CHECK_BUTTON_EVENT_CLOSE) Then $closeCount += 1
+   If CloseMenu("NearBy", $CHECK_BUTTON_NEARBY_CLOSE) Then $closeCount += 1
+   If CloseMenu("Select-Troops", $CHECK_BUTTON_SELECT_TROOPS_CLOSE) Then $closeCount += 1
+   If CloseMenu("Capital-Treasure", $CHECK_BUTTON_CAPITAL_TREASURE_CLOSE) Then $closeCount += 1
+   If CloseMenu("Center-Battle", $CHECK_BUTTON_CENTER_BATTLE_EVENT_CLOSE) Then $closeCount += 1
+   If CloseMenu("Clan-Mission", $CHECK_BUTTON_CLAN_MISSION_CLOSE) Then $closeCount += 1
+   If CloseMenu("Clan-Support", $CHECK_BUTTON_CLAN_SUPPORT_CLOSE) Then $closeCount += 1
+   If CloseMenu("Hero-Collection", $CHECK_BUTTON_HERO_COLLECTION_CLOSE) Then $closeCount += 1
+   If CloseMenu("Field-Menu", $CHECK_BUTTON_FIELD_MENU_CLOSE) Then $closeCount += 1
+   If CloseMenu("Alert", $CHECK_BUTTON_ALERT_CLOSE) Then $closeCount += 1
+   If CloseMenu("Use-Point", $CHECK_BUTTON_USE_ACTION_POINT_CLOSE) Then $closeCount += 1
+   If CloseMenu("Dungeon-Attack", $CHECK_BUTTON_DUNGEON_ATTACK_CLOSE) Then $closeCount += 1
+   If CloseMenu("Dungeon-Sweep-Count", $CHECK_BUTTON_DUNGEON_SWEEP_COUNT_CLOSE) Then $closeCount += 1
+   If CloseMenu("Favorite", $CHECK_BUTTON_FAVORITE_CLOSE) Then $closeCount += 1
+   If CloseMenu("Help", $CHECK_BUTTON_HELP_CLOSE) Then $closeCount += 1
+   If CloseMenu("Castle-Menu", $CHECK_BUTTON_CASTLE_MENU_CLOSE) Then $closeCount += 1
+   If CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE) Then $closeCount += 1
+   If CloseMenu("History-Battle", $CHECK_BUTTON_HISTORY_BATTLE_CLOSE) Then $closeCount += 1
+   If CloseMenu("Attack-BUFF", $CHECK_BUTTON_ATTACK_BUFF_CLOSE) Then $closeCount += 1
+   If CloseMenu("Enemy-Attack", $CHECK_BUTTON_ENEMY_ATTACK_CLOSE) Then $closeCount += 1
+   If CloseMenu("Special-Store", $CHECK_BUTTON_SPECIAL_STORE_CLOSE) Then $closeCount += 1
+
+   Return $closeCount > 0
 EndFunc
 
+
+Func CloseAllMenu()
+
+   While $RunState
+	  If Not CloseCurrentMenu() Then
+		 ExitLoop
+	  EndIf
+	  If _Sleep(500) Then Return False
+   WEnd
+EndFunc
 
 Func RebootNox()
    If Not $HWnDTool Or StringLen($setting_game_icon_pos) <= 0 Then
@@ -91,7 +104,7 @@ Func PullOutAllResourceTroops()
    EndIf
 
    If Not OpenMenu("Status-Troops", $POS_BUTTON_STATUS_TROOPS, $CHECK_BUTTON_FIELD_MENU_CLOSE) Then
-	  CloseAllMenu()
+	  CloseCurrentMenu()
 	  Return 0
    EndIf
 
@@ -252,11 +265,12 @@ Func AltarResourceInternal()
 
    If _SleepAbs(2000) Then Return False
    CloseMenu("Altar", $CHECK_BUTTON_ALTAR_CLOSE)
-   CloseAllMenu()
+   CloseCurrentMenu()
 EndFunc
 
 
 Func DoGetClanMission()
+   CloseCurrentMenu()
 
    Local const $MaxItemIndexInScreen = 5
 
@@ -289,14 +303,21 @@ Func DoGetClanMissionInternal($castleIndex, $reverseMode)
    $MissionArray[1] = $Mission2
    $MissionArray[2] = $Mission3
 
+   If _SleepAbs(1000) Then Return False
+
    ; Unfold bottom menu
    If CheckForPixelList($CHECK_BUTTON_BOTTOM_UNFOLD) Then
 	  ClickControlPos($CHECK_BUTTON_BOTTOM_UNFOLD[0], 2)
 	  If _SleepAbs(1000) Then Return False
    EndIf
 
-   ClickControlPos($POS_BUTTON_CLAN, 1)
-   If _SleepAbs(1000) Then Return False
+   If Not OpenMenu("Clan", $POS_BUTTON_CLAN, $CHECK_BUTTON_TOP_CLOSE) Then
+	  Return False
+   EndIf
+
+   If _SleepAbs(500) Then Return False
+   CloseMenu("Field-Menu", $CHECK_BUTTON_FIELD_MENU_CLOSE)	; close the clan rank menu if click mistake happened.
+   If _SleepAbs(500) Then Return False
 
    ; Main Castle Tab
    ClickControlPos("93.97:43.81", 3)
@@ -338,7 +359,7 @@ Func DoGetClanMissionInternal($castleIndex, $reverseMode)
    If _SleepAbs(400) Then Return False
 
    CloseMenu("Castle-Menu", $CHECK_BUTTON_CASTLE_MENU_CLOSE)
-   If _SleepAbs(400) Then Return False
+   If _SleepAbs(1200) Then Return False
 EndFunc
 
 Func ClickMoveButton($number)
@@ -449,7 +470,7 @@ Func CollectResources()
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
 		 ExitLoop
 	  Else
-		 CloseAllMenu()
+		 CloseCurrentMenu()
 		 If _Sleep(500) Then Return False
 		 ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
 		 If _Sleep($ViewChangeWaitMSec) Then Return False
@@ -525,7 +546,7 @@ Func GoToField($silent = False)
 
 	  If _Sleep(1000) Then Return False
 
-	  CloseAllMenu()
+	  CloseCurrentMenu()
 
 	  $tryCount = $tryCount + 1
    WEnd
@@ -554,10 +575,10 @@ Func CheckTroopAvailableList()
 
    Local $result = [False, False, False, False]
 
-   CloseAllMenu()
+   CloseCurrentMenu()
 
    If Not OpenMenu("Status-Troops", $POS_BUTTON_STATUS_TROOPS, $CHECK_BUTTON_FIELD_MENU_CLOSE) Then
-	  CloseAllMenu()
+	  CloseCurrentMenu()
 	  Return 0
    EndIf
    If _SleepAbs(2000) Then Return 0
@@ -1005,7 +1026,7 @@ Func EnterCastleMainMenu()
 	  If _Sleep(800) Then Return False
 
 	  If CheckForPixelList($CHECK_BUTTON_CASTLE_MENU_CLOSE) Then
-		 SetLog($INFO, "Open Castle Menu", $COLOR_PINK)
+		 SetLog($DEBUG, "Open Castle Menu", $COLOR_PINK)
 		 ExitLoop
 	  EndIf
 
@@ -1264,7 +1285,7 @@ EndFunc
 
 Func CheckClanMissionMenu($closeMenu = True)
 
-   CloseAllMenu()
+   CloseCurrentMenu()
 
    If _SleepAbs(800) Then Return False
 
@@ -1278,13 +1299,13 @@ Func CheckClanMissionMenu($closeMenu = True)
 
    If Not CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
 	  SetLog($ERROR, "Clan Mission Not found", $COLOR_PINK)
-	  CloseAllMenu()
+	  CloseCurrentMenu()
 	  Return False
    EndIf
 
    If Not CheckForPixel("59.02:21.54 | 0x2E576D") Then
 	  SetLog($ERROR, "Clan Mission Not found(2)", $COLOR_PINK)
-	  CloseAllMenu()
+	  CloseCurrentMenu()
 	  Return False
    EndIf
 
@@ -1405,14 +1426,14 @@ Func CheckEnemyAttack()
 	  ClickControlPos("50.61:24.17", 2)
 
 	  If Not CheckForPixelList($CHECK_BUTTON_ENEMY_ATTACK_CLOSE) Then
-		 CloseAllMenu()
+		 CloseCurrentMenu()
 		 ExitLoop
 	  EndIf
 
 	  $tryCount = $tryCount + 1
    WEnd
    If $tryCount == $MaxTryCount Then
-	  CloseAllMenu()
+	  CloseCurrentMenu()
 	  Return False
    EndIf
 
@@ -1535,7 +1556,7 @@ Func MainAutoFieldAction()
    $PrevTroopAvailableStr = "."
    $SameTroopAvailableStatus = False
 
-   CloseAllMenu()
+   CloseCurrentMenu()
 
    GoToFieldNearByMyCastle()
 
@@ -1583,7 +1604,7 @@ Func MainAutoFieldAction()
 		 $PrevTroopAvailableStr = "."
 	  EndIf
 
-	  CloseAllMenu()
+	  CloseCurrentMenu()
 
 	  ; do jobs only one first time
 	  If $Stats_LoopCount == 0 Then
@@ -1672,7 +1693,7 @@ Func MainAutoFieldAction()
 	  If CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
 		 CheckCurrentMenuAfterIdleTimeInternal()
 
-		 CloseAllMenu()
+		 CloseCurrentMenu()
 		 If _SleepAbs(600) Then Return False
 		 ClickControlPos($POS_BUTTON_FIELD_SECOND_MENU)
 		 If _SleepAbs(600) Then Return False
@@ -1681,7 +1702,7 @@ Func MainAutoFieldAction()
 		 CheckCurrentMenuAfterIdleTimeInternal()
 	  EndIf
 
-	  CloseAllMenu()
+	  CloseCurrentMenu()
 
 	  reloadConfig()
 
@@ -1738,7 +1759,7 @@ EndFunc
 Func MainDungeonSweep($tab)
    SetLog($INFO, "Auto Dungeon Sweep Start : " & $tab, $COLOR_BLACK)
 
-   CloseAllMenu()
+   CloseCurrentMenu()
 
    ClickControlPos($POS_BUTTON_DUNGEON, 2)
    If _Sleep(800) Then Return False
@@ -1794,7 +1815,7 @@ EndFunc
 Func MainDungeonTreasure()
    SetLog($INFO, "Auto Dungeon Treasure Start", $COLOR_BLACK)
 
-   CloseAllMenu()
+   CloseCurrentMenu()
 
    ClickControlPos($POS_BUTTON_DUNGEON, 2)
    If _Sleep(800) Then Return False
@@ -1932,7 +1953,7 @@ Func MainTodayJob()
 	  If CheckForPixelList($CHECK_MAIN_CASTLE_VIEW) Then
 		 ExitLoop
 	  Else
-		 CloseAllMenu()
+		 CloseCurrentMenu()
 		 If _Sleep(500) Then Return False
 		 ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
 		 If _Sleep($ViewChangeWaitMSec) Then Return False
