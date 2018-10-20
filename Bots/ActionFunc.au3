@@ -1727,6 +1727,9 @@ Func CheckReconnectButtonStatus()
 		 EndIf
 		 $detected = True
 	  Else
+		 If $DetectedReconnectButtonBeganTick > 0 Then
+			SetLog($INFO, "Disapeared Reconnect Button", $COLOR_BLUE)
+		 EndIf
 		 $DetectedReconnectButtonBeganTick = 0
 		 $detected = False
 	  EndIf
