@@ -70,6 +70,7 @@ Global $CurrentLogLevel = 2
 
 
 ; ---------- COLORS ------------
+; https://www.autoitscript.com/trac/autoit/ticket/26
 Global Const $COLOR_ORANGE = 0xFFA500
 Global Const $COLOR_PINK = 0xf1735f
 Global Const $COLOR_DARKGREY = 0x555555

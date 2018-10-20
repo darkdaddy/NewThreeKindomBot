@@ -44,16 +44,22 @@ $txtLog = _GUICtrlRichEdit_Create($mainView, "", $contentPaneX, $contentPaneY, $
 
 ; Start/Stop Button
 $x = $contentPaneX
-Local $btnWidth = 90
-$btnStart = GUICtrlCreateButton("Start Bot", $x, $generalBottomY, $btnWidth, 55)
-$btnStop = GUICtrlCreateButton("Stop Bot", $x, $generalBottomY, $btnWidth, 55)
-$x += $btnWidth + 10
-$btnReboot = GUICtrlCreateButton("Reboot Game", $x, $generalBottomY, 100, 25)
-$btnTodayJob = GUICtrlCreateButton("Today Job", $x, $generalBottomY + 30, 100, 25)
 
-$x += 100 + 10
-$btnPullout = GUICtrlCreateButton("Pullout", $x, $generalBottomY, 100, 25)
-$btnGetClanMission = GUICtrlCreateButton("Clan Mission", $x, $generalBottomY + 30, 100, 25)
+Local $btnPlayWidth = 60
+Local $btnWidth = 90
+Local $btnGap = 5
+$btnStart = GUICtrlCreateButton("Start", $x, $generalBottomY, $btnPlayWidth, 55)
+$btnStop = GUICtrlCreateButton("Stop", $x, $generalBottomY, $btnPlayWidth, 55)
+$btnPause = GUICtrlCreateButton("Pause", $x + $btnPlayWidth + $btnGap, $generalBottomY, $btnPlayWidth, 55)
+$btnResume = GUICtrlCreateButton("Resume", $x + $btnPlayWidth + $btnGap, $generalBottomY, $btnPlayWidth, 55)
+
+$x += $btnPlayWidth + $btnGap + $btnPlayWidth + $btnGap
+$btnReboot = GUICtrlCreateButton("Reboot Game", $x, $generalBottomY, $btnWidth, 25)
+$btnTodayJob = GUICtrlCreateButton("Today Job", $x, $generalBottomY + 30, $btnWidth, 25)
+
+$x += $btnWidth + $btnGap
+$btnPullout = GUICtrlCreateButton("Pullout", $x, $generalBottomY, $btnWidth, 25)
+$btnGetClanMission = GUICtrlCreateButton("Clan Mission", $x, $generalBottomY + 30, $btnWidth, 25)
 
 ;-----------------------------------------------------------
 ; Tab : Option
@@ -317,6 +323,8 @@ $labelStats_UseBreadCount = GUICtrlCreateLabel("0", $x, $y, 60, 20)
 GUISetOnEvent($GUI_EVENT_CLOSE, "mainViewClose", $mainView)
 GUICtrlSetOnEvent($btnStart, "btnStart")
 GUICtrlSetOnEvent($btnStop, "btnStop")	; already handled in GUIControl
+GUICtrlSetOnEvent($btnPause, "btnPause")
+GUICtrlSetOnEvent($btnResume, "btnResume")
 GUICtrlSetOnEvent($idTab, "tabChanged")
 GUICtrlSetOnEvent($btnCalcPos, "btnCalcPos")
 GUICtrlSetOnEvent($btnReboot, "btnReboot")
@@ -329,7 +337,10 @@ GUICtrlSetOnEvent($inputGameSpeed, "inputGameSpeed")
 
 GUICtrlSetState($btnStart, $GUI_SHOW)
 GUICtrlSetState($btnStop, $GUI_HIDE)
-
+GUICtrlSetState($btnPause, $GUI_SHOW)
+GUICtrlSetState($btnResume, $GUI_HIDE)
+GUICtrlSetState($btnPause, $GUI_DISABLE)
+GUICtrlSetState($btnResume, $GUI_DISABLE)
 GUISetState(@SW_SHOW, $mainView)
 
 
@@ -353,6 +364,8 @@ Func InitBot()
 
    GUICtrlSetState($btnStart, $GUI_HIDE)
    GUICtrlSetState($btnStop, $GUI_SHOW)
+   GUICtrlSetState($btnPause, $GUI_SHOW)
+   GUICtrlSetState($btnResume, $GUI_HIDE)
 
    saveConfig()
    loadConfig()
@@ -379,6 +392,8 @@ Func InitBot()
    EndIf
 
    UpdateWindowRect()
+   GUICtrlSetState($btnPause, $GUI_ENABLE)
+   GUICtrlSetState($btnResume, $GUI_ENABLE)
    GUICtrlSetState($btnReboot, $GUI_DISABLE)
    GUICtrlSetState($btnTodayJob, $GUI_DISABLE)
    GUICtrlSetState($btnPullout, $GUI_DISABLE)
@@ -451,17 +466,49 @@ Func btnStop()
 
    GUICtrlSetState($btnStart, $GUI_SHOW)
    GUICtrlSetState($btnStop, $GUI_HIDE)
+   GUICtrlSetState($btnPause, $GUI_SHOW)
+   GUICtrlSetState($btnResume, $GUI_HIDE)
 
    $Restart = False
    $RunState = False
    $PauseBot = True
 
+   GUICtrlSetState($btnPause, $GUI_DISABLE)
+   GUICtrlSetState($btnResume, $GUI_DISABLE)
    GUICtrlSetState($btnReboot, $GUI_ENABLE)
    GUICtrlSetState($btnTodayJob, $GUI_ENABLE)
    GUICtrlSetState($btnPullout, $GUI_ENABLE)
    GUICtrlSetState($btnGetClanMission, $GUI_ENABLE)
 
    SetLog($INFO, "Bot has stopped", $COLOR_RED)
+EndFunc
+
+Func btnPause()
+   _console("PAUSE BUTTON CLICKED" )
+   If $RunState = False Then
+	  Return
+   EndIf
+
+   GUICtrlSetState($btnPause, $GUI_HIDE)
+   GUICtrlSetState($btnResume, $GUI_SHOW)
+
+   $PauseBot = True
+
+   SetLog($INFO, "Bot has paused", $COLOR_PINK)
+EndFunc
+
+Func btnResume()
+   _console("RESUME BUTTON CLICKED" )
+   If $RunState = False Then
+	  Return
+   EndIf
+
+   GUICtrlSetState($btnPause, $GUI_SHOW)
+   GUICtrlSetState($btnResume, $GUI_HIDE)
+
+   $PauseBot = False
+
+   SetLog($INFO, "Bot has resumed", $COLOR_MEDBLUE)
 EndFunc
 
 Func btnCalcPos()

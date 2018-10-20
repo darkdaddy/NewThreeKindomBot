@@ -1356,7 +1356,7 @@ Func DoClanMissionJob($troopNumber)
 	  SetLog($INFO, "Mission Detected : " & $missionStr, $COLOR_PURPLE)
 
 	  $troopIndex = Mod($troopNumber-1, 3)
-
+	  $lastFailedMissionId = -1
 	  While $RunState
 		 $troopMatched = False
 		 $firstMissionIndex = -1
@@ -1381,8 +1381,8 @@ Func DoClanMissionJob($troopNumber)
 			$missionIndex = $firstMissionIndex
 		 EndIf
 
-		 If $missionIndex < 0 Then
-			SetLog($ERROR, "Mission Not Found (Unexpected..)", $COLOR_RED)
+		 If $missionIndex < 0 Or $missionIndex = $lastFailedMissionId Then
+			SetLog($ERROR, "Mission Not Found : curr=" & $missionIndex & ", last=" & $lastFailedMissionId, $COLOR_RED)
 			$ClanMissionEnabledTemporarily[$troopNumber-1] = False
 			Return False
 		 EndIf
@@ -1395,10 +1395,11 @@ Func DoClanMissionJob($troopNumber)
 		 If _SleepAbs(1200) Then Return False
 
 		 If CheckForPixelList($CHECK_BUTTON_CLAN_MISSION_CLOSE) Then
-			SetLog($ERROR, "Could not go for the mission", $COLOR_RED)
+			SetLog($ERROR, "Could not go for the mission " & $missionIndex, $COLOR_RED)
 
 			; Mark as false for this mission!
 			$detectedMission[$missionIndex] = False
+			$lastFailedMissionId = $missionIndex
 			ContinueLoop
 		 EndIf
 

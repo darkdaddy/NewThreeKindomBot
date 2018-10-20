@@ -2,12 +2,12 @@
 
 #pragma compile(FileDescription, New ThreeKingdom Bot)
 #pragma compile(ProductName, New ThreeKingdom Bot)
-#pragma compile(ProductVersion, 0.13)
-#pragma compile(FileVersion, 0.13)
+#pragma compile(ProductVersion, 0.14)
+#pragma compile(FileVersion, 0.14)
 #pragma compile(LegalCopyright, DarkJaden)
 
 $sBotName = "New ThreeKingdom Bot"
-$sBotVersion = "0.13"
+$sBotVersion = "0.14"
 $sBotTitle = "AutoIt " & $sBotName & " v" & $sBotVersion
 
 #include <Bots/Util/SetLog.au3>
@@ -159,6 +159,10 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 			   mainViewClose()
 			Case $btnStop
 			   btnStop()
+			Case $btnPause
+			   btnPause()
+			Case $btnResume
+			   btnResume()
 			EndSwitch
 	  Case 274
 		 Switch $wParam
