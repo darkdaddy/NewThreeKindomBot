@@ -276,7 +276,7 @@ EndFunc
 
 Func MyPixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)
 
-   While ($PauseBot)
+   While ($RunState And $PauseBot)
 	  Sleep(1000)
    WEnd
 
