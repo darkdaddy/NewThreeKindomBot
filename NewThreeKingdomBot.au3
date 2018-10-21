@@ -276,6 +276,10 @@ EndFunc
 
 Func MyPixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)
 
+   While ($PauseBot)
+	  Sleep(1000)
+   WEnd
+
    Local $result = [0, 0]
    If $setting_capture_mode Then
 

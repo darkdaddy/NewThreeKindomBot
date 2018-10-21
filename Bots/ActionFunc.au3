@@ -329,7 +329,7 @@ Func DoGetClanMissionInternal($castleIndex, $reverseMode)
 
    If $reverseMode Then
 	  DragControlPos("51:71", "51:43", 10);
-	  If _SleepAbs(500) Then Return False
+	  If _SleepAbs(1000) Then Return False
    EndIf
 
    $itemY = Number($CastleFirstItemY) + ($castleIndex * $CastleStepYPos)
@@ -662,7 +662,7 @@ Func GoToNearByEmemy($troopNumber)
 			$tryCount = $tryCount + 1
 
 			; Not found "move" button
-			SetLog($ERROR, "Move button " & $actualTroopMoveNumber & " not found", $COLOR_RED)
+			SetLog($DEBUG, "Move button " & $actualTroopMoveNumber & " not found", $COLOR_RED)
 
 			; this means that there is no more enemy in this near field.
 			; go to anywhere to dragging
@@ -705,7 +705,7 @@ Func GoToNearByEmemy($troopNumber)
 		 If _Sleep(400) Then Return False
 	  WEnd
 
-	  SetLog($ERROR, "Enemy not found : direction = " & $direction, $COLOR_RED)
+	  SetLog($DEBUG, "Enemy not found : direction = " & $direction, $COLOR_DARKGREY)
 
 	  ; Go to origin position again..
 	  ClickControlPos($POS_BUTTON_GOTO_MAP, 2)
