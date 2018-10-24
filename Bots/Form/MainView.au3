@@ -471,7 +471,7 @@ Func btnStop()
 
    $Restart = False
    $RunState = False
-   $PauseBot = True
+   $PauseBot = False
 
    GUICtrlSetState($btnPause, $GUI_DISABLE)
    GUICtrlSetState($btnResume, $GUI_DISABLE)
