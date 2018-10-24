@@ -24,6 +24,7 @@ Func AutoFlow()
    ;Return True
    ;DoGetClanMissionInternal(0)
    ;CheckTroopAvailableList()
+   ;CloseAllMenu()
    ;Return True
 
    While $RunState

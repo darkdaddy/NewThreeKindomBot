@@ -41,19 +41,24 @@ Func CloseCurrentMenu()
    If CloseMenu("Attack-BUFF", $CHECK_BUTTON_ATTACK_BUFF_CLOSE) Then $closeCount += 1
    If CloseMenu("Enemy-Attack", $CHECK_BUTTON_ENEMY_ATTACK_CLOSE) Then $closeCount += 1
    If CloseMenu("Special-Store", $CHECK_BUTTON_SPECIAL_STORE_CLOSE) Then $closeCount += 1
+   If CloseMenu("Clan-Castle-Skill", $CHECK_BUTTON_CLAN_CASTLE_SKILL_CLOSE) Then $closeCount += 1
 
    Return $closeCount > 0
 EndFunc
 
 
 Func CloseAllMenu()
-
+   _console("CloseAllMenu begin");
    While $RunState
-	  If Not CloseCurrentMenu() Then
+	  $res = CloseCurrentMenu()
+	   _console("CloseAllMenu result : " & $res);
+	  If Not $res Then
 		 ExitLoop
 	  EndIf
 	  If _Sleep(500) Then Return False
+
    WEnd
+   _console("CloseAllMenu end");
 EndFunc
 
 Func RebootNox()
@@ -270,7 +275,7 @@ EndFunc
 
 
 Func DoGetClanMission()
-   CloseCurrentMenu()
+   CloseAllMenu()
 
    Local const $MaxItemIndexInScreen = 5
 
@@ -1819,7 +1824,7 @@ EndFunc
 Func MainDungeonTreasure()
    SetLog($INFO, "Auto Dungeon Treasure Start", $COLOR_BLACK)
 
-   CloseCurrentMenu()
+   CloseAllMenu()
 
    ClickControlPos($POS_BUTTON_DUNGEON, 2)
    If _Sleep(800) Then Return False
