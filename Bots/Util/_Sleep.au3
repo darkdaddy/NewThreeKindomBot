@@ -8,7 +8,8 @@ Func _Sleep($iDelay, $bAllowPause = True, $bApplySpeedRate = True)
    While TimerDiff($iBegin) < $iActualDelay
 	  If $RunState = False Then Return True
 	  While ($PauseBot And $bAllowPause)
-		 Sleep(1000)
+		 Sleep(100)
+		 tabChanged()
 	  WEnd
 	  tabChanged()
 	  Sleep(($iActualDelay > 50) ? 50 : 1)
